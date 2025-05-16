@@ -6,13 +6,15 @@ import React, { useEffect, useState } from "react";
 
 export function ScrollToTop({
 	minHeight, // Height from which button will be visible
-	scrollTo,
-  className, // Height to go on scroll to top
+	scrollTo, // Height to go on scroll to top
+  className,
+  size,
 	...props
 }: {
 	minHeight?: number;
 	scrollTo?: number;
   className?: string;
+  size?: number;
 }) {
 	const [visible, setVisible] = useState(false);
 
@@ -40,7 +42,7 @@ export function ScrollToTop({
           className={className}
 					{...props}
 				>
-        <ArrowUpToLine size={40}/>
+        <ArrowUpToLine size={size}/>
         </Button>
 			)}
 		</>

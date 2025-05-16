@@ -16,7 +16,7 @@ export default function ChordsLayout({
 		<>
 			<TopBar className="mb-10"></TopBar>
 			{children}
-			<ScrollToTop minHeight={20} scrollTo={10} className="fixed rounded-full right-4 bottom-4 z-10 cursor-pointer w-12 h-12">
+			<ScrollToTop size={40} minHeight={600} scrollTo={10} className="fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-16 h-16">
 			</ScrollToTop>
 		</>
 	);

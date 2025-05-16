@@ -168,5 +168,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+}
+
+main {
+  flex: 1;
 }

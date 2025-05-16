@@ -34,7 +34,7 @@ export default function RootLayout({
 	return (
 		<html className="scroll-smooth" lang="en" suppressHydrationWarning>
 			<body
-				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} font-sans antialiased`}
+				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} mt-20 font-sans antialiased`}
 			>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<Header />

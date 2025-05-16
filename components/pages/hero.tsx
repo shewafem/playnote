@@ -7,7 +7,7 @@ import { Container } from "../utils/container";
 
 const Hero = () => {
 	return (
-		<Container className="mt-10 flex items-center justify-center">
+		<Container className="flex items-center justify-center">
 				<motion.div
 					className="max-w-full gap-8 md:gap-10 flex-col flex justify-center items-center"
 					initial={{ opacity: 0, y: 20 }}
