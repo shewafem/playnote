@@ -9,7 +9,14 @@ import { Guitar, Music, User, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
 //import { FaPeopleGroup } from "react-icons/fa6";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"; // Shadcn UI Sheet components
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 interface Props {
 	className?: string;
@@ -77,10 +84,12 @@ export const Header: React.FC<Props> = ({ className }) => {
 									</SheetHeader>
 									<nav className="flex flex-col gap-4 px-4">
 										{navLinks.map((link) => (
-											<Link key={link.href} href={link.href} className="nav-link flex items-center gap-2 text-lg">
-												{link.icon}
-												{link.text}
-											</Link>
+											<SheetClose key={link.href} asChild>
+												<Link  href={link.href} className="nav-link flex items-center gap-2 text-lg">
+													{link.icon}
+													{link.text}
+												</Link>
+											</SheetClose>
 										))}
 										<hr className="my-2" />
 										<Link href="/login" className="nav-link">
