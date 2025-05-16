@@ -15,7 +15,7 @@ const Hero = () => {
 					transition={{ duration: 0.8, ease: "easeOut" }}
 				>
 					<h1 className="mb-0 text-center text-4xl xs:text-5xl sm:text-6xl lg:text-6xl xl:text-7xl font-extrabold !leading-[1.15] tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary">
-						Освойте гитару по-новому! 
+						Освойте гитару по-новому!
 					</h1>
 					<p className="mb-0 text-center text-md sm:text-xl text-muted-foreground leading-relaxed sm:max-w-[65ch] max-w-[50ch]">
 						Улучшайте свое мастерство на гитаре с интерактивными инструментами: онлайн-база аккордов, фретборд и практика любимых песен в реальном

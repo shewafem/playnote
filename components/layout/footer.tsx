@@ -73,10 +73,6 @@ const Footer = () => {
 						))}
 					</div>
 				</div>
-
-				<div className="mt-6 flex flex-col justify-between gap-4 pt-2 text-center text-sm font-medium text-muted-foreground lg:flex-row lg:items-center lg:text-left">
-					<p>© 2025 Playnote</p>
-				</div>
 			</Container>
 		</footer>
 	);
