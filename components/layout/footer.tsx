@@ -27,8 +27,8 @@ const sections = [
 
 const Footer = () => {
 	return (
-		<footer className="mt-auto">
-			<Container className="flex items-center flex-col border-t bg-card/95 pt-8">
+		<footer className="mt-auto bg-card/95">
+			<Container className="flex items-center flex-col border-t pt-8">
 				<div className="flex flex-col items-center justify-between gap-10 lg:gap-20 text-center xs:flex-row sm:items-start sm:text-left">
 					<div className="flex w-full flex-col items-center justify-between gap-6 lg:items-start">
 						{/* Logo */}
