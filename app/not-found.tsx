@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button"; // Adjust path as needed
-import { Home } from "lucide-react";
 
 export default function NotFound() {
 	return (
@@ -17,9 +16,7 @@ export default function NotFound() {
 
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
 					<Button asChild size="lg" className="w-auto">
-						<Link href="/">
-							На главную 🏠
-						</Link>
+						<Link href="/">На главную 🏠</Link>
 					</Button>
 				</div>
 			</div>
