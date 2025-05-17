@@ -4,7 +4,7 @@ import { ScaleChord } from "@/lib/music-theory";
 
 interface ChordCardProps {
   chord: ScaleChord;
-  isCurrent?: boolean; // Optional: for highlighting current chord in playback (future feature)
+  isCurrent?: boolean;
 }
 
 export function ChordCard({ chord, isCurrent }: ChordCardProps) {

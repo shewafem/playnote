@@ -1,4 +1,3 @@
-// components/ui/chord-progression/root-note-selector.tsx
 import {
   Select,
   SelectContent,
@@ -19,7 +18,7 @@ export function RootNoteSelector({ currentRootNote, onRootNoteChange }: RootNote
     <div className="flex flex-col space-y-1.5">
       <Label htmlFor="root-note" className="text-sm font-medium">Тоника</Label>
       <Select value={currentRootNote} onValueChange={onRootNoteChange}>
-        <SelectTrigger id="root-note" className="w-[180px]">
+        <SelectTrigger id="root-note" className="w-auto">
           <SelectValue placeholder="Select Root Note" />
         </SelectTrigger>
         <SelectContent>

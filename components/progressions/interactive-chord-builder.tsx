@@ -1,4 +1,3 @@
-// components/ui/chord-progression/interactive-chord-builder.tsx
 import { ScaleChord } from "@/lib/music-theory";
 import { InteractiveChordCard } from "./interactive-chord-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -16,13 +15,13 @@ export function InteractiveChordBuilder({
 	diatonicChords,
 	onChordSelect,
 	currentKey,
-	maxCustomProgressionLength = 8, // Example limit
+	maxCustomProgressionLength = 8,
 	currentCustomProgressionLength = 0,
 }: InteractiveChordBuilderProps) {
 	const isBuilderDisabled = currentCustomProgressionLength >= maxCustomProgressionLength;
 
 	if (!diatonicChords.length) {
-		return <p className="text-muted-foreground">Select a root note to see available chords.</p>;
+		return <p className="text-muted-foreground">Выберите тонику, чтобы увидеть аккорды</p>;
 	}
 
 	return (

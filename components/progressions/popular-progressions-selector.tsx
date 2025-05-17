@@ -1,4 +1,3 @@
-// components/ui/chord-progression/popular-progressions-selector.tsx
 import {
 	Select,
 	SelectContent,
@@ -12,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { POPULAR_PROGRESSIONS} from "@/lib/music-theory";
 
 interface PopularProgressionsSelectorProps {
-	onProgressionNameSelect: (name: string) => void; // Changed prop
+	onProgressionNameSelect: (name: string) => void;
 	currentProgressionName?: string;
 }
 
@@ -20,7 +19,6 @@ export function PopularProgressionsSelector({
 	onProgressionNameSelect,
 	currentProgressionName,
 }: PopularProgressionsSelectorProps) {
-	// handleSelect now just passes the name
 	const handleSelect = (name: string) => {
 		onProgressionNameSelect(name);
 	};
@@ -31,8 +29,8 @@ export function PopularProgressionsSelector({
 				Популярные прогрессии
 			</Label>
 			<Select onValueChange={handleSelect} value={currentProgressionName}>
-				<SelectTrigger id="popular-progression" className="w-[280px]">
-					<SelectValue placeholder="Select a Popular Progression" />
+				<SelectTrigger id="popular-progression" className="w-auto">
+					<SelectValue placeholder="Выберите прогрессию" />
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>

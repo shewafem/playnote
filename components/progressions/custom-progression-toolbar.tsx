@@ -1,4 +1,3 @@
-// components/ui/chord-progression/custom-progression-toolbar.tsx
 import { Button } from "@/components/ui/button";
 import { Trash2, Undo2 } from "lucide-react";
 
@@ -25,7 +24,7 @@ export function CustomProgressionToolbar({
         <Trash2 className="w-4 h-4 mr-2" />
         Очистить
       </Button>
-      <span className="text-sm text-muted-foreground ml-2">Изменение кастомной прогрессии</span>
+      <span className="text-sm text-muted-foreground ml-2">Изменение прогрессии</span>
     </div>
   );
 }

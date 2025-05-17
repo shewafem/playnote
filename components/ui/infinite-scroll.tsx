@@ -21,12 +21,11 @@ export default function InfiniteScroll({
 	reverse,
 	children,
 }: InfiniteScrollProps) {
-	const observer = React.useRef<IntersectionObserver | null>(null); // Initialize with null for clarity
+	const observer = React.useRef<IntersectionObserver | null>(null);
 	const observerRef = React.useCallback(
 		(element: HTMLElement | null) => {
 			let safeThreshold = threshold;
 			if (threshold < 0 || threshold > 1) {
-				console.warn("threshold should be between 0 and 1. You are exceed the range. will use default value: 1");
 				safeThreshold = 1;
 			}
 
@@ -35,12 +34,9 @@ export default function InfiniteScroll({
 			}
 
 			if (element) {
-				// Only create and observe if the element exists
 				observer.current = new IntersectionObserver(
 					(entries) => {
-						// Check if still mounted and conditions are met
 						if (entries[0].isIntersecting && hasMore && !isLoading) {
-							// Added !isLoading check before calling next
 							next();
 						}
 					},
@@ -60,11 +56,9 @@ export default function InfiniteScroll({
 				if (!React.isValidElement(child)) {
 					return child;
 				}
-
+        
 				const isObserveTarget = reverse ? index === 0 : index === flattenChildren.length - 1;
-
 				const refToPass = isObserveTarget ? observerRef : null;
-
 				const propsWithRef = { ref: refToPass };
 
 				return React.cloneElement(child, propsWithRef as React.Attributes & { ref?: React.Ref<HTMLElement> });

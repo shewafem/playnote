@@ -1,4 +1,3 @@
-// components/ui/chord-progression/export-controls.tsx
 import { Button } from "@/components/ui/button";
 import { Download, Printer } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

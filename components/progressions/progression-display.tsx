@@ -1,9 +1,8 @@
-// components/ui/chord-progression/progression-display.tsx
 import { ScaleChord } from "@/lib/music-theory";
 import { ChordCard } from "./chord-card";
 
 interface ProgressionDisplayProps {
-  progressionChords: (ScaleChord | undefined)[]; // Can have undefined if numeral not found
+  progressionChords: (ScaleChord | undefined)[];
 }
 
 export function ProgressionDisplay({ progressionChords }: ProgressionDisplayProps) {

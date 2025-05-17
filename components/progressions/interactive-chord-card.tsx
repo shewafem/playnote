@@ -1,4 +1,3 @@
-// components/ui/chord-progression/interactive-chord-card.tsx
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScaleChord } from "@/lib/music-theory";
 //import { PlusCircle } from "lucide-react";
