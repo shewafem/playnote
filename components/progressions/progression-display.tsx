@@ -8,14 +8,14 @@ interface ProgressionDisplayProps {
 export function ProgressionDisplay({ progressionChords }: ProgressionDisplayProps) {
   if (!progressionChords || progressionChords.length === 0) {
     return (
-      <div className="flex items-center justify-center h-40 border-2 border-dashed rounded-lg bg-muted/50">
+      <div className="mb-4 flex flex-wrap gap-4 p-8 justify-center items-center h-40 border-2 border-dashed rounded-lg bg-muted/50">
         <p className="text-muted-foreground">Выберите или сгенерируйте прогрессию</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap gap-4 py-6 justify-center md:justify-start">
+    <div className="flex flex-wrap gap-4 py-6 justify-center items-center">
       {progressionChords.map((chord, index) =>
         chord ? (
           <ChordCard key={`${chord.numeral}-${chord.rootNote}-${index}`} chord={chord} />

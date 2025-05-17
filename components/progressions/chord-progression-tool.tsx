@@ -12,14 +12,11 @@ import {
 import { ControlPanel } from "./control-panel";
 import { ProgressionDisplay } from "./progression-display";
 import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Lightbulb } from "lucide-react";
 import { InteractiveChordBuilder } from "./interactive-chord-builder";
 import { CustomProgressionToolbar } from "./custom-progression-toolbar";
 import { ExportControls } from "./export-controls";
 import { toPng } from "html-to-image";
 import { downloadImage } from "@/data/image";
-import { ChordCard } from "./chord-card";
 
 type ProgressionSource = "popular" | "random" | "custom";
 const MAX_CUSTOM_PROGRESSION_LENGTH = 12;
@@ -125,33 +122,19 @@ export function ChordProgressionTool() {
 			downloadImage(dataUrl, `chord-progression-${rootNote}-${activeProgressionSource}.png`);
 		} catch (error) {
 			console.error("Ошибка генерации PNG:", error);
-			// TODO: Добавить Toast-увдеомление
+			// TODO: Добавить Toast-уведомление
 		} finally {
 			setIsLoadingPng(false);
 		}
 	}, [rootNote, activeProgressionSource]);
 
-	const handlePrint = useCallback(() => {
-		window.print();
-	}, []);
-
-	let progressionTitle = "Текущая прогрессия";
-	if (activeProgressionSource === "popular" && currentPopularProgressionName) {
-		progressionTitle = `${currentPopularProgressionName} прогрессия`;
-	} else if (activeProgressionSource === "random") {
-		progressionTitle = "Случайная прогрессия";
-	} else if (activeProgressionSource === "custom" && customProgressionNumerals.length > 0) {
-		progressionTitle = "Своя прогрессия";
-	}
-
 	return (
-		<div className="container mx-auto p-4 md:p-8 space-y-8 print:space-y-4">
+		<div className="container mx-auto flex flex-col gap-4">
 			<header className="text-center print:hidden">
 				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl text-primary">Прогрессии аккордов</h1>
 				<p className="mt-3 text-lg text-muted-foreground">Изучайте, создавайте и экспортируйте прогрессии!</p>
 			</header>
-
-			<div className="print:hidden">
+			<div className="flex flex-col sm:flex-row gap-4 items-center">
 				<ControlPanel
 					currentRootNote={rootNote}
 					onRootNoteChange={handleRootNoteChange}
@@ -160,37 +143,23 @@ export function ChordProgressionTool() {
 					isGenerating={isGeneratingRandom}
 					currentPopularProgressionName={currentPopularProgressionName}
 				/>
-			</div>
-
-			<Separator className="print:hidden" />
-			<div
-				id="progression-to-export"
-				className="bg-background p-0 md:p-6 rounded-lg print:p-0 print:shadow-none print:border-none"
-			>
-				<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-					<div>
-						<h2 className="text-2xl mb-2 font-semibold">{progressionTitle}</h2>
-						<p className="text-sm text-muted-foreground">
-							Тоника {rootNote} Major
-						</p>
+				<div
+					id="progression-to-export"
+					className="flex flex-col justify-center items-center bg-background w-full rounded-lg print:p-0 print:shadow-none print:border-none"
+				>
+					{activeProgressionSource === "custom" && (
+						<div className="print:hidden">
+							<CustomProgressionToolbar
+								onClearProgression={handleClearCustomProgression}
+								onRemoveLastChord={handleRemoveLastCustomChord}
+								hasCustomChords={customProgressionNumerals.length > 0}
+							/>
+						</div>
+					)}
+					<div ref={progressionDisplayRef} className="bg-background print:bg-transparent">
+						<ProgressionDisplay progressionChords={progressionChordsToDisplay} />
 					</div>
-					<div className="mt-3 sm:mt-0 print:hidden">
-						<ExportControls onSaveAsPng={handleSaveAsPng} onPrint={handlePrint} isLoadingPng={isLoadingPng} />
-					</div>
-				</div>
-
-				{activeProgressionSource === "custom" && (
-					<div className="print:hidden">
-						<CustomProgressionToolbar
-							onClearProgression={handleClearCustomProgression}
-							onRemoveLastChord={handleRemoveLastCustomChord}
-							hasCustomChords={customProgressionNumerals.length > 0}
-						/>
-					</div>
-				)}
-
-				<div ref={progressionDisplayRef} className="bg-background print:bg-transparent">
-					<ProgressionDisplay progressionChords={progressionChordsToDisplay} />
+					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
 				</div>
 			</div>
 
@@ -205,27 +174,6 @@ export function ChordProgressionTool() {
 					maxCustomProgressionLength={MAX_CUSTOM_PROGRESSION_LENGTH}
 				/>
 			</div>
-
-			<Separator className="print:hidden" />
-
-			<div className="print:hidden">
-				<h2 className="text-2xl font-semibold mb-2">Диатонические аккорды в {rootNote} Major</h2>
-				<p className="text-sm text-muted-foreground mb-4">Это основные аккорды в {rootNote} Major</p>
-				<div className="flex flex-wrap gap-4 py-6 justify-center md:justify-start">
-					{diatonicChords.map((chord) => (
-						<ChordCard key={`diatonic-${chord.numeral}-${chord.rootNote}`} chord={chord} />
-					))}
-				</div>
-			</div>
-
-			<Alert className="mt-8 print:hidden">
-				<Lightbulb className="h-4 w-4" />
-				<AlertTitle>Обучающая подсказка</AlertTitle>
-				<AlertDescription>
-					Используйте интерактивный конструктор, чтобы экспериментировать с вашими собственными последовательностями.
-          <p><span className="font-bold inline-block w-auto">Прогрессия: I - V - vi - IV</span> является одной из самых распространенных в поп-музыке.</p>
-				</AlertDescription>
-			</Alert>
 		</div>
 	);
 }
