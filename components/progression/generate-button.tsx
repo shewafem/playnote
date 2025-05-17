@@ -1,0 +1,17 @@
+// components/ui/chord-progression/generate-button.tsx
+import { Button } from "@/components/ui/button";
+import { Wand2 } from "lucide-react"; // Or any other icon you prefer
+
+interface GenerateButtonProps {
+  onGenerate: () => void;
+  isLoading?: boolean;
+}
+
+export function GenerateButton({ onGenerate, isLoading }: GenerateButtonProps) {
+  return (
+    <Button onClick={onGenerate} disabled={isLoading} size="lg">
+      <Wand2 className="w-5 h-5 mr-2" />
+      {isLoading ? "Генерирую...🎲" : "Сгенерировать"}
+    </Button>
+  );
+}

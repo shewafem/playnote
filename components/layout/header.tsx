@@ -2,21 +2,15 @@
 
 import { cn } from "@/lib/utils";
 import React from "react";
-import { Container } from "@/components/utils/container";
+import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
-import { Guitar, Music, User, Menu } from "lucide-react";
+import { User, Menu } from "lucide-react";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
 //import { FaPeopleGroup } from "react-icons/fa6";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { NavMenu } from "./nav-menu";
 
 interface Props {
 	className?: string;
@@ -25,8 +19,9 @@ interface Props {
 export const Header: React.FC<Props> = ({ className }) => {
 	// Navigation links data
 	const navLinks = [
-		{ href: "/chords", text: "Аккорды", icon: <Music size={17} /> },
-		{ href: "/fretboard", text: "Гриф", icon: <Guitar size={17} /> },
+		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
+		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },
+		{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
 		{ href: "/courses", text: "Курсы", icon: "" },
 		{ href: "/blog", text: "Блог", icon: "" },
 		{ href: "/about", text: "О нас", icon: "" },
@@ -44,18 +39,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 				<Logo size={28} />
 				{/* Навигация для больших экранов */}
 				<div className="flex gap-3 md:gap-8">
-					<nav className="hidden xs:flex items-center gap-3 md:gap-6 text-sm font-medium">
-						{navLinks.map((link) => (
-							<Link
-								key={link.href}
-								href={link.href}
-								className="nav-link text-foreground text-[10px] xs:text-sm md:text-lg transition-colors hover:text-foreground/80" // Example styling
-							>
-								{link.text}
-								{link.icon}
-							</Link>
-						))}
-					</nav>
+					<NavMenu></NavMenu>
 
 					{/* Правая часть - Действия и мобильное меню */}
 					<div className="flex items-center gap-3">
@@ -85,9 +69,9 @@ export const Header: React.FC<Props> = ({ className }) => {
 									<nav className="flex flex-col gap-4 px-4">
 										{navLinks.map((link) => (
 											<SheetClose key={link.href} asChild>
-												<Link  href={link.href} className="nav-link flex items-center gap-2 text-lg">
-													{link.icon}
+												<Link href={link.href} className="nav-link flex items-center gap-2 text-lg">
 													{link.text}
+													{link.icon}
 												</Link>
 											</SheetClose>
 										))}

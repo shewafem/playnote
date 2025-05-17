@@ -6,7 +6,7 @@ import * as Tone from "tone";
 import ChordElement from "@/components/chords/chord-element";
 import InfiniteScroll from "@/components/ui/infinite-scroll";
 import { Loader2 } from "lucide-react";
-import { Container } from "../utils/container";
+import { Container } from "@/components/layout/container";
 
 interface ChordListProps {
 	chords: ChordType[];

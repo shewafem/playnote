@@ -1,5 +1,5 @@
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-import { Container } from "../utils/container";
+import { Container } from "@/components/layout/container";
 import Link from "next/link";
 import Logo from "../ui/logo";
 

@@ -159,7 +159,6 @@
     @apply flex items-center gap-1 text-lg font-semibold; /* Custom class */
   }
 }
-
 html {
   font-size: clamp(12px, 1.5vw, 16px);
 }

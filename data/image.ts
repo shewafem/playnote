@@ -1,3 +1,10 @@
+export function downloadImage(dataUrl: string, filename: string) {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = dataUrl;
+  link.click();
+}
+
 export const downloadSvg = (svgElement: SVGSVGElement, fileName: string) => {
   const svgData = new XMLSerializer().serializeToString(svgElement);
   const blob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
