@@ -10,7 +10,7 @@ interface ExportControlsProps {
 export function ExportControls({ onSaveAsPng, isLoadingPng }: ExportControlsProps) {
 	return (
 		<TooltipProvider delayDuration={100}>
-			<div className="flex gap-3 items-center p-4 border rounded-lg w-fit bg-card shadow">
+			<div className="flex gap-3 items-center w-fit">
 				<h3 className="text-sm font-medium text-muted-foreground mr-2">Экспорт:</h3>
 				<Tooltip>
 					<TooltipTrigger asChild>

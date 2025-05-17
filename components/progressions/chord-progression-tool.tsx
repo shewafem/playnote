@@ -11,7 +11,6 @@ import {
 } from "@/lib/music-theory";
 import { ControlPanel } from "./control-panel";
 import { ProgressionDisplay } from "./progression-display";
-import { Separator } from "@/components/ui/separator";
 import { InteractiveChordBuilder } from "./interactive-chord-builder";
 import { CustomProgressionToolbar } from "./custom-progression-toolbar";
 import { ExportControls } from "./export-controls";
@@ -129,26 +128,15 @@ export function ChordProgressionTool() {
 	}, [rootNote, activeProgressionSource]);
 
 	return (
-		<div className="container mx-auto flex flex-col gap-4">
-			<header className="text-center print:hidden">
+		<div className="container mx-auto p-4 flex flex-col gap-4">
+			<header className="text-center">
 				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl text-primary">Прогрессии аккордов</h1>
 				<p className="mt-3 text-lg text-muted-foreground">Изучайте, создавайте и экспортируйте прогрессии!</p>
 			</header>
-			<div className="flex flex-col sm:flex-row gap-4 items-center">
-				<ControlPanel
-					currentRootNote={rootNote}
-					onRootNoteChange={handleRootNoteChange}
-					onPopularProgressionSelect={(prog, name) => handlePopularProgressionSelect(prog, name as string)}
-					onGenerateRandom={handleGenerateRandom}
-					isGenerating={isGeneratingRandom}
-					currentPopularProgressionName={currentPopularProgressionName}
-				/>
-				<div
-					id="progression-to-export"
-					className="flex flex-col justify-center items-center bg-background w-full rounded-lg print:p-0 print:shadow-none print:border-none"
-				>
+			<div className="flex gap-4 items-center">
+				<div className="flex flex-col justify-center items-center bg-background w-full rounded-lg">
 					{activeProgressionSource === "custom" && (
-						<div className="print:hidden">
+						<div>
 							<CustomProgressionToolbar
 								onClearProgression={handleClearCustomProgression}
 								onRemoveLastChord={handleRemoveLastCustomChord}
@@ -156,24 +144,30 @@ export function ChordProgressionTool() {
 							/>
 						</div>
 					)}
-					<div ref={progressionDisplayRef} className="bg-background print:bg-transparent">
+					<div ref={progressionDisplayRef} className="bg-background">
 						<ProgressionDisplay progressionChords={progressionChordsToDisplay} />
 					</div>
 					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
 				</div>
+				<div className="order-1 sm:order-2">
+					<ControlPanel
+						currentRootNote={rootNote}
+						onRootNoteChange={handleRootNoteChange}
+						onPopularProgressionSelect={(prog, name) => handlePopularProgressionSelect(prog, name as string)}
+						onGenerateRandom={handleGenerateRandom}
+						isGenerating={isGeneratingRandom}
+						currentPopularProgressionName={currentPopularProgressionName}
+					/>
+				</div>
 			</div>
 
-			<Separator className="print:hidden" />
-
-			<div className="print:hidden">
-				<InteractiveChordBuilder
-					diatonicChords={diatonicChords}
-					onChordSelect={handleChordAddToCustom}
-					currentKey={rootNote}
-					currentCustomProgressionLength={customProgressionNumerals.length}
-					maxCustomProgressionLength={MAX_CUSTOM_PROGRESSION_LENGTH}
-				/>
-			</div>
+			<InteractiveChordBuilder
+				diatonicChords={diatonicChords}
+				onChordSelect={handleChordAddToCustom}
+				currentKey={rootNote}
+				currentCustomProgressionLength={customProgressionNumerals.length}
+				maxCustomProgressionLength={MAX_CUSTOM_PROGRESSION_LENGTH}
+			/>
 		</div>
 	);
 }

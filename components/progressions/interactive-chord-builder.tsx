@@ -26,7 +26,7 @@ export function InteractiveChordBuilder({
 
 	return (
 		<div className="space-y-6">
-			<Alert className="border-primary/50">
+			<Alert className="border-primary/50 w-fit">
 				<MousePointerClick className="h-4 w-4" />
 				<AlertTitle className="font-semibold">Постройте свои прогрессии в {currentKey} Major.</AlertTitle>
 				<AlertDescription>
