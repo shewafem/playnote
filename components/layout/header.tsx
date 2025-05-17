@@ -76,12 +76,14 @@ export const Header: React.FC<Props> = ({ className }) => {
 											</SheetClose>
 										))}
 										<hr className="my-2" />
-										<Link href="/login" className="nav-link">
-											<Button className="w-full">
-												Войти
-												<User size={17} />
-											</Button>
-										</Link>
+										<SheetClose asChild>
+											<Link href="/login" className="nav-link">
+												<Button className="w-full">
+													Войти
+													<User size={17} />
+												</Button>
+											</Link>
+										</SheetClose>
 									</nav>
 								</SheetContent>
 							</Sheet>

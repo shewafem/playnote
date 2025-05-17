@@ -16,7 +16,6 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-// 1. Define your Zod schema
 const loginSchema = z.object({
 	email: z.string().email({ message: "Неверный формат почты" }),
 	password: z.string().min(1, { message: "Пароль обязателен" }),
@@ -50,8 +49,6 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
 			redirect: false,
 			email: values.email,
 			password: values.password,
-			// Optionally, add a callbackUrl
-			// callbackUrl: '/dashboard',
 		});
 
 		if (result?.error) {
