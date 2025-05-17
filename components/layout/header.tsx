@@ -30,11 +30,11 @@ export const Header: React.FC<Props> = ({ className }) => {
 	return (
 		<header
 			className={cn(
-				"h-16 fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
+				"h-14 fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
 				className
 			)}
 		>
-			<Container className="flex items-center justify-between">
+			<Container className="px-4 py-2 flex items-center justify-between">
 				{/* Левая часть - Логотип */}
 				<Logo size={28} />
 				{/* Навигация для больших экранов */}

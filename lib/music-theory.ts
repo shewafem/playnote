@@ -1,4 +1,3 @@
-// lib/music-theory.ts
 export const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export type RomanNumeral = "I" | "ii" | "iii" | "IV" | "V" | "vi" | "vii°";
@@ -11,6 +10,15 @@ export interface Chord {
 	displayName: string;
 }
 
+export enum DEGREES {
+  "I" = 1,
+  "ii" = 2,
+  "iii" = 3,
+  "IV" = 4,
+  "V" = 5,
+  "vi" = 6,
+  "vii°" = 7,
+}
 export interface ScaleChord extends Chord {
 	degree: number; // 1-7
 }
@@ -27,7 +35,7 @@ const MAJOR_SCALE_CHORD_QUALITIES: { numeral: RomanNumeral; type: ChordType }[] 
 
 export const getMajorScaleNotes = (rootNote: string): string[] => {
 	const rootIndex = NOTES.indexOf(rootNote);
-	if (rootIndex === -1) throw new Error("Invalid root note");
+	if (rootIndex === -1) throw new Error("Неверная тоника");
 
 	const scaleSteps = [0, 2, 4, 5, 7, 9, 11]; //(W-W-H-W-W-W-H)
 	return scaleSteps.map((step) => NOTES[(rootIndex + step) % NOTES.length]);
