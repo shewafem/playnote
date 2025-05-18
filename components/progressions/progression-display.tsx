@@ -3,19 +3,20 @@ import { ChordCard } from "./chord-card";
 
 interface ProgressionDisplayProps {
   progressionChords: (ScaleChord | undefined)[];
+  ref: React.RefObject<HTMLDivElement | null>;
 }
 
-export function ProgressionDisplay({ progressionChords }: ProgressionDisplayProps) {
+export function ProgressionDisplay({ progressionChords, ref }: ProgressionDisplayProps) {
   if (!progressionChords || progressionChords.length === 0) {
     return (
-      <div className="mb-4 flex flex-wrap gap-4 p-8 justify-center items-center h-40 border-2 border-dashed rounded-lg bg-muted/50">
+      <div ref={ref} className="h-36 w-full flex gap-4 justify-center items-center border-2 border-dashed rounded-lg bg-muted/50">
         <p className="text-muted-foreground">Выберите или сгенерируйте прогрессию</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap gap-4 p-4 justify-center items-center">
+    <div ref={ref} className="flex flex-wrap gap-4 justify-center items-center">
       {progressionChords.map((chord, index) =>
         chord ? (
           <ChordCard key={`${chord.numeral}-${chord.rootNote}-${index}`} chord={chord} />

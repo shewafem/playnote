@@ -5,9 +5,8 @@ import { ArrowUpToLine } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 export function ScrollToTop({
-	minHeight, // Height from which button will be visible
-	scrollTo, // Height to go on scroll to top
-  className,
+	minHeight,
+	scrollTo, 
   size,
 	...props
 }: {
@@ -39,7 +38,7 @@ export function ScrollToTop({
 							behavior: "smooth",
 						})
 					}
-          className={className}
+          className="fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-12 h-12 transition-all duration-200 ease-in-out"
 					{...props}
 				>
         <ArrowUpToLine size={size}/>

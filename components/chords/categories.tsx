@@ -12,7 +12,6 @@ interface CategoriesProps {
 export const Categories: React.FC<CategoriesProps> = ({ items, className, selected }) => {
 	return (
 		<>
-			<h2 className="">Выберите тональность</h2>
 			<nav
 				className={cn("flex flex-wrap justify-center gap-2 bg-background rounded-2xl", className)}
 				aria-label="Keys"

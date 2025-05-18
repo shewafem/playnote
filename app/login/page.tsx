@@ -1,6 +1,7 @@
 import LoginForm from "@/components/auth/login-form";
 import Logo from "@/components/ui/logo";
 
+
 export default function LoginPage() {
 	return (
 		<div className="bg-background flex flex-col items-center justify-center">

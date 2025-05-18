@@ -133,24 +133,8 @@ export function ChordProgressionTool() {
 				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl text-primary">Прогрессии аккордов</h1>
 				<p className="mt-3 text-lg text-muted-foreground">Изучайте, создавайте и экспортируйте прогрессии!</p>
 			</header>
-			<div className="flex gap-4 items-center">
-				<div className="flex flex-col justify-center items-center bg-background w-full rounded-lg">
-					{activeProgressionSource === "custom" && (
-						<div>
-							<CustomProgressionToolbar
-								onClearProgression={handleClearCustomProgression}
-								onRemoveLastChord={handleRemoveLastCustomChord}
-								hasCustomChords={customProgressionNumerals.length > 0}
-							/>
-						</div>
-					)}
-					<div ref={progressionDisplayRef} className="bg-background">
-						<ProgressionDisplay progressionChords={progressionChordsToDisplay} />
-					</div>
-					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
-				</div>
-				<div className="order-1 sm:order-2">
-					<ControlPanel
+			<div className="flex flex-col gap-8 items-center">
+        <ControlPanel
 						currentRootNote={rootNote}
 						onRootNoteChange={handleRootNoteChange}
 						onPopularProgressionSelect={(prog, name) => handlePopularProgressionSelect(prog, name as string)}
@@ -158,7 +142,15 @@ export function ChordProgressionTool() {
 						isGenerating={isGeneratingRandom}
 						currentPopularProgressionName={currentPopularProgressionName}
 					/>
-				</div>
+					{activeProgressionSource === "custom" && (
+							<CustomProgressionToolbar
+								onClearProgression={handleClearCustomProgression}
+								onRemoveLastChord={handleRemoveLastCustomChord}
+								hasCustomChords={customProgressionNumerals.length > 0}
+							/>
+					)}
+						<ProgressionDisplay ref={progressionDisplayRef} progressionChords={progressionChordsToDisplay} />
+					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
 			</div>
 
 			<InteractiveChordBuilder

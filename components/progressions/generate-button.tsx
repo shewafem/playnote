@@ -8,7 +8,7 @@ interface GenerateButtonProps {
 
 export function GenerateButton({ onGenerate, isLoading }: GenerateButtonProps) {
   return (
-    <Button onClick={onGenerate} disabled={isLoading} size="lg">
+    <Button className="cursor-pointer w-full" onClick={onGenerate} disabled={isLoading} size="lg">
       <Wand2 className="w-5 h-5 mr-2" />
       {isLoading ? "Генерирую...🎲" : "Сгенерировать"}
     </Button>

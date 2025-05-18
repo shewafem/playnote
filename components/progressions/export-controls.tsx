@@ -13,7 +13,7 @@ export function ExportControls({ onSaveAsPng, isLoadingPng }: ExportControlsProp
 			<div className="flex gap-3 items-center w-fit">
 				<h3 className="text-sm font-medium text-muted-foreground mr-2">Экспорт:</h3>
 				<Tooltip>
-					<TooltipTrigger asChild>
+					<TooltipTrigger className="cursor-pointer" asChild>
 						<Button variant="outline" onClick={onSaveAsPng} disabled={isLoadingPng}>
 							<Download className="w-4 h-4 mr-2" />
 							{isLoadingPng ? "Сохраняю..." : "PNG"}

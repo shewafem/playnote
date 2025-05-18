@@ -14,9 +14,10 @@ export default function ChordsLayout({
 }>) {
 	return (
 		<>
-			<TopBar className="mb-10"></TopBar>
+      <h2 className="text-4xl my-8 text-center font-bold tracking-tight lg:text-5xl text-primary">Библиотека аккордов</h2>
+			<TopBar className="mb-8"></TopBar>
 			{children}
-			<ScrollToTop size={40} minHeight={600} scrollTo={10} className="fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-16 h-16">
+			<ScrollToTop size={40} minHeight={600} scrollTo={10}>
 			</ScrollToTop>
 		</>
 	);

@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Container } from "@/components/layout/container";
 import { keyNotes } from "@/data/constants";
 import { Categories } from "@/components/chords/categories";
 import { SearchBox } from "@/components/chords/search";
@@ -23,11 +22,9 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 	}, [key]);
 
 	return (
-		<div className={cn("rounded-lg bg-background shadow-xl shadow-black/5 z-10", className)}>
-			<Container className="flex flex-col gap-8 pb-8 items-center justify-center">
+		<div className={cn("p-4 flex flex-col gap-8 items-center justify-center rounded-lg bg-background shadow-x shadow-black/5 z-10", className)}>
 				<Categories items={keyNotes} selected={formattedKey} />
 				{key && <SearchBox keyNote={key} items={suffixes} value={type} />}
-			</Container>
 		</div>
 	);
 };

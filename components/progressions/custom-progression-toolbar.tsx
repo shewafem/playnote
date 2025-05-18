@@ -15,12 +15,12 @@ export function CustomProgressionToolbar({
   if (!hasCustomChords) return null;
 
   return (
-    <div className="flex gap-3 items-center my-4">
-      <Button variant="outline" onClick={onRemoveLastChord} size="sm">
+    <div className="flex gap-3 items-center">
+      <Button className="cursor-pointer" variant="outline" onClick={onRemoveLastChord} size="sm">
         <Undo2 className="w-4 h-4 mr-2" />
         Убрать
       </Button>
-      <Button variant="destructive" onClick={onClearProgression} size="sm">
+      <Button className="cursor-pointer" variant="destructive" onClick={onClearProgression} size="sm">
         <Trash2 className="w-4 h-4 mr-2" />
         Очистить
       </Button>

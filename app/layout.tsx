@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Container } from "@/components/layout/container";
 
 const geologica = Geologica({
 	variable: "--font-geologica",
@@ -34,12 +35,12 @@ export default function RootLayout({
 	return (
 		<html className="scroll-smooth" lang="en" suppressHydrationWarning>
 			<body
-				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} mt-20 font-sans antialiased`}
+				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} mt-12 font-sans antialiased`}
 			>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					<Header />
 					<main>
-						{children}
+						<Container>{children}</Container>
 					</main>
 					<Footer></Footer>
 				</ThemeProvider>

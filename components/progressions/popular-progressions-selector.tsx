@@ -8,7 +8,7 @@ import {
 	SelectLabel,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { POPULAR_PROGRESSIONS} from "@/lib/music-theory";
+import { POPULAR_PROGRESSIONS } from "@/lib/music-theory";
 
 interface PopularProgressionsSelectorProps {
 	onProgressionNameSelect: (name: string) => void;
@@ -24,25 +24,25 @@ export function PopularProgressionsSelector({
 	};
 
 	return (
-		<div className="flex flex-col space-y-1.5">
+		<div className="flex flex-col space-y-1.5 overflow-hidden">
 			<Label htmlFor="popular-progression" className="text-sm font-medium">
-				Популярные прогрессии
+				Популярные
 			</Label>
-			<Select onValueChange={handleSelect} value={currentProgressionName}>
-				<SelectTrigger id="popular-progression" className="w-auto">
-					<SelectValue placeholder="Выберите прогрессию" />
-				</SelectTrigger>
-				<SelectContent>
-					<SelectGroup>
-						<SelectLabel>Частые прогрессии</SelectLabel>
-						{POPULAR_PROGRESSIONS.map((prog) => (
-							<SelectItem key={prog.name} value={prog.name}>
-								{prog.name} ({prog.progression.join(" - ")})
-							</SelectItem>
-						))}
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</div>
+				<Select onValueChange={handleSelect} value={currentProgressionName}>
+					<SelectTrigger id="popular-progression" className="w-full">
+						<SelectValue placeholder="Выберите прогрессию" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectGroup>
+							<SelectLabel>Популярные прогрессии</SelectLabel>
+							{POPULAR_PROGRESSIONS.map((prog) => (
+								<SelectItem key={prog.name} value={prog.name}>
+									{prog.name} {`(${prog.progression.join("-")})`}
+								</SelectItem>
+							))}
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+			</div>
 	);
 }
