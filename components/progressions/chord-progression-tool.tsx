@@ -127,6 +127,10 @@ export function ChordProgressionTool() {
 		}
 	}, [rootNote, activeProgressionSource]);
 
+  console.log(customProgressionNumerals)
+  console.log(activeProgressionNumerals)
+  console.log(activeProgressionSource)
+
 	return (
 		<div className="container mx-auto p-4 flex flex-col gap-4">
 			<header className="text-center">
@@ -150,7 +154,8 @@ export function ChordProgressionTool() {
 							/>
 					)}
 						<ProgressionDisplay ref={progressionDisplayRef} progressionChords={progressionChordsToDisplay} />
-					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
+            {(activeProgressionSource !== "custom" || customProgressionNumerals.length !== 0)
+            && <ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />}
 			</div>
 
 			<InteractiveChordBuilder

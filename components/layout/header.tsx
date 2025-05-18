@@ -52,7 +52,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 							</Button>
 						</Link>
 						{/* Мобильное меню - Hamburger */}
-						<div className="xs:hidden">
+						<div className="min-[37rem]:hidden">
 							<Sheet>
 								<SheetTrigger asChild>
 									<Button variant="outline" size="icon">

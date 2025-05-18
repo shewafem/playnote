@@ -31,7 +31,7 @@ export function ControlPanel({
 		}
 	};
 	return (
-		<Card className={cn(className, "p-8 w-full pt-6 shadow-md gap-6 xs:w-140")}>
+		<Card className={cn(className, "p-8 w-full pt-6 shadow-md gap-6 xs:max-w-150")}>
 			<CardHeader className="p-0 ">
 				<CardTitle className="text-2xl font-bold text-center tracking-tight mb-2">Генерация прогрессий</CardTitle>
 				<CardDescription>
@@ -39,13 +39,13 @@ export function ControlPanel({
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0 space-y-6">
-				<div className="flex flex-row gap-2">
+				<div className="flex gap-2 flex-col xs:flex-row">
 					<RootNoteSelector currentRootNote={currentRootNote} onRootNoteChange={onRootNoteChange} />
 					<PopularProgressionsSelector
 						onProgressionNameSelect={handlePopularSelect}
 						currentProgressionName={currentPopularProgressionName}
 					/>
-					<div className="mt-auto grow-1">
+					<div className="xs:mt-auto grow-1 mt-4">
 						<GenerateButton onGenerate={onGenerateRandom} isLoading={isGenerating} />
 					</div>
 				</div>

@@ -57,7 +57,7 @@ const navItems: NavItem[] = [
 
 export function NavMenu() {
 	return (
-		<NavigationMenu className="hidden xs:block">
+		<NavigationMenu className="hidden min-[37rem]:block">
 			<NavigationMenuList className="">
 				{navItems.map((item) => {
 					if (item.type === "trigger") {
