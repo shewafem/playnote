@@ -1,4 +1,3 @@
-// components/interactive-fretboard/index.tsx
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
@@ -13,8 +12,8 @@ import { Container } from "../layout/container";
 const InteractiveFretboard: React.FC = () => {
   console.log("render")
   const [selectedKey, setSelectedKey] = useState<string>("C");
-  const [selectedShapeType, setSelectedShapeType] = useState<string>("scales");
-  const [selectedShapeName, setSelectedShapeName] = useState<string>("Major");
+  const [selectedShapeType, setSelectedShapeType] = useState<string>("Гаммы");
+  const [selectedShapeName, setSelectedShapeName] = useState<string>("Мажор");
 
   const [isToneReady, setIsToneReady] = useState<boolean>(false);
 
@@ -31,6 +30,7 @@ const InteractiveFretboard: React.FC = () => {
   const sequenceRef = useRef<Tone.Sequence<NoteObject> | null>(null);
 
   useEffect(() => {
+    Tone.start()
     if (Tone && !synthRef.current) {
       const initTone = async () => {
         try {
@@ -47,17 +47,11 @@ const InteractiveFretboard: React.FC = () => {
     }
 
     return () => {
-      // Очистка при размонтировании компонента
       if (sequenceRef.current) {
         sequenceRef.current.dispose();
         sequenceRef.current = null;
       }
-      if (synthRef.current) {
-        synthRef.current.dispose();
-        synthRef.current = null;
-      }
-      // Tone.Transport.cancel() и stop() также могут быть здесь, если необходимо глобально остановить транспорт
-      // Однако, stopPlayback уже должен вызываться в соответствующих местах.
+      // Tone.Transport.cancel() и stop()
       setIsToneReady(false);
       setIsPlayingSequence(false);
       setCurrentlyPlayingNoteId(null);
@@ -88,12 +82,11 @@ const InteractiveFretboard: React.FC = () => {
     return new Set();
   }, [selectedKey, selectedShapeType, selectedShapeName, setSelectedShapeName]);
 
-  const rootNoteValue: NoteValue | undefined = useMemo(() => getNoteValue(selectedKey), [selectedKey]);
+  const rootNoteValue: NoteValue | undefined = getNoteValue(selectedKey);
 
   const playSingleNote = useCallback(
     async (noteNameWithOctave: string) => {
       if (!synthRef.current || !isToneReady || !noteNameWithOctave || isSelectingNotes) {
-        // console.warn("Невозможно воспроизвести ноту: синтезатор не готов, нота не указана или активен режим выбора.");
         return;
       }
       if (Tone.getContext().state !== "running") {
@@ -103,7 +96,7 @@ const InteractiveFretboard: React.FC = () => {
       const now = Tone.now();
       synthRef.current.triggerAttackRelease(noteNameWithOctave, "8n", now);
     },
-    [isToneReady, isSelectingNotes] // Зависимости
+    [isToneReady, isSelectingNotes]
   );
 
   const handleNoteSelection = useCallback(
@@ -112,10 +105,10 @@ const InteractiveFretboard: React.FC = () => {
       setCurrentlySelectingNotes((prev) => {
         const existingIndex = prev.indexOf(identifier);
         if (existingIndex > -1) {
-          // Удалить, если уже существует
+          // удалить, если уже существует
           return [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)];
         } else {
-          // Добавить, если не существует
+          // добавить, если не существует
           return [...prev, identifier];
         }
       });
@@ -317,7 +310,6 @@ const InteractiveFretboard: React.FC = () => {
   const noteClickHandler = isSelectingNotes ? handleNoteSelection : playSingleNote;
   const notesToVisuallySelect = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
 
-  // Обновление BPM транспорта при изменении состояния bpm
   useEffect(() => {
     if (Tone && Tone.getTransport()) {
       Tone.getTransport().bpm.value = bpm;
@@ -327,33 +319,35 @@ const InteractiveFretboard: React.FC = () => {
 
   return (
     <Container className="flex flex-col gap-4 justify-center items-center">
-      <Controls
-        selectedKey={selectedKey}
-        setSelectedKey={setSelectedKey}
-        selectedShapeType={selectedShapeType}
-        setSelectedShapeType={setSelectedShapeType}
-        selectedShapeName={selectedShapeName}
-        setSelectedShapeName={setSelectedShapeName}
-        availableKeys={NOTE_NAMES}
-        availableShapeTypes={Object.keys(SHAPES)}
-        availableShapeNames={Object.keys(SHAPES[selectedShapeType] || {})}
-      />
-      <PlaybackControls
-        isSelectingNotes={isSelectingNotes}
-        currentlySelectingNotes={currentlySelectingNotes}
-        selectedNotesForPlayback={selectedNotesForPlayback}
-        isPlayingSequence={isPlayingSequence}
-        currentPlaybackType={currentPlaybackType}
-        bpm={bpm}
-        setBpm={setBpm}
-        toggleSelectionMode={toggleSelectionMode}
-        confirmSelection={confirmSelection}
-        resetSelection={resetSelection}
-        playPingPongSequence={playPingPongSequence}
-        playSelectedNotesReversed={playSelectedNotesReversed}
-        stopPlayback={stopPlayback}
-        isToneReady={isToneReady}
-      />
+      <div className="flex items-center gap-5">
+        <Controls
+          selectedKey={selectedKey}
+          setSelectedKey={setSelectedKey}
+          selectedShapeType={selectedShapeType}
+          setSelectedShapeType={setSelectedShapeType}
+          selectedShapeName={selectedShapeName}
+          setSelectedShapeName={setSelectedShapeName}
+          availableKeys={NOTE_NAMES}
+          availableShapeTypes={Object.keys(SHAPES)}
+          availableShapeNames={Object.keys(SHAPES[selectedShapeType] || {})}
+        />
+        <PlaybackControls
+          isSelectingNotes={isSelectingNotes}
+          currentlySelectingNotes={currentlySelectingNotes}
+          selectedNotesForPlayback={selectedNotesForPlayback}
+          isPlayingSequence={isPlayingSequence}
+          currentPlaybackType={currentPlaybackType}
+          bpm={bpm}
+          setBpm={setBpm}
+          toggleSelectionMode={toggleSelectionMode}
+          confirmSelection={confirmSelection}
+          resetSelection={resetSelection}
+          playPingPongSequence={playPingPongSequence}
+          playSelectedNotesReversed={playSelectedNotesReversed}
+          stopPlayback={stopPlayback}
+          isToneReady={isToneReady}
+        />
+      </div>
       <FretboardDisplay
         highlightedNotes={highlightedNoteValues}
         rootNoteValue={rootNoteValue}

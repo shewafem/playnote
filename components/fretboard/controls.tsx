@@ -61,7 +61,7 @@ const Controls: React.FC<ControlsProps> = ({
         </Select>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="shape-name-select">Гамма</Label>
+        <Label htmlFor="shape-name-select">Название</Label>
         <Select value={selectedShapeName} onValueChange={setSelectedShapeName}>
           <SelectTrigger id="shape-name-select" className="w-[180px]">
             <SelectValue placeholder="Выбрать гамму" />

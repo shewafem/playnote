@@ -186,3 +186,27 @@ main {
 .animate-note-pulse {
   animation: pulse-animation 0.5s ease-out forwards;
 }
+
+.at-cursor-bar {
+  /* Defines the color of the bar background when a bar is played */
+  background: rgba(222, 98, 175, 0.25);  
+  border-radius: 2px;
+}
+
+.at-selection div {
+  /* Defines the color of the selection background */
+  background: rgba(64, 64, 255, 0.2);
+}
+
+.at-cursor-beat {
+  /* Defines the beat cursor */
+  background: var(--color-primary);
+  width: 1px;
+}
+
+.at-highlight * {
+  /* Defines the color of the music symbols when they are being played (svg) */
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
+}
+

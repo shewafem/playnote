@@ -49,7 +49,6 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 		}
 	};
 
-	// Get note names for display
 	const selectedNoteNames = React.useMemo(
 		() =>
 			mapIdsToNoteObjects(selectedNotesForPlayback)

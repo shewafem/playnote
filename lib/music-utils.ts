@@ -82,7 +82,7 @@ export const SHAPES: { [key: string]: { [key: string]: NoteValue[] } } = {
     "Доминантный Бебоп": [0, 2, 4, 5, 7, 9, 10, 11],
   },
 
-  "Ноты": {
+  "Аккорды": {
     "Major 7": [0, 4, 7, 11],
     "Minor 7": [0, 3, 7, 10],
     "Dominant 7": [0, 4, 7, 10],

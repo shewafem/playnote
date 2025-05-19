@@ -31,7 +31,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 
 	return (
 		<div
-			className={cn("flex items-center h-10 relative", "border-b-2 border-gray-500", {
+			className={cn("flex items-center gap-4 h-10 relative", "border-b-2 border-gray-500", {
 				"last:border-b-0": displayStringIndex === 0,
 			})}
 		>

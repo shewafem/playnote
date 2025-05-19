@@ -32,7 +32,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 	return (
 		<div
 			className={cn(
-				"flex flex-col p-5 bg-card border border-border rounded-md relative overflow-x-auto shadow-lg",
+				"flex flex-col p-4 bg-card border border-border rounded-md relative overflow-x-auto shadow-lg",
 				"w-fit"
 			)}
 		>

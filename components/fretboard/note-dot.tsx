@@ -44,7 +44,7 @@ const NoteDot: React.FC<NoteDotProps> = ({
 	};
 
 	const className = cn(
-		"w-6 h-6 rounded-full flex items-center justify-center relative border",
+		"w-8 h-8 rounded-full flex items-center justify-center relative border",
 		"transition-all duration-100 ease-in-out", 
 		{
 			"bg-secondary border-secondary-foreground/30": !isHighlighted && !isSelected,
@@ -64,12 +64,12 @@ const NoteDot: React.FC<NoteDotProps> = ({
 	);
 
 	// Когда показывать ноту
-	const showNoteName = isHighlighted || isSelected || isPlaying;
+	const showNoteName = isHighlighted || isSelected || isPlaying || !isSelected;
 
 	return (
 		<div className={className} onClick={handleClick}>
 			{showNoteName && (
-				<span className="text-xs font-bold pointer-events-none select-none text-primary-foreground">{displayName}</span>
+				<span className="text-md font-bold pointer-events-none select-none text-primary-foreground">{displayName}</span>
 			)}
 		</div>
 	);
