@@ -35,8 +35,8 @@ const sections = [
 const Footer = () => {
 	return (
 		<footer className="mt-12 border-t">
-			<Container className="flex items-center pt-6 justify-between">
-				<div className="flex h-25 flex-col items-center justify-between lg:items-start">
+			<Container className="flex items-center flex-col sm:flex-row gap-4 pt-6 justify-between">
+				<div className="flex h-25 flex-col items-center gap-5 lg:items-start">
 					{/* Logo */}
 						<Logo></Logo>
 					<ul className="flex items-center gap-6 text-muted-foreground">
@@ -47,13 +47,13 @@ const Footer = () => {
 						))}
 					</ul>
 				</div>
-				<div className="flex justify-center gap-10 lg:gap-20">
+				<div className="flex justify-center gap-10 flex-wrap lg:gap-20">
 					{sections.map((section, sectionIdx) => (
 						<div className="flex flex-col items-center" key={sectionIdx}>
 							<h3 className="mb-6 font-bold">{section.title}</h3>
 							<ul className="space-y-4 text-sm text-muted-foreground">
 								{section.links.map((link, linkIdx) => (
-									<li key={linkIdx} className="font-medium hover:text-primary">
+									<li key={linkIdx} className="font-medium text-center hover:text-primary">
 										<Link href={link.href}>{link.name}</Link>
 									</li>
 								))}
