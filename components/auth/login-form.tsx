@@ -85,7 +85,7 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
 							<div className="grid gap-5">
 								<div className="grid gap-3">
 									<Label htmlFor="email">Почта</Label>
-									<Input id="email" type="email" placeholder="m@example.com" {...register("email")} />
+									<Input id="email" type="email" className="text-muted-foreground" placeholder="playnote@gmail.com" {...register("email")} />
 									{errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
 								</div>
 								<div className="grid gap-3">
@@ -102,7 +102,7 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
 								</div>
 								{/* Ошибка входа */}
 								{loginError && <p className="text-sm text-red-500 text-center">{loginError}</p>}
-								<Button type="submit" className="w-full" disabled={isSubmitting}>
+								<Button type="submit" className="cursor-pointer w-full" disabled={isSubmitting}>
 									{isSubmitting ? "Загрузка..." : "Войти"}
 								</Button>
 							</div>

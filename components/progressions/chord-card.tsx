@@ -12,17 +12,17 @@ interface ChordCardProps {
 
 export function ChordCard({ chord, isCurrent, className, onClick }: ChordCardProps) {
   return (
-    <Card onClick={onClick} role="button" className={cn(className, `cursor-pointer py-2 gap-2 w-32 h-fit flex flex-col justify-between text-center shadow-lg transition-all duration-300 hover:shadow-xl ${isCurrent ? 'ring-2 ring-primary scale-105' : 'ring-1 ring-slate-200 dark:ring-slate-700'}`)}>
-      <CardHeader className="p-0">
-        <CardTitle className="p-0 text-3xl font-bold text-primary">
+    <Card onClick={onClick} role="button" className={cn(className, `sm:w-24 w-20 cursor-pointer p-2 gap-0 h-fit flex flex-col justify-between text-center shadow-lg transition-all duration-300 hover:shadow-xl ${isCurrent ? 'ring-2 ring-primary scale-105' : 'ring-1 ring-slate-200 dark:ring-slate-700'}`)}>
+      <CardHeader className="p-0 gap-0">
+        <CardTitle className="p-0 text-xl font-bold text-primary">
           {chord.numeral}
         </CardTitle>
-        <CardDescription className="p-0 text-sm text-muted-foreground">
+        <CardDescription className="p-0 text-xs md:text-sm text-muted-foreground">
             {chord.type}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0 flex flex-col items-center justify-between flex-grow">
-        <p className="text-2xl font-semibold">{chord.displayName}</p>
+        <p className="text-xl md:text-2xl font-semibold">{chord.displayName}</p>
       </CardContent>
     </Card>
   );

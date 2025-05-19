@@ -22,9 +22,15 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 	}, [key]);
 
 	return (
-		<div className={cn("p-4 flex flex-col gap-8 items-center justify-center rounded-lg bg-background shadow-x shadow-black/5 z-10", className)}>
-				<Categories items={keyNotes} selected={formattedKey} />
-				{key && <SearchBox keyNote={key} items={suffixes} value={type} />}
+		<div
+			className={cn(
+				"p-4 flex flex-col gap-6 items-center justify-center rounded-lg bg-background shadow-x shadow-black/5 z-10",
+				className
+			)}
+		>
+			<p>Выберите тональность</p>
+			<Categories items={keyNotes} selected={formattedKey} />
+			{key && <SearchBox keyNote={key} items={suffixes} value={type} />}
 		</div>
 	);
 };

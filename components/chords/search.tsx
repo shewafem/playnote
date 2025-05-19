@@ -70,7 +70,7 @@ interface ItemListProps {
 const ItemList: React.FC<ItemListProps> = ({items, keyNote, setOpen}) => {
 	return (
 		<Command>
-			<CommandInput placeholder="Найти тип..." />
+			<CommandInput placeholder="Найти тип..." className="text-base"/>
 			<CommandList>
 				<CommandEmpty>Таких аккордов нет...</CommandEmpty>
 				<CommandGroup heading="Типы">

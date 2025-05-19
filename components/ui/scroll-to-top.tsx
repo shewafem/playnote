@@ -38,7 +38,7 @@ export function ScrollToTop({
 							behavior: "smooth",
 						})
 					}
-          className="fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-12 h-12 transition-all duration-200 ease-in-out"
+          className="bg-fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-12 h-12 transition-all duration-200 ease-in-out"
 					{...props}
 				>
         <ArrowUpToLine size={size}/>

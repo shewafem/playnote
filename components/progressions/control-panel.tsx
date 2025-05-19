@@ -31,11 +31,11 @@ export function ControlPanel({
 		}
 	};
 	return (
-		<Card className={cn(className, "p-8 w-full pt-6 shadow-md gap-6 xs:max-w-150")}>
-			<CardHeader className="p-0 ">
-				<CardTitle className="text-2xl font-bold text-center tracking-tight mb-2">Генерация прогрессий</CardTitle>
-				<CardDescription>
-					Выберите тонику и популярную прогрессию или сгенерируйте случайную.
+		<Card className={cn(className, "p-8 w-full pt-6 shadow-md gap-3 xs:max-w-150")}>
+			<CardHeader className="p-0 gap-6">
+				<CardTitle className="text-2xl font-bold text-center tracking-tight">Генерация прогрессий</CardTitle>
+				<CardDescription className="">
+					Выберите тонику и прогрессию или сгенерируйте случайную.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0 space-y-6">

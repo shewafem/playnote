@@ -127,35 +127,36 @@ export function ChordProgressionTool() {
 		}
 	}, [rootNote, activeProgressionSource]);
 
-  console.log(customProgressionNumerals)
-  console.log(activeProgressionNumerals)
-  console.log(activeProgressionSource)
+	console.log(customProgressionNumerals);
+	console.log(activeProgressionNumerals);
+	console.log(activeProgressionSource);
 
 	return (
-		<div className="container mx-auto p-4 flex flex-col gap-4">
-			<header className="text-center">
-				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl text-primary">Прогрессии аккордов</h1>
+		<section className="container mx-auto p-4 flex flex-col gap-8">
+			<div className="text-center">
+				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary">Прогрессии аккордов</h1>
 				<p className="mt-3 text-lg text-muted-foreground">Изучайте, создавайте и экспортируйте прогрессии!</p>
-			</header>
-			<div className="flex flex-col gap-8 items-center">
-        <ControlPanel
-						currentRootNote={rootNote}
-						onRootNoteChange={handleRootNoteChange}
-						onPopularProgressionSelect={(prog, name) => handlePopularProgressionSelect(prog, name as string)}
-						onGenerateRandom={handleGenerateRandom}
-						isGenerating={isGeneratingRandom}
-						currentPopularProgressionName={currentPopularProgressionName}
+			</div>
+			<div className="flex flex-col gap-4 items-center">
+				<ControlPanel
+					currentRootNote={rootNote}
+					onRootNoteChange={handleRootNoteChange}
+					onPopularProgressionSelect={(prog, name) => handlePopularProgressionSelect(prog, name as string)}
+					onGenerateRandom={handleGenerateRandom}
+					isGenerating={isGeneratingRandom}
+					currentPopularProgressionName={currentPopularProgressionName}
+				/>
+				{activeProgressionSource === "custom" && (
+					<CustomProgressionToolbar
+						onClearProgression={handleClearCustomProgression}
+						onRemoveLastChord={handleRemoveLastCustomChord}
+						hasCustomChords={customProgressionNumerals.length > 0}
 					/>
-					{activeProgressionSource === "custom" && (
-							<CustomProgressionToolbar
-								onClearProgression={handleClearCustomProgression}
-								onRemoveLastChord={handleRemoveLastCustomChord}
-								hasCustomChords={customProgressionNumerals.length > 0}
-							/>
-					)}
-						<ProgressionDisplay ref={progressionDisplayRef} progressionChords={progressionChordsToDisplay} />
-            {(activeProgressionSource !== "custom" || customProgressionNumerals.length !== 0)
-            && <ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />}
+				)}
+				<ProgressionDisplay ref={progressionDisplayRef} progressionChords={progressionChordsToDisplay} />
+				{(activeProgressionSource !== "custom" || customProgressionNumerals.length !== 0) && (
+					<ExportControls onSaveAsPng={handleSaveAsPng} isLoadingPng={isLoadingPng} />
+				)}
 			</div>
 
 			<InteractiveChordBuilder
@@ -165,6 +166,6 @@ export function ChordProgressionTool() {
 				currentCustomProgressionLength={customProgressionNumerals.length}
 				maxCustomProgressionLength={MAX_CUSTOM_PROGRESSION_LENGTH}
 			/>
-		</div>
+		</section>
 	);
 }

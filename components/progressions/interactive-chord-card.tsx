@@ -14,7 +14,7 @@ export function InteractiveChordCard({ chord, onClick, disabled }: InteractiveCh
         <TooltipTrigger>
           <ChordCard
             chord={chord}
-            className={`gap-2 p-2 w-32 h-fit flex flex-col text-center shadow-md transition-all duration-200 ${
+            className={`${
               disabled
                 ? 'opacity-50 cursor-not-allowed bg-muted/50'
                 : 'hover:shadow-xl hover:ring-2 hover:ring-primary hover:scale-105 cursor-pointer'

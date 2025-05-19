@@ -3,6 +3,13 @@ import { Container } from "@/components/layout/container";
 import Link from "next/link";
 import Logo from "../ui/logo";
 
+const socials = [
+	{ icon: <FaInstagram className="size-6" />, link: "#" },
+	{ icon: <FaFacebook className="size-6" />, link: "#" },
+	{ icon: <FaTwitter className="size-6" />, link: "#" },
+	{ icon: <FaLinkedin className="size-6" />, link: "#" },
+];
+
 const sections = [
 	{
 		title: "Теория",
@@ -27,51 +34,32 @@ const sections = [
 
 const Footer = () => {
 	return (
-		<footer className="mt-12 bg-card/95">
-			<Container className="flex items-center flex-col border-t pt-8">
-				<div className="flex flex-col items-center justify-between gap-10 lg:gap-20 text-center xs:flex-row sm:items-start sm:text-left">
-					<div className="flex w-full flex-col items-center justify-between gap-6 lg:items-start">
-						{/* Logo */}
-						<div className="flex items-center lg:justify-start">
-							<Logo size={28}></Logo>
-						</div>
-						<ul className="flex items-center space-x-6 text-muted-foreground">
-							<li className="font-medium hover:text-primary">
-								<Link href="#">
-									<FaInstagram className="size-6" />
-								</Link>
+		<footer className="mt-12 border-t">
+			<Container className="flex items-center pt-6 justify-between">
+				<div className="flex h-25 flex-col items-center justify-between lg:items-start">
+					{/* Logo */}
+						<Logo></Logo>
+					<ul className="flex items-center gap-6 text-muted-foreground">
+						{socials.map((social, index) => (
+							<li key={index} className="font-medium hover:text-primary">
+								<Link href={social.link}>{social.icon}</Link>
 							</li>
-							<li className="font-medium hover:text-primary">
-								<Link href="#">
-									<FaFacebook className="size-6" />
-								</Link>
-							</li>
-							<li className="font-medium hover:text-primary">
-								<Link href="#">
-									<FaTwitter className="size-6" />
-								</Link>
-							</li>
-							<li className="font-medium hover:text-primary">
-								<Link href="#">
-									<FaLinkedin className="size-6" />
-								</Link>
-							</li>
-						</ul>
-					</div>
-					<div className="flex justify-center gap-10 lg:gap-20">
-						{sections.map((section, sectionIdx) => (
-							<div className="flex flex-col items-center" key={sectionIdx}>
-								<h3 className="mb-6 font-bold">{section.title}</h3>
-								<ul className="space-y-4 text-sm text-muted-foreground">
-									{section.links.map((link, linkIdx) => (
-										<li key={linkIdx} className="font-medium hover:text-primary">
-											<Link href={link.href}>{link.name}</Link>
-										</li>
-									))}
-								</ul>
-							</div>
 						))}
-					</div>
+					</ul>
+				</div>
+				<div className="flex justify-center gap-10 lg:gap-20">
+					{sections.map((section, sectionIdx) => (
+						<div className="flex flex-col items-center" key={sectionIdx}>
+							<h3 className="mb-6 font-bold">{section.title}</h3>
+							<ul className="space-y-4 text-sm text-muted-foreground">
+								{section.links.map((link, linkIdx) => (
+									<li key={linkIdx} className="font-medium hover:text-primary">
+										<Link href={link.href}>{link.name}</Link>
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
 				</div>
 			</Container>
 		</footer>

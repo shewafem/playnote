@@ -16,7 +16,7 @@ export function ProgressionDisplay({ progressionChords, ref }: ProgressionDispla
   }
 
   return (
-    <div ref={ref} className="flex flex-wrap gap-4 justify-center items-center">
+    <div ref={ref} className="flex flex-wrap gap-4 p-2 justify-center items-center">
       {progressionChords.map((chord, index) =>
         chord ? (
           <ChordCard key={`${chord.numeral}-${chord.rootNote}-${index}`} chord={chord} />

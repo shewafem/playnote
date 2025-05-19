@@ -30,13 +30,13 @@ export const Header: React.FC<Props> = ({ className }) => {
 	return (
 		<header
 			className={cn(
-				"h-14 fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
+				"h-14 fixed top-0 bg-wood-grain left-0 right-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
 				className
 			)}
 		>
 			<Container className="px-4 py-2 flex items-center justify-between">
 				{/* Левая часть - Логотип */}
-				<Logo size={28} />
+				<Logo/>
 				{/* Навигация для больших экранов */}
 				<div className="flex gap-3 md:gap-8">
 					<NavMenu></NavMenu>
@@ -60,10 +60,10 @@ export const Header: React.FC<Props> = ({ className }) => {
 										<span className="sr-only">Открыть меню</span>
 									</Button>
 								</SheetTrigger>
-								<SheetContent side="right" className="w-3/4 min-[400px]:w-1/2 sm:w-1/3">
+								<SheetContent side="right" className="w-full xs:w-2/3">
 									<SheetHeader className="mb-3">
 										<SheetTitle>
-											<Logo size={28} />
+											<Logo/>
 										</SheetTitle>
 									</SheetHeader>
 									<nav className="flex flex-col gap-4 px-4">

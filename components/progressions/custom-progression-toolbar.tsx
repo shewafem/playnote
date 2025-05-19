@@ -15,7 +15,7 @@ export function CustomProgressionToolbar({
   if (!hasCustomChords) return null;
 
   return (
-    <div className="flex gap-3 items-center">
+    <div className="flex gap-3 flex-wrap items-center justify-center">
       <Button className="cursor-pointer" variant="outline" onClick={onRemoveLastChord} size="sm">
         <Undo2 className="w-4 h-4 mr-2" />
         Убрать

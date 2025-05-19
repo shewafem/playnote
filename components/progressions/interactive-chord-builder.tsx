@@ -25,7 +25,7 @@ export function InteractiveChordBuilder({
 	}
 
 	return (
-		<div className="space-y-6">
+		<div className="flex flex-col justify-center items-center gap-5">
 			<Alert className="border-primary/50 w-fit">
 				<MousePointerClick className="h-4 w-4" />
 				<AlertTitle className="font-semibold">Постройте свои прогрессии в {currentKey} Major.</AlertTitle>
@@ -38,7 +38,7 @@ export function InteractiveChordBuilder({
 					)}
 				</AlertDescription>
 			</Alert>
-			<div className="flex flex-wrap gap-4 justify-center md:justify-start">
+			<div className="flex flex-wrap gap-4 justify-center">
 				{diatonicChords.map((chord) => (
 					<InteractiveChordCard
 						key={chord.numeral + chord.rootNote}

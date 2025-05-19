@@ -11,11 +11,7 @@ interface CategoriesProps {
 
 export const Categories: React.FC<CategoriesProps> = ({ items, className, selected }) => {
 	return (
-		<>
-			<nav
-				className={cn("flex flex-wrap justify-center gap-2 bg-background rounded-2xl", className)}
-				aria-label="Keys"
-			>
+			<nav className={cn("flex flex-wrap justify-center gap-2 bg-background rounded-2xl", className)} aria-label="Keys">
 				{items.map((name) => {
 					// Determine the display name based on the key
 					const displayName = name === "C#" ? "Csharp" : name === "F#" ? "Fsharp" : name;
@@ -34,7 +30,6 @@ export const Categories: React.FC<CategoriesProps> = ({ items, className, select
 					);
 				})}
 			</nav>
-		</>
 	);
 };
 

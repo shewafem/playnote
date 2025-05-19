@@ -1,20 +1,36 @@
+"use client"
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 interface LogoProps {
-	className?: string;
-  size?: number;
+  className?: string;
 }
 
-export const Logo: React.FC<LogoProps> = ({ className, size }) => {
-	return (
-		<Link href="/" className={cn("flex items-center justify-center", className)}>
-			<Image src="/logo.svg" alt="logo" width={size} height={size} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>
-			<p className="text-base sm:text-2xl font-logo font-black">Playnote!</p>
-		</Link>
-	);
+export const Logo: React.FC<LogoProps> = ({ className }) => {
+  return (
+    <Link href="/" className={cn("flex items-center justify-center w-40", className)}>
+      <Image 
+        src="/logo-light.svg" 
+        alt="logo" 
+        width={0} 
+        height={0} 
+        sizes="100vw" 
+        className="w-full h-full dark:hidden" 
+        priority
+      />
+      <Image 
+        src="/logo-dark.svg" 
+        alt="logo" 
+        width={0} 
+        height={0} 
+        sizes="100vw" 
+        className="hidden w-full h-full dark:block" 
+        priority
+      />
+    </Link>
+  );
 };
 
 export default Logo;
