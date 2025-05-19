@@ -61,15 +61,14 @@ export const getDiatonicChords = (rootNote: string): ScaleChord[] => {
 export const POPULAR_PROGRESSIONS: { name: string; progression: RomanNumeral[] }[] = [
 	{ name: "Классический поп", progression: ["I", "V", "vi", "IV"] },
 	{ name: "Прогрессия 50-ых", progression: ["I", "vi", "IV", "V"] },
-	//{ name: "Канон Пахельбеля", progression: ["I", "V", "vi", "iii", "IV", "I", "IV", "V"] },
 	{ name: "Блюз (12-тактовый)", progression: ["I", "I", "I", "I", "IV", "IV", "I", "I", "V", "IV", "I", "V"] },
 	{ name: "Джазовая стандартная", progression: ["ii", "V", "I"] },
 	{ name: "Поп в миноре", progression: ["vi", "IV", "I", "V"] },
 	{ name: "Модерн поп", progression: ["IV", "I", "V", "vi"] },
 	{ name: "Грустный поп", progression: ["vi", "I", "V", "IV"] },
 	{ name: "Баллада", progression: ["I", "vi", "ii", "V"] },
-	//{ name: "Церковная каденция", progression: ["IV", "I"] },
-	//{ name: "Автентическая каденция", progression: ["V", "I"] },
+	{ name: "Церковная каденция", progression: ["IV", "I"] },
+	{ name: "Автентическая каденция", progression: ["V", "I"] },
 ];
 
 export const getRandomProgression = (maxLength: number = 4): RomanNumeral[] => {

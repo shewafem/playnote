@@ -1,0 +1,370 @@
+// components/interactive-fretboard/index.tsx
+"use client";
+
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import * as Tone from "tone";
+import Controls from "./controls";
+import FretboardDisplay from "./fretboard-display";
+import PlaybackControls from "./playback-controls";
+import { NOTE_NAMES, SHAPES, getNoteValue, getNoteValuesInShape, mapIdsToNoteObjects } from "@/lib/music-utils";
+import { NoteValue, NoteObject } from "@/lib/types";
+import { Container } from "../layout/container";
+
+const InteractiveFretboard: React.FC = () => {
+  console.log("render")
+  const [selectedKey, setSelectedKey] = useState<string>("C");
+  const [selectedShapeType, setSelectedShapeType] = useState<string>("scales");
+  const [selectedShapeName, setSelectedShapeName] = useState<string>("Major");
+
+  const [isToneReady, setIsToneReady] = useState<boolean>(false);
+
+  const [isSelectingNotes, setIsSelectingNotes] = useState<boolean>(false);
+  const [currentlySelectingNotes, setCurrentlySelectingNotes] = useState<string[]>([]);
+  const [selectedNotesForPlayback, setSelectedNotesForPlayback] = useState<string[]>([]);
+
+  const [bpm, setBpm] = useState<number>(120);
+  const [isPlayingSequence, setIsPlayingSequence] = useState<boolean>(false);
+  const [currentPlaybackType, setCurrentPlaybackType] = useState<string | null>(null);
+  const [currentlyPlayingNoteId, setCurrentlyPlayingNoteId] = useState<string | null>(null);
+
+  const synthRef = useRef<Tone.PolySynth | null>(null);
+  const sequenceRef = useRef<Tone.Sequence<NoteObject> | null>(null);
+
+  useEffect(() => {
+    if (Tone && !synthRef.current) {
+      const initTone = async () => {
+        try {
+          synthRef.current = new Tone.PolySynth(Tone.Synth).toDestination();
+          Tone.getTransport().bpm.value = 30;
+          setIsToneReady(true);
+          console.log("Tone.js инициализирован.");
+        } catch (error) {
+          console.error("Ошибка инициализации Tone.js synth:", error);
+          setIsToneReady(false);
+        }
+      };
+      initTone();
+    }
+
+    return () => {
+      // Очистка при размонтировании компонента
+      if (sequenceRef.current) {
+        sequenceRef.current.dispose();
+        sequenceRef.current = null;
+      }
+      if (synthRef.current) {
+        synthRef.current.dispose();
+        synthRef.current = null;
+      }
+      // Tone.Transport.cancel() и stop() также могут быть здесь, если необходимо глобально остановить транспорт
+      // Однако, stopPlayback уже должен вызываться в соответствующих местах.
+      setIsToneReady(false);
+      setIsPlayingSequence(false);
+      setCurrentlyPlayingNoteId(null);
+      console.log("Ресурсы Tone.js очищены.");
+    };
+  }, []);
+
+  const highlightedNoteValues: Set<NoteValue> = useMemo(() => {
+    const rootNoteValue = getNoteValue(selectedKey);
+    if (rootNoteValue === undefined) {
+      console.warn(`Неверно указана тоника: ${selectedKey}`);
+      return new Set();
+    }
+    if (SHAPES[selectedShapeType] && SHAPES[selectedShapeType][selectedShapeName]) {
+      return getNoteValuesInShape(rootNoteValue, selectedShapeType, selectedShapeName);
+    }
+
+    const availableShapes = Object.keys(SHAPES[selectedShapeType] || {});
+    if (availableShapes.length > 0) {
+      const firstShapeName = availableShapes[0];
+      console.warn(
+        `Выбранная форма "${selectedShapeName}" не найдена для типа "${selectedShapeType}". Используется первая доступная: "${firstShapeName}".`
+      );
+      setSelectedShapeName(firstShapeName); // Автоматически выбрать первую доступную форму
+      return getNoteValuesInShape(rootNoteValue, selectedShapeType, firstShapeName);
+    }
+    console.warn(`Для типа "${selectedShapeType}" не найдено доступных форм/гамм.`);
+    return new Set();
+  }, [selectedKey, selectedShapeType, selectedShapeName, setSelectedShapeName]);
+
+  const rootNoteValue: NoteValue | undefined = useMemo(() => getNoteValue(selectedKey), [selectedKey]);
+
+  const playSingleNote = useCallback(
+    async (noteNameWithOctave: string) => {
+      if (!synthRef.current || !isToneReady || !noteNameWithOctave || isSelectingNotes) {
+        // console.warn("Невозможно воспроизвести ноту: синтезатор не готов, нота не указана или активен режим выбора.");
+        return;
+      }
+      if (Tone.getContext().state !== "running") {
+        await Tone.start();
+        console.log("Аудиоконтекст Tone.js запущен по требованию (клик по ноте).");
+      }
+      const now = Tone.now();
+      synthRef.current.triggerAttackRelease(noteNameWithOctave, "8n", now);
+    },
+    [isToneReady, isSelectingNotes] // Зависимости
+  );
+
+  const handleNoteSelection = useCallback(
+    (identifier: string) => {
+      if (!isSelectingNotes || !identifier) return;
+      setCurrentlySelectingNotes((prev) => {
+        const existingIndex = prev.indexOf(identifier);
+        if (existingIndex > -1) {
+          // Удалить, если уже существует
+          return [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)];
+        } else {
+          // Добавить, если не существует
+          return [...prev, identifier];
+        }
+      });
+    },
+    [isSelectingNotes]
+  );
+
+  const stopPlayback = useCallback(() => {
+    console.log("Остановка воспроизведения...");
+    if (Tone && Tone.getTransport() && Tone.getContext()?.state !== "closed") {
+      Tone.getTransport().stop();
+      Tone.getTransport().cancel(0); // Отменить все запланированные события
+      if (sequenceRef.current) {
+        sequenceRef.current.stop(0); // Остановить последовательность немедленно
+        sequenceRef.current.dispose();
+        sequenceRef.current = null;
+      }
+    } else {
+      console.warn("Tone.js недоступен для остановки воспроизведения.");
+    }
+
+    setIsPlayingSequence(false);
+    setCurrentPlaybackType(null);
+    setCurrentlyPlayingNoteId(null); // Сброс подсвеченной ноты
+    console.log("Воспроизведение остановлено.");
+  }, []);
+
+  const toggleSelectionMode = useCallback(() => {
+    if (isPlayingSequence) {
+      stopPlayback();
+    }
+    setIsSelectingNotes((prev) => {
+      const nextState = !prev;
+      if (nextState) {
+        // При входе в режим выбора, инициализировать текущий выбор подтвержденными нотами
+        setCurrentlySelectingNotes([...selectedNotesForPlayback]);
+        console.log("Включен режим выбора нот.");
+      } else {
+        // При выходе из режима выбора без подтверждения, очистить временный выбор
+        setCurrentlySelectingNotes([]);
+        console.log("Выход из режима выбора нот (отменено).");
+      }
+      return nextState;
+    });
+  }, [isPlayingSequence, selectedNotesForPlayback, stopPlayback]);
+
+  const confirmSelection = useCallback(() => {
+    // Установить подтвержденный выбор для воспроизведения
+    setSelectedNotesForPlayback([...currentlySelectingNotes]);
+    setIsSelectingNotes(false); // Выйти из режима выбора
+    console.log(`Выбор подтвержден: ${currentlySelectingNotes.length} нот.`);
+  }, [currentlySelectingNotes]);
+
+  const resetSelection = useCallback(() => {
+    console.log("Сброс выбранных нот...");
+    setCurrentlySelectingNotes([]);
+    setSelectedNotesForPlayback([]);
+    if (isPlayingSequence) {
+      stopPlayback();
+    }
+    setCurrentlyPlayingNoteId(null);
+    console.log("Выбор нот сброшен.");
+  }, [isPlayingSequence, stopPlayback]);
+
+  const startPlayback = useCallback(
+    async (sequenceEvents: NoteObject[], loop: boolean = true, type: string = "pingpong") => {
+      if (
+        !synthRef.current ||
+        !isToneReady ||
+        !Tone ||
+        !Array.isArray(sequenceEvents) ||
+        sequenceEvents.length === 0 ||
+        !sequenceEvents.every(
+          (event) => typeof event === "object" && event !== null && "note" in event && "id" in event
+        )
+      ) {
+        console.error("Не выполнены условия для начала воспроизведения или неверные данные последовательности.");
+        stopPlayback(); // Очистить состояние, если запуск не удался
+        return;
+      }
+
+      try {
+        if (Tone.getContext().state !== "running") {
+          await Tone.start();
+          console.log("Аудиоконтекст Tone.js запущен из startPlayback.");
+        }
+
+        // Всегда останавливать предыдущее воспроизведение перед началом нового
+        if (isPlayingSequence || sequenceRef.current) {
+            console.log("Остановка предыдущего воспроизведения перед запуском нового.");
+            stopPlayback(); // Используем существующую функцию stopPlayback
+        }
+
+
+        setIsPlayingSequence(true);
+        setCurrentPlaybackType(type);
+        setCurrentlyPlayingNoteId(null);
+
+        // Tone.getTransport().cancel() уже вызывается в stopPlayback
+
+        console.log(`Создание новой последовательности: ${type}, Цикл: ${loop}, Количество событий: ${sequenceEvents.length}`);
+        sequenceRef.current = new Tone.Sequence<NoteObject>(
+          (time: number, event: NoteObject) => {
+            if (synthRef.current && event) {
+              const { id, note } = event;
+              const nonNegativeTime = Math.max(0, time);
+
+              Tone.Draw.schedule(() => {
+                setCurrentlyPlayingNoteId(id);
+              }, time);
+
+              const highlightDuration = Tone.Time("16n").toSeconds();
+              Tone.Draw.schedule(() => {
+                setCurrentlyPlayingNoteId((prevId) => (prevId === id ? null : prevId));
+              }, time + highlightDuration);
+
+              try {
+                synthRef.current.triggerAttackRelease(note, "8n", nonNegativeTime);
+              } catch (synthError) {
+                console.error(`Ошибка при воспроизведении ноты ${note} в последовательности:`, synthError);
+              }
+            } else {
+              console.warn("Синтезатор или событие не доступно в колбэке последовательности.");
+            }
+          },
+          sequenceEvents,
+          "4n" // Интервал между событиями (четвертная нота)
+        );
+
+        sequenceRef.current.loop = loop;
+        sequenceRef.current.start(0); // Начать последовательность относительно времени старта транспорта (0)
+
+        Tone.getTransport().start();
+        console.log(`Воспроизведение начато. BPM: ${Tone.getTransport().bpm.value}`);
+
+      } catch (error) {
+        console.error("Ошибка при настройке startPlayback:", error);
+        stopPlayback();
+      }
+    },
+    [stopPlayback, isToneReady, isPlayingSequence] // Добавил isPlayingSequence в зависимости
+  );
+
+  const playPingPongSequence = useCallback(() => {
+    const forwardEvents = mapIdsToNoteObjects(selectedNotesForPlayback);
+    if (forwardEvents.length === 0) {
+      console.warn("Нет выбранных нот для пинг-понг воспроизведения.");
+      return;
+    }
+
+    let sequenceEvents: NoteObject[];
+    if (forwardEvents.length <= 1) {
+      sequenceEvents = forwardEvents;
+    } else {
+      // Исключаем первую и последнюю ноту из перевернутой части, чтобы избежать дублирования на стыках
+      const reversedEvents = [...forwardEvents].reverse().slice(1, -1);
+      sequenceEvents = [...forwardEvents, ...reversedEvents];
+    }
+    startPlayback(sequenceEvents, true, "pingpong");
+  }, [selectedNotesForPlayback, startPlayback]);
+
+  const playSelectedNotesReversed = useCallback(() => {
+    const events = mapIdsToNoteObjects(selectedNotesForPlayback);
+    if (events.length === 0) {
+      console.warn("Нет выбранных нот для обратного воспроизведения.");
+      return;
+    }
+    const reversedEvents = [...events].reverse();
+    startPlayback(reversedEvents, false, "reverse");
+
+    // Запланировать остановку транспорта после завершения последовательности
+    if (Tone && Tone.getTransport() && sequenceRef.current && !sequenceRef.current.loop) {
+      // Расчет длительности последовательности
+      // sequenceRef.current.subdivision содержит интервал, например "4n"
+      // sequenceRef.current.length содержит количество событий
+      const subdivisionDuration = Tone.Time(sequenceRef.current.subdivision).toSeconds();
+      const totalDurationInSeconds = sequenceRef.current.length * subdivisionDuration;
+
+      if (totalDurationInSeconds > 0) {
+        console.log(`Планирование остановки для обратной последовательности через: ${totalDurationInSeconds.toFixed(2)}с`);
+        try {
+          Tone.getTransport().scheduleOnce(() => {
+            // Проверяем, действительно ли это та самая последовательность, которую нужно остановить
+            if (currentPlaybackType === "reverse" && !sequenceRef.current?.loop) {
+                stopPlayback();
+                console.log("Обратная последовательность завершена, воспроизведение остановлено по расписанию.");
+            }
+          }, `+${totalDurationInSeconds}`); // Запланировать относительно текущего времени транспорта + длительность
+        } catch (e) {
+          console.error("Ошибка планирования остановки обратной последовательности:", e);
+          console.warn("Не удалось запланировать остановку. Возможно, потребуется остановить вручную.");
+        }
+      } else {
+        console.warn("Не удалось определить длительность последовательности для планирования остановки.");
+      }
+    }
+  }, [selectedNotesForPlayback, startPlayback, stopPlayback, currentPlaybackType]);
+
+  const noteClickHandler = isSelectingNotes ? handleNoteSelection : playSingleNote;
+  const notesToVisuallySelect = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
+
+  // Обновление BPM транспорта при изменении состояния bpm
+  useEffect(() => {
+    if (Tone && Tone.getTransport()) {
+      Tone.getTransport().bpm.value = bpm;
+    }
+  }, [bpm]);
+
+
+  return (
+    <Container className="flex flex-col gap-4 justify-center items-center">
+      <Controls
+        selectedKey={selectedKey}
+        setSelectedKey={setSelectedKey}
+        selectedShapeType={selectedShapeType}
+        setSelectedShapeType={setSelectedShapeType}
+        selectedShapeName={selectedShapeName}
+        setSelectedShapeName={setSelectedShapeName}
+        availableKeys={NOTE_NAMES}
+        availableShapeTypes={Object.keys(SHAPES)}
+        availableShapeNames={Object.keys(SHAPES[selectedShapeType] || {})}
+      />
+      <PlaybackControls
+        isSelectingNotes={isSelectingNotes}
+        currentlySelectingNotes={currentlySelectingNotes}
+        selectedNotesForPlayback={selectedNotesForPlayback}
+        isPlayingSequence={isPlayingSequence}
+        currentPlaybackType={currentPlaybackType}
+        bpm={bpm}
+        setBpm={setBpm}
+        toggleSelectionMode={toggleSelectionMode}
+        confirmSelection={confirmSelection}
+        resetSelection={resetSelection}
+        playPingPongSequence={playPingPongSequence}
+        playSelectedNotesReversed={playSelectedNotesReversed}
+        stopPlayback={stopPlayback}
+        isToneReady={isToneReady}
+      />
+      <FretboardDisplay
+        highlightedNotes={highlightedNoteValues}
+        rootNoteValue={rootNoteValue}
+        onNoteClick={noteClickHandler}
+        selectedNotesForPlayback={notesToVisuallySelect} // Ноты, которые выбраны пользователем
+        currentlyPlayingNoteId={currentlyPlayingNoteId} // ID текущей воспроизводимой ноты для подсветки
+        isSelectingMode={isSelectingNotes}
+        isToneReady={isToneReady}
+      />
+    </Container>
+  );
+};
+
+export default InteractiveFretboard;

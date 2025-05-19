@@ -2,7 +2,7 @@ import { RootNoteSelector } from "./root-note-selector";
 import { PopularProgressionsSelector } from "./popular-progressions-selector";
 import { GenerateButton } from "./generate-button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { POPULAR_PROGRESSIONS, RomanNumeral } from "@/lib/music-theory";
+import { POPULAR_PROGRESSIONS, RomanNumeral } from "@/lib/progression";
 import { cn } from "@/lib/utils";
 
 interface ControlPanelProps {
@@ -34,9 +34,7 @@ export function ControlPanel({
 		<Card className={cn(className, "p-8 w-full pt-6 shadow-md gap-3 xs:max-w-150")}>
 			<CardHeader className="p-0 gap-6">
 				<CardTitle className="text-2xl font-bold text-center tracking-tight">Генерация прогрессий</CardTitle>
-				<CardDescription className="">
-					Выберите тонику и прогрессию или сгенерируйте случайную.
-				</CardDescription>
+				<CardDescription className="">Выберите тонику и прогрессию или сгенерируйте случайную.</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0 space-y-6">
 				<div className="flex gap-2 flex-col xs:flex-row">

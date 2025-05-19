@@ -8,7 +8,7 @@ import {
 	RomanNumeral,
 	ScaleChord,
 	POPULAR_PROGRESSIONS,
-} from "@/lib/music-theory";
+} from "@/lib/progression";
 import { ControlPanel } from "./control-panel";
 import { ProgressionDisplay } from "./progression-display";
 import { InteractiveChordBuilder } from "./interactive-chord-builder";
@@ -134,7 +134,9 @@ export function ChordProgressionTool() {
 	return (
 		<section className="container mx-auto p-4 flex flex-col gap-8">
 			<div className="text-center">
-				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary">Прогрессии аккордов</h1>
+				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary">
+					Прогрессии аккордов
+				</h1>
 				<p className="mt-3 text-lg text-muted-foreground">Изучайте, создавайте и экспортируйте прогрессии!</p>
 			</div>
 			<div className="flex flex-col gap-4 items-center">

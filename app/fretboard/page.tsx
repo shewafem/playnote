@@ -1,3 +1,5 @@
+import InteractiveFretboard from "@/components/fretboard";
+
 export default function Fretboard() {
-  //return <GuitarPage></GuitarPage>
+  return <InteractiveFretboard></InteractiveFretboard>
 }
