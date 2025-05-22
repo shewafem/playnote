@@ -22,12 +22,7 @@ const ChordList: React.FC<ChordListProps> = ({ chords }) => {
 
 	useEffect(() => {
 		const startTone = async () => {
-			try {
 				await Tone.start();
-				console.log("Tone.js инициализирован");
-			} catch (e) {
-				console.error("Ошибка при инициализации Tone.js", e);
-			}
 		};
 		startTone();
 	}, []);

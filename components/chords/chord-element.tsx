@@ -27,7 +27,7 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 		if (svgElement) {
 			downloadSvg(svgElement, fileName);
 		} else {
-			console.error("SVG элемент не найден");
+			console.error("SVG не найден");
 		}
 	};
 
@@ -36,7 +36,7 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 		if (svgElement) {
 			downloadPng(svgElement, fileName);
 		} else {
-			console.error("SVG элемент не найден");
+			console.error("SVG не найден");
 		}
 	};
 

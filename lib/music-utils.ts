@@ -1,7 +1,7 @@
 // lib/musicUtils.ts
 
 import { Midi } from "tonal";
-import { NoteValue, NoteObject } from "./types"; // Assuming types are defined here
+import { NoteValue, NoteObject } from "./types";
 
 export const NOTE_NAMES: string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
@@ -15,15 +15,15 @@ const transformNotesToMidi = (notes: string[]): number[] => {
 };
 
 export const GUITAR_TUNINGS_MIDI: { [key: string]: number[] } = {
-  "Standard (E A D G B E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
+  "Стандартный (E A D G B E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
   "Drop D (D A D G B E)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "E4"]),
   "Open G (D G D G B D)": transformNotesToMidi(["D2", "G2", "D3", "G3", "B3", "D4"]),
   "Open D (D A D F# A D)": transformNotesToMidi(["D2", "A2", "D3", "F#3", "A3", "D4"]),
   "DADGAD": transformNotesToMidi(["D2", "A2", "D3", "G3", "A3", "D4"]),
-  "Half step down (Eb Ab Db Gb Bb Eb)": transformNotesToMidi(["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"]),
+  "Eb (Eb Ab Db Gb Bb Eb)": transformNotesToMidi(["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"]),
 };
 
-export const GUITAR_TUNING_DEFAULT: number[] = GUITAR_TUNINGS_MIDI["Standard (E A D G B E)"];
+export const GUITAR_TUNING_DEFAULT: number[] = GUITAR_TUNINGS_MIDI["Стандартный (E A D G B E)"];
 
 //(0-11)
 export function getNoteValue(noteName: string): NoteValue | undefined {
@@ -48,10 +48,8 @@ export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tu
     return -1;
   }
   // Validate fret number
-  if (fretNumber < 0 || fretNumber > MAX_FRETS) { // Use MAX_FRETS here
-     // console.warn(`Invalid fret number: ${fretNumber}`); // Optional warning
-     // Depending on desired behavior, could return -1 or calculate anyway.
-     // Let's calculate anyway, but validate index.
+  if (fretNumber < 0 || fretNumber > MAX_FRETS) {
+      console.warn(`Неверное количество ладов: ${fretNumber}`); 
   }
 
   const openStringMIDI = tuning[stringIndex];
@@ -95,11 +93,10 @@ export const SHAPES: { [key: string]: { [key: string]: NoteValue[] } } = {
 };
 
 
-// Get a Set of highlighted pitch classes (0-11) based on root and shape
 export function getNoteValuesInShape(rootNoteValue: NoteValue, shapeType: string, shapeName: string): Set<NoteValue> {
   const shape = SHAPES[shapeType]?.[shapeName];
   if (!shape) {
-     // console.warn(`Shape not found: ${shapeType} - ${shapeName}`); // Optional warning
+    console.warn(`Схема не найдена: ${shapeType} - ${shapeName}`); 
     return new Set();
   }
 
@@ -107,48 +104,36 @@ export function getNoteValuesInShape(rootNoteValue: NoteValue, shapeType: string
   return new Set(noteValues);
 }
 
-// Helper to map selected identifiers ("s-f") to note objects { id: string, note: string | null }
-// This helper needs to be updated to reflect the potential null from midiToNoteName
 export function mapIdsToNoteObjects(ids: string[]): NoteObject[] {
   if (!Array.isArray(ids)) {
-    console.error("mapIdsToNoteObjects was called with a non-array value:", ids);
     return [];
   }
 
   return ids
     .map((id) => {
       if (typeof id !== "string" || !id.includes("-")) {
-        console.warn(`Skipping invalid identifier in mapIdsToNoteObjects: ${id}`);
         return null;
       }
       const parts = id.split("-");
       if (parts.length !== 2) {
-        console.warn(`Skipping identifier with incorrect parts: ${id}`);
         return null;
       }
       const [s, f] = parts.map(Number);
       if (isNaN(s) || isNaN(f)) {
-        console.warn(`Skipping identifier with non-numeric parts: ${id}`);
         return null;
       }
 
-      // Use the MAX_FRETS defined in this file if needed for validation,
-      // although getFretboardNoteMIDI already handles basic bounds.
       const midi = getFretboardNoteMIDI(s, f);
-      if (midi === -1) { // getFretboardNoteMIDI returns -1 for invalid string index
-        console.warn(`Skipping identifier with invalid MIDI calculation (string index out of bounds?): ${id}`);
+      if (midi === -1) {
         return null;
       }
-      // midiToNoteName can return null
       const noteNameWithOctave = midiToNoteName(midi);
 
-      // Only return object if noteNameWithOctave is not null
       if (noteNameWithOctave === null) {
-          console.warn(`Skipping identifier ${id} due to invalid MIDI->Note conversion for MIDI ${midi}`);
           return null;
       }
 
-      return { id: id, note: noteNameWithOctave }; // Note is guaranteed string here
+      return { id: id, note: noteNameWithOctave };
     })
-    .filter((obj): obj is NoteObject => obj !== null); // Filter out nulls and assert type
+    .filter((obj): obj is NoteObject => obj !== null);
 }

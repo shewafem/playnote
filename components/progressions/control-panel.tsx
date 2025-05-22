@@ -47,9 +47,6 @@ export function ControlPanel({
 						<GenerateButton onGenerate={onGenerateRandom} isLoading={isGenerating} />
 					</div>
 				</div>
-				{/*<div className="flex justify-start">
-					<GenerateButton onGenerate={onGenerateRandom} isLoading={isGenerating} />
-				</div>*/}
 			</CardContent>
 		</Card>
 	);

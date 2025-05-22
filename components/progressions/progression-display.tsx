@@ -11,9 +11,9 @@ export function ProgressionDisplay({ progressionChords, ref }: ProgressionDispla
 		return (
 			<div
 				ref={ref}
-				className="h-36 w-full flex gap-4 justify-center items-center border-2 border-dashed rounded-lg bg-muted/50"
+				className="h-36 w-full flex p-4 mt-4 justify-center items-center border-2 border-dashed rounded-lg bg-muted/50"
 			>
-				<p className="text-muted-foreground">Выберите или сгенерируйте прогрессию</p>
+				<p className="text-muted-foreground text-center">Выберите или сгенерируйте прогрессию</p>
 			</div>
 		);
 	}

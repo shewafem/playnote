@@ -2,4 +2,5 @@ import { ChordProgressionTool } from "@/components/progressions/chord-progressio
 
 export default function HomePage() {
 	return <ChordProgressionTool />;
+
 }
