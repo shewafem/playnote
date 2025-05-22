@@ -45,7 +45,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 					<div className="flex items-center gap-3">
 						{" "}
 						<ModeToggle />
-						<Link href="/login" className="hidden xs:block">
+						<Link href="/sign-in" className="hidden xs:block">
 							<Button className="gap-1 cursor-pointer">
 								Войти
 								<User size={24} />
@@ -77,7 +77,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 										))}
 										<hr className="my-2" />
 										<SheetClose asChild>
-											<Link href="/login" className="nav-link">
+											<Link href="/sign-in" className="nav-link">
 												<Button className="w-full">
 													Войти
 													<User size={17} />
