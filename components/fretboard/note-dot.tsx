@@ -47,7 +47,7 @@ const NoteDot: React.FC<NoteDotProps> = ({
 		"w-8 h-8 rounded-full flex items-center justify-center relative border",
 		"transition-all duration-100 ease-in-out", 
 		{
-			"bg-secondary border-secondary-foreground/30": !isHighlighted && !isSelected,
+			"bg-muted-foreground/20 border-secondary-foreground/30": !isHighlighted && !isSelected,
 		},
 		// Подсвеченная
 		{ "bg-primary/80 border-primary": isHighlighted && !isSelected },
@@ -56,7 +56,7 @@ const NoteDot: React.FC<NoteDotProps> = ({
 		// Тоника
 		{ "outline-red-500 outline-2 outline-offset-1": isRoot },
 		// Анимация проигрыша
-		{ "bg-yellow-200 border-yellow-500 shadow-lg animate-note-pulse": isPlaying },
+		{ "bg-primary shadow-lg": isPlaying },
 		// Курсор
 		{ "cursor-pointer": canClick },
 		{ "hover:shadow-lg": canClick && !isPlaying },

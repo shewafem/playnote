@@ -1,5 +1,6 @@
 // components/interactive-fretboard/controls.tsx
 import React from 'react';
+import {GUITAR_TUNINGS_MIDI} from '@/lib/music-utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 
@@ -10,6 +11,8 @@ interface ControlsProps {
   setSelectedShapeType: (type: string) => void;
   selectedShapeName: string;
   setSelectedShapeName: (name: string) => void;
+  selectedTuning: string;
+  setSelectedTuning: (tuning: string) => void;
   availableKeys: string[];
   availableShapeTypes: string[];
   availableShapeNames: string[];
@@ -22,6 +25,8 @@ const Controls: React.FC<ControlsProps> = ({
   setSelectedShapeType,
   selectedShapeName,
   setSelectedShapeName,
+  selectedTuning,
+  setSelectedTuning,
   availableKeys,
   availableShapeTypes,
   availableShapeNames,
@@ -69,6 +74,19 @@ const Controls: React.FC<ControlsProps> = ({
           <SelectContent>
             {shapeNameOptions.map(option => (
               <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="tuning-select">Строй</Label>
+        <Select value={selectedTuning} onValueChange={setSelectedTuning}>
+          <SelectTrigger id="tuning-select" className="w-[120px]">
+            <SelectValue placeholder="Выбрать строй" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.keys(GUITAR_TUNINGS_MIDI).map(tuning => (
+              <SelectItem key={tuning} value={tuning}>{tuning}</SelectItem>
             ))}
           </SelectContent>
         </Select>

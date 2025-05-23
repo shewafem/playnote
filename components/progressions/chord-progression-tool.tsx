@@ -132,7 +132,7 @@ export function ChordProgressionTool() {
 	console.log(activeProgressionSource);
 
 	return (
-		<section className="container mx-auto p-4 flex flex-col gap-8">
+		<section className=" flex flex-col gap-8">
 			<div className="text-center">
 				<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary">
 					Прогрессии аккордов

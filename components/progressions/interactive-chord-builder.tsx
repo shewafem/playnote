@@ -21,7 +21,7 @@ export function InteractiveChordBuilder({
 	const isBuilderDisabled = currentCustomProgressionLength >= maxCustomProgressionLength;
 
 	if (!diatonicChords.length) {
-		return <p className="text-muted-foreground">Выберите тонику, чтобы увидеть аккорды</p>;
+		return <p className="text-muted-foreground text-center">Выберите тонику, чтобы увидеть аккорды</p>;
 	}
 
 	return (

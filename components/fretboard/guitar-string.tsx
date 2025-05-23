@@ -14,6 +14,7 @@ interface GuitarStringProps {
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
+  selectedTuning: string;
 }
 
 const GuitarString: React.FC<GuitarStringProps> = ({
@@ -25,6 +26,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
+  selectedTuning,
 }) => {
 	// обратный порядок
 	const displayStringIndex = GUITAR_TUNING_DEFAULT.length - 1 - stringIndex;
@@ -47,6 +49,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 					isSelectingMode={isSelectingMode}
 					onNoteClick={onNoteClick}
 					isToneReady={isToneReady}
+          selectedTuning={selectedTuning}
 				/>
 			))}
 		</div>

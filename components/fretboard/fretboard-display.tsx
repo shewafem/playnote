@@ -2,7 +2,7 @@
 import React from "react";
 import GuitarString from "./guitar-string";
 import FretNumbers from "./fret-numbers";
-import { GUITAR_TUNING_DEFAULT } from "@/lib/music-utils";
+import { GUITAR_TUNINGS_MIDI } from "@/lib/music-utils";
 import { NoteValue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ interface FretboardDisplayProps {
 	onNoteClick?: (value: string) => void;
 	selectedNotesForPlayback: string[]; //идентификаторы ("s-f")
 	currentlyPlayingNoteId: string | null;
+  selectedTuning: string;
 	isSelectingMode: boolean;
 	isToneReady: boolean;
 }
@@ -23,21 +24,24 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 	selectedNotesForPlayback,
 	currentlyPlayingNoteId,
 	isSelectingMode,
+  selectedTuning,
 	isToneReady,
 }) => {
 	//const numStrings = GUITAR_TUNING_DEFAULT.length;
+
+  const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 
 	const selectedNotesSet = React.useMemo(() => new Set(selectedNotesForPlayback || []), [selectedNotesForPlayback]);
 
 	return (
 		<div
 			className={cn(
-				"flex flex-col p-4 bg-card border border-border rounded-md relative overflow-x-auto shadow-lg",
-				"w-fit"
+				"flex flex-col p-4 bg-card border border-border rounded-md relative shadow-lg",
+				"w-fit",
 			)}
 		>
 			<FretNumbers />
-			{GUITAR_TUNING_DEFAULT.map((_, stringIndex) => (
+			{tuning.map((_, stringIndex) => (
 				<GuitarString
 					key={stringIndex}
 					stringIndex={stringIndex}
@@ -48,6 +52,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 					isSelectingMode={isSelectingMode}
 					onNoteClick={isToneReady ? onNoteClick : undefined}
 					isToneReady={isToneReady}
+          selectedTuning={selectedTuning}
 				/>
 			))}
 		</div>

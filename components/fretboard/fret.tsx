@@ -2,7 +2,7 @@
 import React from "react";
 import NoteDot from "./note-dot";
 import FretWire from "./fret-wire";
-import { getFretboardNoteMIDI, DEFAULT_FRETS } from "@/lib/music-utils";
+import { getFretboardNoteMIDI, DEFAULT_FRETS, GUITAR_TUNINGS_MIDI } from "@/lib/music-utils";
 import { NoteValue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ interface FretProps {
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
+  selectedTuning: string;
 }
 
 const Fret: React.FC<FretProps> = ({
@@ -24,12 +25,14 @@ const Fret: React.FC<FretProps> = ({
 	highlightedNotes,
 	rootNoteValue,
 	selectedNotesForPlayback,
+  selectedTuning,
 	currentlyPlayingNoteId,
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
 }) => {
-	const midiValue = getFretboardNoteMIDI(stringIndex, fretNumber);
+  const tuning = GUITAR_TUNINGS_MIDI[selectedTuning]
+	const midiValue = getFretboardNoteMIDI(stringIndex, fretNumber, tuning);
 
 	const noteValue = (midiValue % 12) as NoteValue; //(0-11)
 	const identifier = `${stringIndex}-${fretNumber}`; // ID

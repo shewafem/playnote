@@ -9,7 +9,7 @@ const FretNumbers: React.FC = () => {
       {[...Array(DEFAULT_FRETS)].map((_, fretIndex) => (
         <div
           key={`fret-num-${fretIndex}`}
-          className="w-14 text-center text-sm text-muted-foreground"
+          className="w-18 text-center text-sm text-muted-foreground"
         >
           {fretIndex + 1}
         </div>
