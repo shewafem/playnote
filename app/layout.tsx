@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/layout/container";
+import { SessionProvider } from "next-auth/react";
 
 const geologica = Geologica({
 	variable: "--font-geologica",
@@ -38,11 +39,13 @@ export default function RootLayout({
 				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} mt-14 font-sans antialiased`}
 			>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-					<Header />
-					<main>
-						<Container>{children}</Container>
-					</main>
-					<Footer></Footer>
+					<SessionProvider>
+						<Header />
+						<main>
+							<Container>{children}</Container>
+						</main>
+						<Footer></Footer>
+					</SessionProvider>
 				</ThemeProvider>
 			</body>
 		</html>

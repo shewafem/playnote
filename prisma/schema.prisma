@@ -20,16 +20,17 @@ model User {
   name           String?
   email          String    @unique
   emailVerified  DateTime?
-  hashedPassword String? 
-  image          String?   
+  hashedPassword String?
+  image          String?
   role           UserRole  @default(STUDENT)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   accounts Account[]
+  sessions Session[]
 
   // Admin/Teacher
-  coursesCreated Course[]  @relation("TeacherCourses")
+  coursesCreated Course[] @relation("TeacherCourses")
 
   // Student
   enrollments Enrollment[]
@@ -54,9 +55,30 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 enum DifficultyLevel {
@@ -80,33 +102,32 @@ enum CourseGenre {
 }
 
 model Course {
-  id              String          @id @default(cuid())
-  title           String
-  description     String          @db.Text
-  difficulty      DifficultyLevel
-  genre           CourseGenre
-  thumbnailUrl    String?
-  prerequisites   String?         @db.Text
-  price           Float?          
-  isPublished     Boolean         @default(false)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id            String          @id @default(cuid())
+  title         String
+  description   String          @db.Text
+  difficulty    DifficultyLevel
+  genre         CourseGenre
+  thumbnailUrl  String?
+  prerequisites String?         @db.Text
+  price         Float?
+  isPublished   Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
-  teacherId       String
-  teacher         User            @relation("TeacherCourses", fields: [teacherId], references: [id])
+  teacherId String
+  teacher   User   @relation("TeacherCourses", fields: [teacherId], references: [id])
 
-  lessons         Lesson[]
-  enrollments     Enrollment[]
-  category        Category?       @relation(fields: [categoryId], references: [id])
-  categoryId      String?
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  categoryId  String?
 }
 
 model Category {
-  id      String    @id @default(cuid())
-  name    String    @unique
+  id      String   @id @default(cuid())
+  name    String   @unique
   courses Course[]
 }
-
 
 enum LessonContentType {
   VIDEO_EMBED // YouTube, Vimeo URL
@@ -117,44 +138,43 @@ enum LessonContentType {
 }
 
 model Lesson {
-  id            String            @id @default(cuid())
-  title         String
-  content       String            @db.Text // URL for embeds/uploads, or rich text content
-  contentType   LessonContentType
-  order         Int               
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id          String            @id @default(cuid())
+  title       String
+  content     String            @db.Text // URL for embeds/uploads, or rich text content
+  contentType LessonContentType
+  order       Int
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
-  courseId      String
-  course        Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  userProgress  LessonProgress[]
-  attachments   Attachment[]
+  userProgress LessonProgress[]
+  attachments  Attachment[]
 }
 
 // PDFs, tabs, backing tracks
 model Attachment {
-  id        String    @id @default(cuid())
+  id        String   @id @default(cuid())
   name      String
-  url       String    // URL to the uploaded file (S3, Cloudinary, etc.)
-  fileType  String    // e.g., 'pdf', 'gp5', 'mp3'
-  size      Int?      // File size in bytes
-  createdAt DateTime  @default(now())
+  url       String // URL to the uploaded file (S3, Cloudinary, etc.)
+  fileType  String // e.g., 'pdf', 'gp5', 'mp3'
+  size      Int? // File size in bytes
+  createdAt DateTime @default(now())
 
-  lessonId  String
-  lesson    Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 }
 
-
 model Enrollment {
-  id          String   @id @default(cuid())
-  enrolledAt  DateTime @default(now())
+  id         String   @id @default(cuid())
+  enrolledAt DateTime @default(now())
 
-  studentId   String
-  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, courseId]) // A student can enroll in a course only once
 }
@@ -164,11 +184,11 @@ model LessonProgress {
   completedAt DateTime @default(now())
   isCompleted Boolean  @default(false)
 
-  studentId   String
-  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  lessonId    String
-  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([studentId, lessonId]) // Progress for a lesson per student
 }

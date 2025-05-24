@@ -1,19 +1,19 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ArrowUpToLine } from "lucide-react";
 import React, { useEffect, useState } from "react";
-
 export function ScrollToTop({
 	minHeight,
-	scrollTo, 
-  size,
-	...props
+	scrollTo,
+	size,
+	className,
 }: {
 	minHeight?: number;
 	scrollTo?: number;
-  className?: string;
-  size?: number;
+	size?: number;
+	className?: string;
 }) {
 	const [visible, setVisible] = useState(false);
 
@@ -38,11 +38,13 @@ export function ScrollToTop({
 							behavior: "smooth",
 						})
 					}
-          className="bg-fixed justify-items-stretch rounded-full right-4 bottom-4 z-10 cursor-pointer w-12 h-12 transition-all duration-200 ease-in-out"
-					{...props}
+					className={cn(
+						"fixed rounded-full right-4 bottom-4 z-10 cursor-pointer transition-all duration-200 ease-in-out",
+						className
+					)}
 				>
-        <ArrowUpToLine size={size}/>
-        </Button>
+					<ArrowUpToLine size={size} />
+				</Button>
 			)}
 		</>
 	);

@@ -5,18 +5,32 @@ import React from "react";
 import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/ui/logo";
 import Link from "next/link";
-import { User, Menu } from "lucide-react";
+import { User, Menu, UserRoundCog, LogOut } from "lucide-react";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
 //import { FaPeopleGroup } from "react-icons/fa6";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NavMenu } from "./nav-menu";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface Props {
 	className?: string;
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
+	const { data, status } = useSession();
+	const user = data?.user;
+	console.log(user?.image);
+
 	// Navigation links data
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
@@ -36,7 +50,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 		>
 			<Container className="px-4 py-2 flex items-center justify-between">
 				{/* Левая часть - Логотип */}
-				<Logo/>
+				<Logo />
 				{/* Навигация для больших экранов */}
 				<div className="flex gap-3 md:gap-8">
 					<NavMenu></NavMenu>
@@ -45,12 +59,39 @@ export const Header: React.FC<Props> = ({ className }) => {
 					<div className="flex items-center gap-3">
 						{" "}
 						<ModeToggle />
-						<Link href="/sign-in" className="hidden xs:block">
-							<Button className="gap-1 cursor-pointer">
-								Войти
-								<User size={24} />
-							</Button>
-						</Link>
+						{status === "authenticated" && (
+							<div className="flex items-center">
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Avatar className="cursor-pointer">
+											<AvatarImage src={user?.image as string} alt="avatar" />
+											<AvatarFallback>
+												<UserRoundCog />
+											</AvatarFallback>
+										</Avatar>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent className="w-45">
+										<DropdownMenuGroup>
+											<DropdownMenuItem className="cursor-pointer">
+												<Link href="/profile">Мой профиль</Link>
+											</DropdownMenuItem>
+										</DropdownMenuGroup>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+											Выйти <LogOut size={28} />
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</div>
+						)}
+						{status === "unauthenticated" && (
+							<Link href="/sign-in" className="hidden xs:block">
+								<Button className="gap-1 cursor-pointer">
+									Войти
+									<User size={24} />
+								</Button>
+							</Link>
+						)}
 						{/* Мобильное меню - Hamburger */}
 						<div className="min-[37rem]:hidden">
 							<Sheet>
@@ -63,7 +104,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 								<SheetContent side="right" className="w-full xs:w-2/3">
 									<SheetHeader className="mb-3">
 										<SheetTitle>
-											<Logo/>
+											<Logo />
 										</SheetTitle>
 									</SheetHeader>
 									<nav className="flex flex-col gap-4 px-4">

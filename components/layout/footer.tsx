@@ -35,10 +35,10 @@ const sections = [
 const Footer = () => {
 	return (
 		<footer className="mt-12 border-t">
-			<Container className="flex items-center flex-col sm:flex-row gap-4 pt-6 justify-between">
+			<Container className="flex items-center flex-col sm:flex-row sm:gap-28 gap-5 pt-6 justify-center">
 				<div className="flex h-25 flex-col items-center gap-5 lg:items-start">
 					{/* Logo */}
-						<Logo></Logo>
+					<Logo></Logo>
 					<ul className="flex items-center gap-6 text-muted-foreground">
 						{socials.map((social, index) => (
 							<li key={index} className="font-medium hover:text-primary">

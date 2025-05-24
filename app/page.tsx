@@ -1,6 +1,9 @@
+import { auth } from "@/auth";
 import Hero from "@/components/pages/hero";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  console.log(session)
 	return (
 		<>
 			<Hero/>
