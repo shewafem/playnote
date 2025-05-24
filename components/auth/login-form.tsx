@@ -10,15 +10,12 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter} from "next/navigation";
 import Image from "next/image";
 import { LoginFormValues, LoginSchema } from "@/schemas/auth-schema";
 
 export default function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
-
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +45,7 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
         setError("Неверный логин или пароль.");
         console.error("Ошибка авторизации:", result.error);
       } else if (result?.ok) {
-        router.push(callbackUrl);
+        router.push("/");
         router.refresh();
       }
     });
@@ -66,7 +63,7 @@ export default function LoginForm({ className, ...props }: React.ComponentProps<
                   variant="outline"
                   className="w-full h-10 cursor-pointer text-md"
                   disabled={isPending}
-                  onClick={() => signIn("google", { redirectTo: callbackUrl })}
+                  onClick={() => signIn("google", { redirectTo: "/" })}
                 >
                   <Image width={16} height={16} alt="google-icon" src="/google-icon.svg" />
                   Войти с Google

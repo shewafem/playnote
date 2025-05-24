@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     });
 
     if (existingUser) {
-      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+      return NextResponse.json({ error: "Почта уже используется" }, { status: 409 });
     }
 
     // Hash the password
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ success: "User registered successfully!" }, { status: 201 });
+    return NextResponse.json({ success: "Аккаунт успешно создан" }, { status: 201 });
   } catch (error) {
     console.error("REGISTRATION_ERROR", error);
     return NextResponse.json({ error: "An internal error occurred" }, { status: 500 });

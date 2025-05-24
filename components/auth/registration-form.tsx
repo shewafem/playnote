@@ -67,7 +67,7 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 					setError("Registration successful, but auto-login failed. Please log in manually.");
 				} else if (signInResult?.ok) {
 					// Redirect to home or dashboard on successful login
-					router.push("/");
+					router.push("/profile");
 				}
 			} catch {
 				setError("Failed to connect to the server. Please try again.");

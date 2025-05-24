@@ -192,3 +192,27 @@ model LessonProgress {
 
   @@unique([studentId, lessonId]) // Progress for a lesson per student
 }
+
+model Chord {
+  id        Int      @id @default(autoincrement())
+  key       String   // e.g., "C", "C#", "Db"
+  suffix    String   // e.g., "major", "minor", "dim"
+  positions Position[]
+
+  @@unique([key, suffix]) // Гарантирует, что каждый аккорд (C major, A minor) уникален
+  @@index([key])          // Индекс для быстрого поиска по тональности
+}
+
+model Position {
+  id       Int      @id @default(autoincrement())
+  frets    Int[]
+  fingers  Int[]
+  baseFret Int
+  barres   Int[]
+  midi     Int[]
+  capo     Boolean?
+  chordId  Int
+  chord    Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade) // onDelete: Cascade удалит позиции при удалении аккорда
+
+  @@index([chordId]) // Индекс для быстрого поиска позиций для аккорда
+}
