@@ -1,4 +1,4 @@
-import { ScaleChord } from "@/lib/progression";
+import { ScaleChord } from "@/lib/progression-utils";
 import { ChordCard } from "@/components/progressions/chord-card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 interface InteractiveChordCardProps {

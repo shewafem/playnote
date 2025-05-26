@@ -1,7 +1,7 @@
 // components/interactive-fretboard/guitar-string.tsx
 import React from "react";
 import Fret from "./fret";
-import { DEFAULT_FRETS, GUITAR_TUNING_DEFAULT } from "@/lib/music-utils";
+import { DEFAULT_FRETS, GUITAR_TUNING_DEFAULT } from "@/lib/fretboard-utils";
 import { NoteValue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +14,7 @@ interface GuitarStringProps {
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
-  selectedTuning: string;
+	selectedTuning: string;
 }
 
 const GuitarString: React.FC<GuitarStringProps> = ({
@@ -26,7 +26,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
-  selectedTuning,
+	selectedTuning,
 }) => {
 	// обратный порядок
 	const displayStringIndex = GUITAR_TUNING_DEFAULT.length - 1 - stringIndex;
@@ -49,7 +49,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 					isSelectingMode={isSelectingMode}
 					onNoteClick={onNoteClick}
 					isToneReady={isToneReady}
-          selectedTuning={selectedTuning}
+					selectedTuning={selectedTuning}
 				/>
 			))}
 		</div>

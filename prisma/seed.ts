@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
-import { Chord } from "@/data/types";
+import { Chord } from "@/lib/chords/types";
 
 const prisma = new PrismaClient();
 

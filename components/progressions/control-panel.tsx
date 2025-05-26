@@ -2,7 +2,7 @@ import { RootNoteSelector } from "./root-note-selector";
 import { PopularProgressionsSelector } from "./popular-progressions-selector";
 import { GenerateButton } from "./generate-button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { POPULAR_PROGRESSIONS, RomanNumeral } from "@/lib/progression";
+import { POPULAR_PROGRESSIONS, RomanNumeral } from "@/lib/progression-utils";
 import { cn } from "@/lib/utils";
 
 interface ControlPanelProps {

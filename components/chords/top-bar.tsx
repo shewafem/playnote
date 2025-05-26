@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { keyNotes } from "@/data/constants";
+import { keyNotes } from "@/lib/chords/constants";
 import { Categories } from "@/components/chords/categories";
 import { SearchBox } from "@/components/chords/search";
 // formatItem might still be useful on the client for display purposes
-import { formatItem } from "@/data/utils"; // Or keep it in a client-side utils if it's purely for formatting
+import { formatItem } from "@/lib/chords/utils"; // Or keep it in a client-side utils if it's purely for formatting
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 

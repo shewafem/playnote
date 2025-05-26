@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GUITAR_TUNINGS_MIDI, mapIdsToNoteObjects } from "@/lib/music-utils"; // Assuming this is now in lib/musicUtils.ts
+import { GUITAR_TUNINGS_MIDI, mapIdsToNoteObjects } from "@/lib/fretboard-utils"; // Assuming this is now in lib/musicUtils.ts
 import { Chord } from "tonal";
 import { Pause, Play } from "lucide-react";
 

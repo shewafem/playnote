@@ -8,14 +8,14 @@ import {
 	RomanNumeral,
 	ScaleChord,
 	POPULAR_PROGRESSIONS,
-} from "@/lib/progression";
+} from "@/lib/progression-utils";
 import { ControlPanel } from "./control-panel";
 import { ProgressionDisplay } from "./progression-display";
 import { InteractiveChordBuilder } from "./interactive-chord-builder";
 import { CustomProgressionToolbar } from "./custom-progression-toolbar";
 import { ExportControls } from "./export-controls";
 import { toPng } from "html-to-image";
-import { downloadImage } from "@/data/image";
+import { downloadImage } from "@/lib/chords/image";
 
 type ProgressionSource = "popular" | "random" | "custom";
 const MAX_CUSTOM_PROGRESSION_LENGTH = 12;

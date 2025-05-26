@@ -1,6 +1,6 @@
 // components/ui/chord-progression/chord-card.tsx
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ScaleChord } from "@/lib/progression";
+import { ScaleChord } from "@/lib/progression-utils";
 import { cn } from "@/lib/utils";
 
 interface ChordCardProps {

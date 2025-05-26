@@ -8,7 +8,7 @@ import {
 	SelectLabel,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { POPULAR_PROGRESSIONS } from "@/lib/progression";
+import { POPULAR_PROGRESSIONS } from "@/lib/progression-utils";
 
 interface PopularProgressionsSelectorProps {
 	onProgressionNameSelect: (name: string) => void;

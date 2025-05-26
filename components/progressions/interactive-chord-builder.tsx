@@ -1,4 +1,4 @@
-import { ScaleChord } from "@/lib/progression";
+import { ScaleChord } from "@/lib/progression-utils";
 import { InteractiveChordCard } from "./interactive-chord-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MousePointerClick } from "lucide-react";

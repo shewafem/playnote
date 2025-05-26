@@ -10,29 +10,7 @@
 //   ...
 // }
 
-import { PrismaClient, Chord as PrismaGeneratedChord, Position as PrismaGeneratedPosition } from "@prisma/client";
-// Импортируем ваши оригинальные типы для сохранения сигнатур функций
-import { ChordRecord, Chord } from "./types";
-
-const prisma = new PrismaClient();
-
-// --- Вспомогательная функция для маппинга ---
-// Prisma возвращает объекты со всеми полями, включая id, chordId.
-// Эта функция приводит их к вашему типу `Chord` и `PositionItem`.
-function mapPrismaChordToAppChord(prismaChord: PrismaGeneratedChord & { positions: PrismaGeneratedPosition[] }): Chord {
-	return {
-		key: prismaChord.key,
-		suffix: prismaChord.suffix,
-		positions: prismaChord.positions.map((p) => ({
-			frets: p.frets,
-			fingers: p.fingers,
-			baseFret: p.baseFret,
-			barres: p.barres,
-			midi: p.midi,
-			capo: p.capo === null ? undefined : p.capo, // Prisma null -> undefined для опционального поля
-		})),
-	};
-}
+import prisma from "@/lib/prisma"
 
 export function formatItem(item: string): string {
 	if (item === undefined) {
@@ -42,30 +20,7 @@ export function formatItem(item: string): string {
 	return formattedItem;
 }
 
-export async function getAllChords(): Promise<ChordRecord> {
-	try {
-		const allChordsFromDb = await prisma.chord.findMany({
-			include: {
-				positions: true,
-			},
-		});
-
-		// Преобразуем плоский список аккордов в структуру ChordRecord
-		const chordRecord: ChordRecord = {};
-		allChordsFromDb.forEach((prismaChord) => {
-			if (!chordRecord[prismaChord.key]) {
-				chordRecord[prismaChord.key] = [];
-			}
-			chordRecord[prismaChord.key].push(mapPrismaChordToAppChord(prismaChord));
-		});
-		return chordRecord;
-	} catch (error) {
-		console.error("Ошибка получения всех аккордов из БД:", error);
-		throw new Error("Ошибка получения всех аккордов из БД");
-	}
-}
-
-export async function getChordsByKey(key: string): Promise<Chord[]> {
+export async function getChordsByKey(key: string) {
 	const formattedKey = formatItem(key);
 	try {
 		const chordsFromDb = await prisma.chord.findMany({
@@ -75,19 +30,15 @@ export async function getChordsByKey(key: string): Promise<Chord[]> {
 			include: {
 				positions: true,
 			},
-			orderBy: {
-				// Опционально: для консистентного порядка суффиксов
-				suffix: "asc",
-			},
 		});
-		return chordsFromDb.map(mapPrismaChordToAppChord);
+		return chordsFromDb;
 	} catch (error) {
 		console.error(`Ошибка получения аккордов по тональности ${formattedKey} из БД:`, error);
 		throw new Error(`Ошибка получения аккордов по тональности ${formattedKey} из БД`);
 	}
 }
 
-export async function getChord(key: string, suffix: string): Promise<Chord | undefined> {
+export async function getChord(key: string, suffix: string) {
 	const formattedKey = formatItem(key);
 	try {
 		const chordFromDb = await prisma.chord.findUnique({
@@ -107,7 +58,7 @@ export async function getChord(key: string, suffix: string): Promise<Chord | und
 		if (!chordFromDb) {
 			return undefined;
 		}
-		return mapPrismaChordToAppChord(chordFromDb);
+		return chordFromDb;
 	} catch (error) {
 		console.error(`Ошибка получения аккорда ${formattedKey} ${suffix} из БД:`, error);
 		throw new Error(`Ошибка получения аккорда ${formattedKey} ${suffix} из БД`);
@@ -136,9 +87,3 @@ export async function getSuffixes(key: string): Promise<string[]> {
 		throw new Error(`Ошибка получения суффиксов для тональности ${formattedKey} из БД`);
 	}
 }
-
-// Не забудьте, что для работы этого кода вам нужно:
-// 1. Установить Prisma Client: npm install @prisma/client
-// 2. Сгенерировать Prisma Client: npx prisma generate
-// 3. Убедиться, что ваша база данных запущена и содержит данные.
-//    Возможно, вам понадобится скрипт для заполнения (seed script) базы данных из вашего chords.json.

@@ -2,7 +2,7 @@
 import React from "react";
 import NoteDot from "./note-dot";
 import FretWire from "./fret-wire";
-import { getFretboardNoteMIDI, DEFAULT_FRETS, GUITAR_TUNINGS_MIDI } from "@/lib/music-utils";
+import { getFretboardNoteMIDI, DEFAULT_FRETS, GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
 import { NoteValue } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -11,12 +11,12 @@ interface FretProps {
 	fretNumber: number;
 	highlightedNotes: Set<NoteValue>;
 	rootNoteValue: NoteValue;
-	selectedNotesForPlayback: Set<string>; 
+	selectedNotesForPlayback: Set<string>;
 	currentlyPlayingNoteId: string | null;
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
-  selectedTuning: string;
+	selectedTuning: string;
 }
 
 const Fret: React.FC<FretProps> = ({
@@ -25,13 +25,13 @@ const Fret: React.FC<FretProps> = ({
 	highlightedNotes,
 	rootNoteValue,
 	selectedNotesForPlayback,
-  selectedTuning,
+	selectedTuning,
 	currentlyPlayingNoteId,
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
 }) => {
-  const tuning = GUITAR_TUNINGS_MIDI[selectedTuning]
+	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 	const midiValue = getFretboardNoteMIDI(stringIndex, fretNumber, tuning);
 
 	const noteValue = (midiValue % 12) as NoteValue; //(0-11)
@@ -39,8 +39,8 @@ const Fret: React.FC<FretProps> = ({
 
 	const isScaleHighlighted = highlightedNotes.has(noteValue);
 	const isRoot = isScaleHighlighted && noteValue === rootNoteValue;
-  const isThird = isScaleHighlighted && noteValue === (rootNoteValue + 4) % 12;
-  const isFifth = isScaleHighlighted && noteValue === (rootNoteValue + 7) % 12;
+	const isThird = isScaleHighlighted && noteValue === (rootNoteValue + 4) % 12;
+	const isFifth = isScaleHighlighted && noteValue === (rootNoteValue + 7) % 12;
 	const isSelected = selectedNotesForPlayback.has(identifier);
 	const isPlaying = identifier === currentlyPlayingNoteId;
 
@@ -51,8 +51,8 @@ const Fret: React.FC<FretProps> = ({
 				midiValue={midiValue}
 				isHighlighted={isScaleHighlighted}
 				isRoot={isRoot}
-        isThird={isThird}
-        isFifth={isFifth}
+				isThird={isThird}
+				isFifth={isFifth}
 				isSelected={isSelected}
 				isPlaying={isPlaying}
 				isSelectingMode={isSelectingMode}

@@ -1,4 +1,4 @@
-import { ScaleChord } from "@/lib/progression";
+import { ScaleChord } from "@/lib/progression-utils";
 import { ChordCard } from "./chord-card";
 
 interface ProgressionDisplayProps {

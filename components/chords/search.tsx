@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { formatItem } from "@/data/utils";
+import { formatItem } from "@/lib/chords/utils";
 
 interface SearchProps {
 	keyNote: string;
@@ -20,8 +20,8 @@ interface SearchProps {
 export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, className }) => {
 	const [open, setOpen] = React.useState(false);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
-  const currentSuffix = useParams<{ type: string }>().type;
-  const formattedSuffix: string = formatItem(currentSuffix)
+	const currentSuffix = useParams<{ type: string }>().type;
+	const formattedSuffix: string = formatItem(currentSuffix);
 	const selectedItem = items.find((item) => item === value) || null;
 
 	return (
@@ -30,7 +30,7 @@ export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, classN
 				<Popover open={open} onOpenChange={setOpen}>
 					<PopoverTrigger asChild>
 						<Button variant="outline" className="cursor-pointer w-full sm:w-[200px] justify-start">
-              {formattedSuffix ? <>{formattedSuffix}</> : selectedItem ? <>{selectedItem}</> : <>Выберите тип</>}
+							{formattedSuffix ? <>{formattedSuffix}</> : selectedItem ? <>{selectedItem}</> : <>Выберите тип</>}
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent className="w-full sm:w-[200px] p-0" align="start">
@@ -51,7 +51,7 @@ export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, classN
 							<DrawerTitle>Выберите тип</DrawerTitle>
 							<DrawerDescription>Выберите тип из списка ниже.</DrawerDescription>
 							<div className="mt-4 border-t">
-								<ItemList items={items} keyNote={keyNote} setOpen={setOpen}/>
+								<ItemList items={items} keyNote={keyNote} setOpen={setOpen} />
 							</div>
 						</div>
 					</DrawerContent>
@@ -67,10 +67,10 @@ interface ItemListProps {
 	setOpen: (open: boolean) => void;
 }
 
-const ItemList: React.FC<ItemListProps> = ({items, keyNote, setOpen}) => {
+const ItemList: React.FC<ItemListProps> = ({ items, keyNote, setOpen }) => {
 	return (
 		<Command>
-			<CommandInput placeholder="Найти тип..." className="text-base"/>
+			<CommandInput placeholder="Найти тип..." className="text-base" />
 			<CommandList>
 				<CommandEmpty>Таких аккордов нет...</CommandEmpty>
 				<CommandGroup heading="Типы">
@@ -94,4 +94,4 @@ const ItemList: React.FC<ItemListProps> = ({items, keyNote, setOpen}) => {
 			</CommandList>
 		</Command>
 	);
-}
+};
