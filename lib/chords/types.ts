@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type InstrumentType = {
 	strings: number;
 	fretsOnChord: number;
@@ -7,3 +9,10 @@ export type InstrumentType = {
 		standard: string[];
 	};
 };
+
+// chord with positions
+export type ChordWithPositions = Prisma.ChordGetPayload<{
+  include: {
+    positions: true;
+  };
+}>;

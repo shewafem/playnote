@@ -3,7 +3,7 @@ import React from "react";
 import GuitarString from "./guitar-string";
 import FretNumbers from "./fret-numbers";
 import { GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
-import { NoteValue } from "@/lib/types";
+import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
 interface FretboardDisplayProps {

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react"; // Import useState and useEffect
 
 const features = [
 	{
@@ -45,6 +46,13 @@ const features = [
 
 const Feature = () => {
 	const { resolvedTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+
+	// useEffect only runs on the client, so now we can safely show the UI
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	return (
 		<section className="py-20 mx-auto flex items-center justify-center">
 			<div className="container flex flex-col gap-8 lg:px-16">
@@ -57,25 +65,50 @@ const Feature = () => {
 					</p>
 				</div>
 				<div className="grid gap-6 md:grid-cols-2 lg:gap-8 items-start">
-					{features.map((feature) => (
-						<div key={feature.id} className="flex flex-col rounded-xl border border-border">
-							<Link href={feature.link}>
-								<div>
-									<Image
-										width={1000}
-										height={1000}
-										src={resolvedTheme === "light" ? feature.image : feature.darkImage}
-										alt={feature.title}
-										className="aspect-16/9 h-full w-full object-contain"
-									/>
-								</div>
-								<div className="px-4 py-4 ">
-									<h3 className="mb-3 text-lg font-semibold md:text-2xl">{feature.title}</h3>
-									<p className="text-muted-foreground lg:text-lg">{feature.description}</p>
-								</div>
-							</Link>
-						</div>
-					))}
+					{features.map((feature) => {
+                        // Determine the correct image source
+                        // Fallback to light image if not mounted or theme is not yet resolved correctly,
+                        // though `resolvedTheme` should be stable once `mounted` is true.
+                        const imageSrc = mounted && resolvedTheme === "dark" 
+                            ? feature.darkImage 
+                            : feature.image;
+                        
+                        // Alternatively, to avoid any flash and ensure layout is stable,
+                        // you can render a placeholder until mounted.
+                        if (!mounted) {
+                            // Render a placeholder or null. A placeholder div with the same aspect ratio is best.
+                            // This prevents the image from "popping in" and causing layout shift.
+                            return (
+                                <div key={feature.id} className="flex flex-col rounded-xl border border-border">
+                                    <div className="aspect-16/9 h-full w-full bg-muted/20 animate-pulse" /> {/* Placeholder */}
+                                    <div className="px-4 py-4 ">
+                                        <h3 className="mb-3 text-lg font-semibold md:text-2xl">{feature.title}</h3>
+                                        <p className="text-muted-foreground lg:text-lg">{feature.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        }
+
+						return (
+							<div key={feature.id} className="flex flex-col rounded-xl border border-border">
+								<Link href={feature.link}>
+									<div>
+										<Image
+											width={1000}
+											height={1000}
+											src={imageSrc}
+											alt={feature.title}
+											className="aspect-16/9 h-full w-full object-contain"
+										/>
+									</div>
+									<div className="px-4 py-4 ">
+										<h3 className="mb-3 text-lg font-semibold md:text-2xl">{feature.title}</h3>
+										<p className="text-muted-foreground lg:text-lg">{feature.description}</p>
+									</div>
+								</Link>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 		</section>

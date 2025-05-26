@@ -1,13 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { ChordWithPositions } from "@/lib/chords/types";
+import prisma from "@/lib/prisma";
 import * as fs from "fs";
 import * as path from "path";
-import { Chord } from "@/lib/chords/types";
-
-const prisma = new PrismaClient();
 
 // Описываем структуру всего JSON файла
 type JsonChordsDatabase = {
-	[noteKey: string]: Chord[]; // e.g. "C": [ { key: "C", suffix: "major", ... } ]
+	[noteKey: string]: ChordWithPositions[]; // e.g. "C": [ { key: "C", suffix: "major", ... } ]
 };
 
 async function main() {

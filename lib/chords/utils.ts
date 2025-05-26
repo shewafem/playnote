@@ -11,6 +11,7 @@
 // }
 
 import prisma from "@/lib/prisma"
+import { ChordWithPositions } from "./types";
 
 export function formatItem(item: string): string {
 	if (item === undefined) {
@@ -20,7 +21,7 @@ export function formatItem(item: string): string {
 	return formattedItem;
 }
 
-export async function getChordsByKey(key: string) {
+export async function getChordsByKey(key: string): Promise<ChordWithPositions[]> {
 	const formattedKey = formatItem(key);
 	try {
 		const chordsFromDb = await prisma.chord.findMany({
@@ -38,7 +39,7 @@ export async function getChordsByKey(key: string) {
 	}
 }
 
-export async function getChord(key: string, suffix: string) {
+export async function getChord(key: string, suffix: string): Promise<ChordWithPositions | undefined> {
 	const formattedKey = formatItem(key);
 	try {
 		const chordFromDb = await prisma.chord.findUnique({

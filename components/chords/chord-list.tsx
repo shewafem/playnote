@@ -1,17 +1,18 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { Chord as ChordType } from "@/lib/chords/types";
 import * as Tone from "tone";
 import ChordElement from "@/components/chords/chord-element";
 import InfiniteScroll from "@/components/ui/infinite-scroll";
 import { Loader2 } from "lucide-react";
 import { Container } from "@/components/layout/container";
-interface ChordListProps {
-	chords: ChordType[];
+import { ChordWithPositions } from "@/lib/chords/types";
+
+type ChordListProps = {
+  chords: ChordWithPositions[]
 }
 const ITEMS_PER_PAGE = 4;
 const ChordList: React.FC<ChordListProps> = ({ chords }) => {
-	const [displayedChords, setDisplayedChords] = useState<ChordType[]>([]);
+	const [displayedChords, setDisplayedChords] = useState<ChordWithPositions[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const [offset, setOffset] = useState(0);

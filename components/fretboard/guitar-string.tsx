@@ -2,7 +2,7 @@
 import React from "react";
 import Fret from "./fret";
 import { DEFAULT_FRETS, GUITAR_TUNING_DEFAULT } from "@/lib/fretboard-utils";
-import { NoteValue } from "@/lib/types";
+import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
 interface GuitarStringProps {

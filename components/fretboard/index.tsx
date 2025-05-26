@@ -13,7 +13,7 @@ import {
 	getNoteValuesInShape,
 	mapIdsToNoteObjects,
 } from "@/lib/fretboard-utils";
-import { NoteValue, NoteObject } from "@/lib/types";
+import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 const InteractiveFretboard: React.FC = () => {
 	//state for shapes
 	const [selectedKey, setSelectedKey] = useState<string>("C");

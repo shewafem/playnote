@@ -3,7 +3,7 @@
 import { guitar } from "@/lib/chords/constants";
 import { downloadPng, downloadSvg } from "@/lib/chords/image";
 import { playChord } from "@/lib/chords/player";
-import { Position } from "@/lib/chords/types";
+import { Position } from "@prisma/client";
 import Chord from "@techies23/react-chords";
 import { Download } from "lucide-react";
 import { useRef } from "react";

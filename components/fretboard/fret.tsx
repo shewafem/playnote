@@ -3,7 +3,7 @@ import React from "react";
 import NoteDot from "./note-dot";
 import FretWire from "./fret-wire";
 import { getFretboardNoteMIDI, DEFAULT_FRETS, GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
-import { NoteValue } from "@/lib/types";
+import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
 interface FretProps {
