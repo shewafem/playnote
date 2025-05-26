@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/layout/container";
 import { SessionProvider } from "next-auth/react";
+import { AppBreadcrumbs } from "@/components/layout/breadcrumbs";
 
 const geologica = Geologica({
 	variable: "--font-geologica",
@@ -42,7 +43,10 @@ export default function RootLayout({
 					<SessionProvider>
 						<Header />
 						<main>
-							<Container>{children}</Container>
+							<Container>
+								<AppBreadcrumbs ></AppBreadcrumbs>
+								{children}
+							</Container>
 						</main>
 						<Footer></Footer>
 					</SessionProvider>
