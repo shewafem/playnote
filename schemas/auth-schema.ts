@@ -26,6 +26,3 @@ export const RegisterSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof LoginSchema>;
 export type RegistrationFormValues = z.infer<typeof RegisterSchema>;
-
-
-//Определяем Zod-схемы для регистрации и входа, при ошибке выводим соответствующее сообщение

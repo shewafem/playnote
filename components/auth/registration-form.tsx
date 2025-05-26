@@ -83,9 +83,11 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 						<div className="grid gap-3">
 							<div className="flex flex-col gap-4">
 								<Button
+                  type="button"
 									variant="outline"
 									className="w-full h-10 cursor-pointer text-md"
-									onClick={() => signIn("google", { callbackUrl: "/" })}
+                  disabled={isPending}
+									onClick={() => signIn("google", { redirectTo: "/profile" })}
 								>
 									<Image width={16} height={16} alt="google-icon" src="/google-icon.svg" />
 									Войти с Google

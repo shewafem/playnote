@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const Hero = () => {
 	return (
 		<motion.section
-			className="mt-20 sm:mt-25 max-w-full gap-4 md:gap-5 flex-col flex justify-center items-center"
+			className=" max-w-full gap-4 md:gap-5 flex-col flex justify-center items-center"
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.8, ease: "easeOut" }}

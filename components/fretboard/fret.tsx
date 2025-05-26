@@ -10,7 +10,7 @@ interface FretProps {
 	stringIndex: number;
 	fretNumber: number;
 	highlightedNotes: Set<NoteValue>;
-	rootNoteValue: NoteValue | undefined;
+	rootNoteValue: NoteValue;
 	selectedNotesForPlayback: Set<string>; 
 	currentlyPlayingNoteId: string | null;
 	isSelectingMode: boolean;
@@ -39,6 +39,8 @@ const Fret: React.FC<FretProps> = ({
 
 	const isScaleHighlighted = highlightedNotes.has(noteValue);
 	const isRoot = isScaleHighlighted && noteValue === rootNoteValue;
+  const isThird = isScaleHighlighted && noteValue === (rootNoteValue + 4) % 12;
+  const isFifth = isScaleHighlighted && noteValue === (rootNoteValue + 7) % 12;
 	const isSelected = selectedNotesForPlayback.has(identifier);
 	const isPlaying = identifier === currentlyPlayingNoteId;
 
@@ -49,6 +51,8 @@ const Fret: React.FC<FretProps> = ({
 				midiValue={midiValue}
 				isHighlighted={isScaleHighlighted}
 				isRoot={isRoot}
+        isThird={isThird}
+        isFifth={isFifth}
 				isSelected={isSelected}
 				isPlaying={isPlaying}
 				isSelectingMode={isSelectingMode}

@@ -16,21 +16,25 @@ enum UserRole {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String    @unique
-  emailVerified  DateTime?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
   hashedPassword String?
-  image          String?
-  role           UserRole  @default(STUDENT)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  image         String?
+  role          UserRole  @default(STUDENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
 
   // Admin/Teacher
-  coursesCreated Course[] @relation("TeacherCourses")
+  coursesCreated   Course[] @relation("TeacherCourses")
+  // User's learned items
+  learnedScales    UserLearnedScale[]
+  learnedChords    UserLearnedChord[]
+  learnedArpeggios UserLearnedArpeggio[]
 
   // Student
   enrollments Enrollment[]
@@ -195,16 +199,19 @@ model LessonProgress {
 
 model Chord {
   id        Int      @id @default(autoincrement())
-  key       String   // e.g., "C", "C#", "Db"
-  suffix    String   // e.g., "major", "minor", "dim"
+  key       String // e.g., "C", "C#", "Db"
+  suffix    String // e.g., "major", "minor", "dim"
   positions Position[]
 
-  @@unique([key, suffix]) // Гарантирует, что каждый аккорд (C major, A minor) уникален
-  @@index([key])          // Индекс для быстрого поиска по тональности
+  // This links to users who have learned this chord
+  learnedBy UserLearnedChord[]
+
+  @@unique([key, suffix]) // Ensures each chord (C major, A minor) is unique
+  @@index([key]) // Index for quick search by key
 }
 
 model Position {
-  id       Int      @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   frets    Int[]
   fingers  Int[]
   baseFret Int
@@ -212,7 +219,62 @@ model Position {
   midi     Int[]
   capo     Boolean?
   chordId  Int
-  chord    Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade) // onDelete: Cascade удалит позиции при удалении аккорда
+  chord    Chord   @relation(fields: [chordId], references: [id], onDelete: Cascade)
 
-  @@index([chordId]) // Индекс для быстрого поиска позиций для аккорда
+  @@index([chordId])
+}
+
+model Scale {
+  id      Int    @id @default(autoincrement())
+  name    String
+  formula String @unique
+
+  // This links to users who have learned this scale
+  learnedBy UserLearnedScale[]
+}
+
+model Arpeggio {
+  id      Int    @id @default(autoincrement())
+  name    String
+  formula String @unique
+
+  // This links to users who have learned this arpeggio
+  learnedBy UserLearnedArpeggio[]
+}
+
+model UserLearnedChord {
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chordId   Int
+  chord     Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade)
+  learnedAt DateTime @default(now())
+  // You could add more fields here, e.g., proficiency: String?
+
+  @@id([userId, chordId]) // Composite primary key
+  @@index([userId])
+  @@index([chordId])
+}
+
+model UserLearnedScale {
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scaleId   Int
+  scale     Scale    @relation(fields: [scaleId], references: [id], onDelete: Cascade)
+  learnedAt DateTime @default(now())
+
+  @@id([userId, scaleId])
+  @@index([userId])
+  @@index([scaleId])
+}
+
+model UserLearnedArpeggio {
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  arpeggioId Int
+  arpeggio   Arpeggio @relation(fields: [arpeggioId], references: [id], onDelete: Cascade)
+  learnedAt  DateTime @default(now())
+
+  @@id([userId, arpeggioId])
+  @@index([userId])
+  @@index([arpeggioId])
 }

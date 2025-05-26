@@ -8,7 +8,6 @@ import Link from "next/link";
 import { User, Menu, UserRoundCog, LogOut } from "lucide-react";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
-//import { FaPeopleGroup } from "react-icons/fa6";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NavMenu } from "./nav-menu";
 import {
@@ -29,7 +28,6 @@ interface Props {
 export const Header: React.FC<Props> = ({ className }) => {
 	const { data, status } = useSession();
 	const user = data?.user;
-	console.log(user?.image);
 
 	// Navigation links data
 	const navLinks = [
@@ -38,7 +36,6 @@ export const Header: React.FC<Props> = ({ className }) => {
 		{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
 		{ href: "/courses", text: "Курсы", icon: "" },
 		{ href: "/blog", text: "Блог", icon: "" },
-		{ href: "/about", text: "О нас", icon: "" },
 	];
 
 	return (
@@ -118,12 +115,18 @@ export const Header: React.FC<Props> = ({ className }) => {
 										))}
 										<hr className="my-2" />
 										<SheetClose asChild>
+                      {status === "unauthenticated" ?
 											<Link href="/sign-in" className="nav-link">
 												<Button className="w-full">
 													Войти
 													<User size={17} />
 												</Button>
-											</Link>
+											</Link> : 
+												<Button onClick={() => signOut()} className="w-full nav-link cursor-pointer">
+													Выйти
+													<User size={17} />
+												</Button>
+                      }
 										</SheetClose>
 									</nav>
 								</SheetContent>

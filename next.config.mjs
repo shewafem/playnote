@@ -6,8 +6,8 @@ const nextConfig = {
     config.plugins.push(
       new AlphaTabWebPackPlugin({
         assetOutputDir: 'public/alphatab'
-      })
-    );
+      }),
+    )
     return config;
   },
 };

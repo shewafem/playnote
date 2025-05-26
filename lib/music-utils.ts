@@ -17,19 +17,22 @@ const transformNotesToMidi = (notes: string[]): number[] => {
 export const GUITAR_TUNINGS_MIDI: { [key: string]: number[] } = {
 	"Стандартный (E-A-D-G-B-E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
 	"Drop D (D-A-D-G-B-E)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "E4"]),
+  "Double Drop D (D-A-D-G-B-D)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "D4"]),
+  "Drop C (C-G-C-F-A-D)": transformNotesToMidi(["C2", "G2", "C3", "D3", "G3", "C4"]),
 	"Open G (D-G-D-G-B-D)": transformNotesToMidi(["D2", "G2", "D3", "G3", "B3", "D4"]),
 	"Open D (D-A-D-F♯-A-D)": transformNotesToMidi(["D2", "A2", "D3", "F#3", "A3", "D4"]),
-	DADGAD: transformNotesToMidi(["D2", "A2", "D3", "G3", "A3", "D4"]),
+	"Фолк (D-A-D-G-A-D)": transformNotesToMidi(["D2", "A2", "D3", "G3", "A3", "D4"]),
 	"E♭ (E♭-A♭-D♭-G♭-B♭-E♭)": transformNotesToMidi(["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"]),
-	"Yvette (F-A-C-G-B-E)": transformNotesToMidi(["F2", "A2", "C3", "G3", "B3", "E4"]),
+	"Math rock (F-A-C-G-B-E)": transformNotesToMidi(["F2", "A2", "C3", "G3", "B3", "E4"]),
+  "Семиструнная (D-G-B-D-G-B-D)": transformNotesToMidi(["D2", "G2", "B2", "D3", "G3", "B3", "D4"]),
 };
 
 export const GUITAR_TUNING_DEFAULT = Object.values(GUITAR_TUNINGS_MIDI)[0];
 
 //(0-11)
-export function getNoteValue(noteName: string): NoteValue | undefined {
+export function getNoteValue(noteName: string): NoteValue {
 	const value = NOTE_NAMES.indexOf(noteName.toUpperCase());
-	return value !== -1 ? (value as NoteValue) : undefined;
+	return value as NoteValue
 }
 
 //(C, C#, ...)
@@ -48,7 +51,6 @@ export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tu
 	if (stringIndex < 0 || stringIndex >= tuning.length) {
 		return -1;
 	}
-	// Validate fret number
 	if (fretNumber < 0 || fretNumber > MAX_FRETS) {
 		console.warn(`Неверное количество ладов: ${fretNumber}`);
 	}

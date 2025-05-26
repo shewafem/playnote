@@ -1,7 +1,7 @@
 export const NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export type RomanNumeral = "I" | "ii" | "iii" | "IV" | "V" | "vi" | "vii°";
-export type ChordType = "Major" | "minor" | "diminished";
+export type ChordType = "major" | "minor" | "dim";
 
 export interface Chord {
 	numeral: RomanNumeral;
@@ -24,13 +24,13 @@ export interface ScaleChord extends Chord {
 }
 
 const MAJOR_SCALE_CHORD_QUALITIES: { numeral: RomanNumeral; type: ChordType }[] = [
-	{ numeral: "I", type: "Major" },
+	{ numeral: "I", type: "major" },
 	{ numeral: "ii", type: "minor" },
 	{ numeral: "iii", type: "minor" },
-	{ numeral: "IV", type: "Major" },
-	{ numeral: "V", type: "Major" },
+	{ numeral: "IV", type: "major" },
+	{ numeral: "V", type: "major" },
 	{ numeral: "vi", type: "minor" },
-	{ numeral: "vii°", type: "diminished" },
+	{ numeral: "vii°", type: "dim" },
 ];
 
 export const getMajorScaleNotes = (rootNote: string): string[] => {
@@ -47,7 +47,7 @@ export const getDiatonicChords = (rootNote: string): ScaleChord[] => {
 		const chordRootNote = scaleNotes[index];
 		let displayName = chordRootNote;
 		if (quality.type === "minor") displayName += "m";
-		if (quality.type === "diminished") displayName += "°";
+		if (quality.type === "dim") displayName += "°";
 
 		return {
 			...quality,

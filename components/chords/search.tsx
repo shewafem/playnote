@@ -74,12 +74,12 @@ const ItemList: React.FC<ItemListProps> = ({items, keyNote, setOpen}) => {
 			<CommandList>
 				<CommandEmpty>Таких аккордов нет...</CommandEmpty>
 				<CommandGroup heading="Типы">
-					{items.map((item) => {
-						const modifiedItem = item.replace(/\//g, "over").replace(/#/g, "sharp");
+					{items.map((item, index) => {
+						const modifiedItem = item.toString().replace(/\//g, "over").replace(/#/g, "sharp");
 						return (
-							<Link href={`/chords/${keyNote}/${modifiedItem}`} key={item}>
+							<Link href={`/chords/${keyNote}/${modifiedItem}`} key={index}>
 								<CommandItem
-                  className="cursor-pointer"
+									className="cursor-pointer"
 									value={item}
 									onSelect={() => {
 										setOpen(false);

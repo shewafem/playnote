@@ -88,7 +88,7 @@ const InteractiveFretboard: React.FC = () => {
     return new Set();
   }, [selectedKey, selectedShapeType, selectedShapeName, setSelectedShapeName]);
 
-  const rootNoteValue: NoteValue | undefined = getNoteValue(selectedKey);
+  const rootNoteValue: NoteValue = getNoteValue(selectedKey);
 
   const playSingleNote = useCallback(
     async (noteNameWithOctave: string) => {
@@ -278,11 +278,11 @@ const InteractiveFretboard: React.FC = () => {
   const playSelectedNotes = useCallback(() => {
     const events = mapIdsToNoteObjects(selectedNotesForPlayback);
     if (events.length === 0) {
-      console.warn("Нет выбранных нот для обратного воспроизведения.");
+      console.warn("Нет выбранных нот для воспроизведения.");
       return;
     }
     const forwardEvents = [...events];
-    startPlayback(forwardEvents, false, "forward");
+    startPlayback(forwardEvents, true, "forward");
 
     // Запланировать остановку транспорта после завершения последовательности
     if (Tone && Tone.getTransport() && sequenceRef.current && !sequenceRef.current.loop) {

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface FretboardDisplayProps {
 	highlightedNotes: Set<NoteValue>;
-	rootNoteValue: NoteValue | undefined;
+	rootNoteValue: NoteValue;
 	onNoteClick?: (value: string) => void;
 	selectedNotesForPlayback: string[]; //идентификаторы ("s-f")
 	currentlyPlayingNoteId: string | null;

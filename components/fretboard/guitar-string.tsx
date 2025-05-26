@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 interface GuitarStringProps {
 	stringIndex: number;
 	highlightedNotes: Set<NoteValue>;
-	rootNoteValue: NoteValue | undefined;
+	rootNoteValue: NoteValue;
 	selectedNotesForPlayback: Set<string>;
 	currentlyPlayingNoteId: string | null;
 	isSelectingMode: boolean;

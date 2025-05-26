@@ -48,11 +48,11 @@ const navItems: NavItem[] = [
 			{ href: "/blog", text: "Статьи", description: "Статьи и уроки." },
 		],
 	},
-	{
-		type: "link",
-		text: "О нас",
-		href: "/about",
-	},
+	//{
+	//	type: "link",
+	//	text: "О нас",
+	//	href: "/about",
+	//},
 ];
 
 export function NavMenu() {
