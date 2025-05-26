@@ -2,15 +2,11 @@
 import { getSuffixes } from "@/data/utils";
 import { NextResponse } from "next/server";
 
-interface RouteParams {
-  key: string;
-}
-
 export async function GET(
   request: Request,
-  { params }: { params: RouteParams }
+  { params }: { params: Promise<{ key: string }> }
 ) {
-  const { key } = await params;
+  const { key } = await params
   if (!key) {
     return NextResponse.json({ error: "Параметр 'key' отсутствует" }, { status: 400 });
   }

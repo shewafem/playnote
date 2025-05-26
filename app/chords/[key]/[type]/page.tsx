@@ -5,16 +5,9 @@ import ChordElement from "@/components/chords/chord-element";
 import { getChord, formatItem } from "@/data/utils"; // <-- Укажите правильный путь
 import React from "react";
 
-// Определение типа для params
-interface TypeOfChordsOfKeyParams {
-  key: string;
-  type: string; // 'type' здесь соответствует 'suffix' в вашей модели данных
-}
-
-export default async function TypeOfChordsOfKey({ params }: { params: Promise<TypeOfChordsOfKeyParams> | TypeOfChordsOfKeyParams }) {
+export default async function TypeOfChordsOfKey({ params }: { params: Promise<{key: string, type: string}> }) {
   // Обработка params
-  const resolvedParams = await params;
-  const { key: rawKeyFromUrl, type: rawTypeFromUrl } = resolvedParams;
+  const { key: rawKeyFromUrl, type: rawTypeFromUrl } = await params
 
   // 2. Форматируем 'type' (суффикс) из URL перед передачей в getChord.
   //    Функция getChord ожидает, что суффикс уже будет в корректном формате (например, "major", "minor#7"),

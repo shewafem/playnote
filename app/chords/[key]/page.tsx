@@ -4,12 +4,7 @@ import ChordList from "@/components/chords/chord-list";
 // 1. Обновляем импорт, чтобы использовать новые функции из вашего Prisma-сервиса
 import { getChordsByKey, formatItem } from "@/data/utils"; 
 
-// Определение типа для params, чтобы TypeScript был доволен
-interface ChordsOfKeyParams {
-  key: string;
-}
-
-export default async function ChordsOfKey({ params }: { params: Promise<ChordsOfKeyParams> | ChordsOfKeyParams }) {
+export default async function ChordsOfKey({ params }: { params: Promise<{ key: string }> }) {
   // Обработка params, если это Promise (стандарт для Next.js < 13.4 или при определенных конфигурациях)
   // или уже разрешенный объект (Next.js 13.4+ App Router по умолчанию)
   const resolvedParams = await params;
