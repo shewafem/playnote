@@ -15,9 +15,10 @@ interface SearchProps {
 	items: string[];
 	value: string | null;
 	className?: string;
+  isLoading?: boolean;
 }
 
-export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, className }) => {
+export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, className, isLoading }) => {
 	const [open, setOpen] = React.useState(false);
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 	const currentSuffix = useParams<{ type: string }>().type;
@@ -40,7 +41,7 @@ export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, classN
 			) : (
 				<Drawer open={open} onOpenChange={setOpen}>
 					<DrawerTrigger asChild>
-						<Button variant="outline" className="w-full sm:w-[200px] justify-start">
+						<Button disabled={isLoading} variant="outline" className="w-full sm:w-[200px] justify-start">
 							{" "}
 							{/* Responsive width */}
 							{selectedItem ? <>{selectedItem}</> : <>Выберите тип</>}

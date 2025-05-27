@@ -41,7 +41,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 	return (
 		<header
 			className={cn(
-				"h-14 fixed top-0 bg-wood-grain left-0 right-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
+				"h-14 fixed top-0 bg-wood-grain left-0 right-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b",
 				className
 			)}
 		>

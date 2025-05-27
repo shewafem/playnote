@@ -87,12 +87,12 @@ const ChordList: React.FC<ChordListProps> = ({ chords }) => {
 					<div className="text-center pt-8 text-muted-foreground">Вы дошли до конца!</div>
 				)}
 
-				{displayedChords.length === 0 && !isLoading && (
+				{/*{displayedChords.length === 0 && !isLoading && (
 					<div className="flex justify-center items-center py-8">
 						<Loader2 className="h-8 w-8 animate-spin text-primary" />
 						<span className="ml-2">Загружаем аккорды... 🎸</span>
 					</div>
-				)}
+				)}*/}
 			</div>
 		</Container>
 	);

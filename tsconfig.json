@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/musicUtils.tsx=", "next.config.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/musicUtils.tsx=", "next.config.mjs", "prisma/seed.ts"],
   "exclude": ["node_modules"]
 }

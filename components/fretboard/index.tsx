@@ -132,9 +132,9 @@ const InteractiveFretboard: React.FC = () => {
 		console.log("Остановка воспроизведения...");
 		if (Tone && Tone.getTransport() && Tone.getContext()?.state !== "closed") {
 			Tone.getTransport().stop();
-			Tone.getTransport().cancel(0); // Отменить все запланированные события
+			Tone.getTransport().cancel(0); 
 			if (sequenceRef.current) {
-				sequenceRef.current.stop(0); // Остановить последовательность немедленно
+				sequenceRef.current.stop(0);
 				sequenceRef.current.dispose();
 				sequenceRef.current = null;
 			}
@@ -144,7 +144,7 @@ const InteractiveFretboard: React.FC = () => {
 
 		setIsPlayingSequence(false);
 		setCurrentPlaybackType(null);
-		setCurrentlyPlayingNoteId(null); // Сброс подсвеченной ноты
+		setCurrentlyPlayingNoteId(null);
 		console.log("Воспроизведение остановлено.");
 	}, []);
 
@@ -155,11 +155,9 @@ const InteractiveFretboard: React.FC = () => {
 		setIsSelectingNotes((prev) => {
 			const nextState = !prev;
 			if (nextState) {
-				// При входе в режим выбора, инициализировать текущий выбор подтвержденными нотами
 				setCurrentlySelectingNotes([...selectedNotesForPlayback]);
 				console.log("Включен режим выбора нот.");
 			} else {
-				// При выходе из режима выбора без подтверждения, очистить временный выбор
 				setCurrentlySelectingNotes([]);
 				console.log("Выход из режима выбора нот (отменено).");
 			}
@@ -198,7 +196,7 @@ const InteractiveFretboard: React.FC = () => {
 				)
 			) {
 				console.error("Не выполнены условия для начала воспроизведения или неверные данные последовательности.");
-				stopPlayback(); // Очистить состояние, если запуск не удался
+				stopPlayback(); 
 				return;
 			}
 
@@ -207,18 +205,14 @@ const InteractiveFretboard: React.FC = () => {
 					await Tone.start();
 					console.log("Аудиоконтекст Tone.js запущен из startPlayback.");
 				}
-
-				// Всегда останавливать предыдущее воспроизведение перед началом нового
 				if (isPlayingSequence || sequenceRef.current) {
 					console.log("Остановка предыдущего воспроизведения перед запуском нового.");
-					stopPlayback(); // Используем существующую функцию stopPlayback
+					stopPlayback();
 				}
 
 				setIsPlayingSequence(true);
 				setCurrentPlaybackType(type);
 				setCurrentlyPlayingNoteId(null);
-
-				// Tone.getTransport().cancel() уже вызывается в stopPlayback
 
 				console.log(
 					`Создание новой последовательности: ${type}, Цикл: ${loop}, Количество событий: ${sequenceEvents.length}`
@@ -248,11 +242,11 @@ const InteractiveFretboard: React.FC = () => {
 						}
 					},
 					sequenceEvents,
-					"4n" // Интервал между событиями (четвертная нота)
+					"4n" // четвертная нота)
 				);
 
 				sequenceRef.current.loop = loop;
-				sequenceRef.current.start(0); // Начать последовательность относительно времени старта транспорта (0)
+				sequenceRef.current.start(0); // времени старта транспорта (0)
 
 				Tone.getTransport().start();
 				console.log(`Воспроизведение начато. BPM: ${Tone.getTransport().bpm.value}`);
@@ -261,7 +255,7 @@ const InteractiveFretboard: React.FC = () => {
 				stopPlayback();
 			}
 		},
-		[stopPlayback, isToneReady, isPlayingSequence] // Добавил isPlayingSequence в зависимости
+		[stopPlayback, isToneReady, isPlayingSequence]
 	);
 
 	const playPingPongSequence = useCallback(() => {
@@ -275,7 +269,6 @@ const InteractiveFretboard: React.FC = () => {
 		if (forwardEvents.length <= 1) {
 			sequenceEvents = forwardEvents;
 		} else {
-			// Исключаем первую и последнюю ноту из перевернутой части, чтобы избежать дублирования на стыках
 			const reversedEvents = [...forwardEvents].reverse().slice(1, -1);
 			sequenceEvents = [...forwardEvents, ...reversedEvents];
 		}
@@ -300,17 +293,12 @@ const InteractiveFretboard: React.FC = () => {
 			const totalDurationInSeconds = sequenceRef.current.length * subdivisionDuration;
 
 			if (totalDurationInSeconds > 0) {
-				console.log(
-					`Планирование остановки для обратной последовательности через: ${totalDurationInSeconds.toFixed(2)}с`
-				);
 				try {
 					Tone.getTransport().scheduleOnce(() => {
-						// Проверяем, действительно ли это та самая последовательность, которую нужно остановить
 						if (currentPlaybackType === "forward" && !sequenceRef.current?.loop) {
 							stopPlayback();
-							console.log("Обратная последовательность завершена, воспроизведение остановлено по расписанию.");
 						}
-					}, `+${totalDurationInSeconds}`); // Запланировать относительно текущего времени транспорта + длительность
+					}, `+${totalDurationInSeconds}`);
 				} catch (e) {
 					console.error("Ошибка планирования остановки обратной последовательности:", e);
 					console.warn("Не удалось запланировать остановку. Возможно, потребуется остановить вручную.");

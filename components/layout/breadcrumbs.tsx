@@ -12,6 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"; // Убедитесь, что путь правильный
 import React from "react";
+import { formatItem } from "@/lib/chords/utils";
 
 // (Опционально) Словарь для кастомных названий сегментов
 const segmentTranslations: { [key: string]: string } = {
@@ -20,12 +21,14 @@ const segmentTranslations: { [key: string]: string } = {
   progressions: "Прогрессии",
   profile: "Профиль",
   player: "Проигрыватель",
+  "sign-in": "Вход",
+  "sign-up": "Регистрация",
   // Добавьте другие переводы по необходимости
 };
 
 export function AppBreadcrumbs() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean); // Разделяем путь и удаляем пустые строки
+  const segments = pathname.split("/").filter(Boolean).map((segment) => formatItem(segment)); // Разделяем путь и удаляем пустые строки
 
   // Если мы на главной странице, можно ничего не показывать или показать "Главная"
   if (segments.length === 0) {
@@ -34,12 +37,8 @@ export function AppBreadcrumbs() {
 
   const breadcrumbs = segments.map((segment, index) => {
     const href = "/" + segments.slice(0, index + 1).join("/");
-    // Пытаемся получить перевод или используем сам сегмент с большой буквы
     const rawLabel = segmentTranslations[segment.toLowerCase()] || segment;
-    // Проверяем, не является ли сегмент динамическим (например, ID)
-    // Это очень упрощенная проверка, для реальных ID может потребоваться более сложная логика
-    // или загрузка имени по ID на странице и передача его в контекст для крошек
-    const isDynamicSegment = /^[0-9a-fA-F]{24}$/.test(segment) || /^\d+$/.test(segment); // Пример для MongoDB ID или просто чисел
+    const isDynamicSegment = /^[0-9a-fA-F]{24}$/.test(segment) || /^\d+$/.test(segment);
     
     let label = rawLabel;
     if (!segmentTranslations[segment.toLowerCase()] && !isDynamicSegment) {
@@ -61,7 +60,7 @@ export function AppBreadcrumbs() {
   });
 
   return (
-    <Breadcrumb className="mb-4 ml-5"> {/* Добавим немного отступа снизу */}
+    <Breadcrumb className="mb-4 ml-5">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>

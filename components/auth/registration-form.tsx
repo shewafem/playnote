@@ -124,7 +124,7 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 								</div>
 								{error && <p className="text-sm text-red-500 text-center">{error}</p>}
 								{success && <p className="text-sm text-green-500 text-center">{success}</p>}
-								<Button type="submit" className="w-full" disabled={isPending}>
+								<Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
 									{isPending ? "Создаем аккаунт..." : "Создать аккаунт"}
 								</Button>
 							</div>

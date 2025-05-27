@@ -38,7 +38,7 @@
 	--color-popover: var(--popover);
 	--color-card-foreground: var(--card-foreground);
 	--color-card: var(--card);
-  --color-note: var(--note);
+	--color-note: var(--note);
 
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
@@ -90,7 +90,7 @@
 	--sidebar-border: oklch(0.91 0 0);
 	--sidebar-ring: oklch(0.37 0.14 323.4);
 
-  --note: oklch(0.7357 0.1641 34.7091);
+	--note: oklch(0.7357 0.1641 34.7091);
 
 	--radius: 0.5rem;
 
@@ -172,44 +172,85 @@ main {
 }
 
 @keyframes note-playing-pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.9;
-  }
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.15);
+		opacity: 0.9;
+	}
 }
 
 .note-playing {
-  animation: note-playing-pulse 0.6s ease-in-out infinite;
+	animation: note-playing-pulse 0.6s ease-in-out infinite;
 }
 
 .at-cursor-bar {
-  /* Defines the color of the bar background when a bar is played */
-  background: rgba(222, 98, 175, 0.25);  
-  border-radius: 2px;
+	/* Defines the color of the bar background when a bar is played */
+	background: rgba(222, 98, 175, 0.25);
+	border-radius: 2px;
 }
 
 .at-selection div {
-  /* Defines the color of the selection background */
-  background: rgba(64, 64, 255, 0.2);
+	/* Defines the color of the selection background */
+	background: rgba(64, 64, 255, 0.2);
 }
 
 .at-cursor-beat {
-  /* Defines the beat cursor */
-  background: var(--color-primary);
-  width: 1px;
+	/* Defines the beat cursor */
+	background: var(--color-primary);
+	width: 1px;
 }
 
 .at-highlight * {
-  /* Defines the color of the music symbols when they are being played (svg) */
-  fill: var(--color-primary);
-  stroke: var(--color-primary);
+	/* Defines the color of the music symbols when they are being played (svg) */
+	fill: var(--color-primary);
+	stroke: var(--color-primary);
 }
 
 .at-surface {
-  background: white;
+	background: white;
 }
 
+.at-wrap {
+	width: 80vw;
+	height: 80vh;
+	margin: 0 auto;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	position: relative;
+}
+.at-content {
+	position: relative;
+	overflow: hidden;
+	flex: 1 1 auto;
+}
+.at-sidebar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	display: flex;
+	align-content: stretch;
+	z-index: 29;
+	border-right: 1px solid rgba(0, 0, 0, 0.12);
+	background: #f7f7f7;
+}
+.at-viewport {
+	overflow-y: auto;
+	position: absolute;
+	top: 0;
+	left: 100px;
+	right: 0;
+	bottom: 0;
+	padding-right: 20px;
+}
+.at-footer {
+	flex: 0 0 auto;
+	background: #436d9d;
+	color: #fff;
+}

@@ -7,8 +7,6 @@ import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/layout/container";
 import { SessionProvider } from "next-auth/react";
 import { AppBreadcrumbs } from "@/components/layout/breadcrumbs";
-import { Suspense } from "react";
-import Loading from "./loading";
 
 const geologica = Geologica({
 	variable: "--font-geologica",
@@ -46,8 +44,8 @@ export default function RootLayout({
 						<Header />
 						<main>
 							<Container>
-								<AppBreadcrumbs ></AppBreadcrumbs>
-								<Suspense fallback={<Loading></Loading>}>{children}</Suspense>
+								<AppBreadcrumbs />
+                {children}
 							</Container>
 						</main>
 						<Footer></Footer>

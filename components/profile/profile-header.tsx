@@ -1,6 +1,12 @@
 // components/profile/ProfileHeader.tsx
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+const roleText = {
+  STUDENT: "Студент",
+  TEACHER: "Учитель",
+  ADMIN: "Админ",
+};
+
 interface ProfileHeaderProps {
   user: {
     name?: string | null;
@@ -17,8 +23,8 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
         <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
       </Avatar>
       <div className="text-center md:text-left">
-        <h1 className="text-2xl font-bold">{user.name || "Пользователь"}</h1>
-        <p className="text-muted-foreground">{user.role}</p>
+        <h1 className="text-2xl font-bold">{user.name}</h1>
+        <p className="text-muted-foreground">{user.role === "STUDENT" ? roleText.STUDENT : roleText.TEACHER}</p>
       </div>
     </div>
   );

@@ -58,11 +58,8 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 			<Categories items={keyNotes} selected={formattedKeyForDisplay} />
 			{/* You might want to show a loading indicator for SearchBox items */}
 			{keyFromUrl &&
-				(isLoading ? (
-					<p>Загружаю суффиксы...</p>
-				) : (
-					<SearchBox keyNote={keyFromUrl} items={suffixes} value={typeFromUrl} />
-				))}
+					<SearchBox isLoading={isLoading} keyNote={keyFromUrl} items={suffixes} value={typeFromUrl} />
+      }
 		</div>
 	);
 };

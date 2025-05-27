@@ -1,22 +1,15 @@
 // app/chords/[key]/[type]/page.tsx (или где находится ваш компонент)
 
 import ChordElement from "@/components/chords/chord-element";
-// 1. Обновляем импорты, чтобы использовать новые функции из вашего Prisma-сервиса
-import { getChord, formatItem } from "@/lib/chords/utils"; // <-- Укажите правильный путь
+import { getChord, formatItem } from "@/lib/chords/utils";
 import React from "react";
 
 export default async function TypeOfChordsOfKey({ params }: { params: Promise<{ key: string; type: string }> }) {
 	// Обработка params
 	const { key: rawKeyFromUrl, type: rawTypeFromUrl } = await params;
 
-	// 2. Форматируем 'type' (суффикс) из URL перед передачей в getChord.
-	//    Функция getChord ожидает, что суффикс уже будет в корректном формате (например, "major", "minor#7"),
-	//    но она сама отформатирует 'key'.
 	const formattedSuffixForQuery = formatItem(rawTypeFromUrl);
 
-	// 3. Вызываем новую функцию getChord.
-	//    Передаем 'rawKeyFromUrl' (getChord отформатирует его внутри себя с помощью formatItem)
-	//    и 'formattedSuffixForQuery'.
 	const chord = await getChord(rawKeyFromUrl, formattedSuffixForQuery);
 
 	if (!chord) {

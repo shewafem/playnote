@@ -127,10 +127,6 @@ export function ChordProgressionTool() {
 		}
 	}, [rootNote, activeProgressionSource]);
 
-	console.log(customProgressionNumerals);
-	console.log(activeProgressionNumerals);
-	console.log(activeProgressionSource);
-
 	return (
 		<section className=" flex flex-col gap-8">
 			<div className="text-center">
