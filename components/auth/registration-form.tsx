@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { RegisterSchema, RegistrationFormValues } from "@/schemas/auth-schema"; // Import the RegisterSchema
+import { RegisterSchema, RegistrationFormValues } from "@/schemas/auth-schema";
 
 export default function RegistrationForm({ className, ...props }: React.ComponentProps<"div">) {
 	const router = useRouter();
@@ -55,8 +55,7 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 				}
 
 				setSuccess(data.success);
-
-				// Automatically sign in the user after successful registration
+        
 				const signInResult = await signIn("credentials", {
 					email: values.email,
 					password: values.password,
@@ -66,7 +65,6 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 				if (signInResult?.error) {
 					setError("Registration successful, but auto-login failed. Please log in manually.");
 				} else if (signInResult?.ok) {
-					// Redirect to home or dashboard on successful login
 					router.push("/profile");
 				}
 			} catch {

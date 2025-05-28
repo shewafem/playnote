@@ -9,7 +9,6 @@ export type InstrumentType = {
 		standard: string[];
 	};
 };
-
 // chord with positions
 export type ChordWithPositions = Prisma.ChordGetPayload<{
   include: {

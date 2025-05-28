@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react"; // Import useState and useEffect
+import { useEffect, useState } from "react";
 
 const features = [
 	{
@@ -48,7 +48,6 @@ const Feature = () => {
 	const { resolvedTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 
-	// useEffect only runs on the client, so now we can safely show the UI
 	useEffect(() => {
 		setMounted(true);
 	}, []);
@@ -66,18 +65,10 @@ const Feature = () => {
 				</div>
 				<div className="grid gap-6 md:grid-cols-2 lg:gap-8 items-start">
 					{features.map((feature) => {
-                        // Determine the correct image source
-                        // Fallback to light image if not mounted or theme is not yet resolved correctly,
-                        // though `resolvedTheme` should be stable once `mounted` is true.
                         const imageSrc = mounted && resolvedTheme === "dark" 
                             ? feature.darkImage 
                             : feature.image;
-                        
-                        // Alternatively, to avoid any flash and ensure layout is stable,
-                        // you can render a placeholder until mounted.
                         if (!mounted) {
-                            // Render a placeholder or null. A placeholder div with the same aspect ratio is best.
-                            // This prevents the image from "popping in" and causing layout shift.
                             return (
                                 <div key={feature.id} className="flex flex-col rounded-xl border border-border">
                                     <div className="aspect-16/9 h-full w-full bg-muted/20 animate-pulse" /> {/* Placeholder */}

@@ -2,7 +2,7 @@ import { getChord } from "@/lib/chords/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(
-	request: Request, // Объект входящего запроса (может понадобиться для query-параметров в будущем)
+	request: Request,
 	{ params }: { params: Promise<{ key: string; type: string }> }
 ) {
 	const { key, type } = await params;

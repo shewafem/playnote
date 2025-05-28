@@ -13,7 +13,7 @@ type JsonChordsDatabase = {
 async function main() {
 	console.log("Начинаем заполнение базы данных...");
 
-	const filePath = path.join(__dirname, "..", "chords.json"); // Путь к вашему JSON файлу
+	const filePath = path.join(__dirname, "..", "chords.json"); // пут к JSON файлу
 	// Предполагается, что chords.json лежит в корне проекта,
 	// а seed.ts в prisma/seed.ts
 
@@ -27,7 +27,7 @@ async function main() {
 
 	for (const noteKey in chordsDatabase) {
 		if (Object.prototype.hasOwnProperty.call(chordsDatabase, noteKey)) {
-			const chordsByKey = chordsDatabase[noteKey]; // Это массив ChordData[]
+			const chordsByKey = chordsDatabase[noteKey]; // ChordData[]
 
 			for (const chord of chordsByKey) {
 				// Проверяем, существует ли уже такой аккорд
@@ -53,7 +53,7 @@ async function main() {
 							key: chord.key,
 							suffix: chord.suffix,
 							positions: {
-								// Prisma позволяет создавать связанные записи таким образом
+								// Prisma связанные записи таким образом
 								create: chord.positions.map((pos) => ({
 									frets: pos.frets,
 									fingers: pos.fingers,
@@ -65,7 +65,7 @@ async function main() {
 							},
 						},
 						include: {
-							// Опционально: включить созданные позиции в результат
+							// включить созданные позиции в результат
 							positions: true,
 						},
 					});

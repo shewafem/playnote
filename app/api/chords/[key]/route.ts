@@ -1,8 +1,7 @@
-// app/api/chords/[key]/route.ts
 import { getChordsByKey } from "@/lib/chords/utils";
 import { NextResponse } from "next/server";
 export async function GET(
-	request: Request, // Объект входящего запроса (может понадобиться для query-параметров в будущем)
+	request: Request,
 	{ params }: { params: Promise<{ key: string }> }
 ) {
 	const { key } = await params;

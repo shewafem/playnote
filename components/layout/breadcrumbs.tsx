@@ -1,5 +1,4 @@
-// components/custom/AppBreadcrumbs.tsx
-"use client"; // Этот компонент использует хуки, поэтому он должен быть клиентским
+"use client"; 
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,11 +9,10 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"; // Убедитесь, что путь правильный
+} from "@/components/ui/breadcrumb";
 import React from "react";
 import { formatItem } from "@/lib/chords/utils";
 
-// (Опционально) Словарь для кастомных названий сегментов
 const segmentTranslations: { [key: string]: string } = {
   chords: "Аккорды",
   fretboard: "Гриф",
@@ -23,14 +21,12 @@ const segmentTranslations: { [key: string]: string } = {
   player: "Проигрыватель",
   "sign-in": "Вход",
   "sign-up": "Регистрация",
-  // Добавьте другие переводы по необходимости
 };
 
 export function AppBreadcrumbs() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean).map((segment) => formatItem(segment)); // Разделяем путь и удаляем пустые строки
+  const segments = pathname.split("/").filter(Boolean).map((segment) => formatItem(segment));
 
-  // Если мы на главной странице, можно ничего не показывать или показать "Главная"
   if (segments.length === 0) {
     return 
   }
@@ -42,11 +38,8 @@ export function AppBreadcrumbs() {
     
     let label = rawLabel;
     if (!segmentTranslations[segment.toLowerCase()] && !isDynamicSegment) {
-        // Капитализация, если нет перевода и это не явный ID
         label = segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase();
     } else if (isDynamicSegment && !segmentTranslations[segment.toLowerCase()]) {
-        // Для динамических сегментов без перевода можно оставить как есть или показать "Детали"
-        // label = "Детали"; // или segment;
     }
 
 

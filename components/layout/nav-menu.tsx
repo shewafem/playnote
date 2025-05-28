@@ -13,20 +13,19 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Guitar, Music } from "lucide-react";
 
-// Define the structure for nested links
 interface NestedLink {
 	href: string;
 	text: string;
-	description?: string; // Optional description for list items
+	description?: string;
 	icon?: React.ReactNode;
 }
 
 interface NavItem {
 	type: "link" | "trigger";
 	text: string;
-	href?: string; // Only for type 'link'
-	icon?: React.ReactNode; // Only for type 'link'
-	items?: NestedLink[]; // Only for type 'trigger'
+	href?: string; 
+	icon?: React.ReactNode;
+	items?: NestedLink[]; 
 }
 
 const navItems: NavItem[] = [
@@ -77,7 +76,6 @@ export function NavMenu() {
 							</NavigationMenuItem>
 						);
 					} else {
-						// Type is 'link'
 						return (
 							<NavigationMenuItem key={item.href}>
 								<NavigationMenuLink href={item.href} className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>

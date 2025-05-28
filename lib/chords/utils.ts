@@ -88,3 +88,32 @@ export async function getSuffixes(key: string): Promise<string[]> {
 		throw new Error(`Ошибка получения суффиксов для тональности ${formattedKey} из БД`);
 	}
 }
+
+export async function getChordsByKeyPaginated(
+  key: string,
+  skip: number,
+  take: number
+): Promise<{ chords: ChordWithPositions[]; totalCount: number }> {
+  const formattedKey = formatItem(key);
+  try {
+    // Prisma transaction to get both data and count efficiently
+    const [chordsFromDb, totalCount] = await prisma.$transaction([
+      prisma.chord.findMany({
+        where: { key: formattedKey },
+        include: {
+          positions: true,
+        },
+        skip: skip,
+        take: take,
+      }),
+      prisma.chord.count({
+        where: { key: formattedKey },
+      }),
+    ]);
+    return { chords: chordsFromDb, totalCount };
+  } catch (error) {
+    console.error(`Ошибка получения пагинированных аккордов для тональности ${formattedKey} из БД:`, error);
+    // It's better to throw or return a specific error structure
+    throw new Error(`Ошибка получения пагинированных аккордов для тональности ${formattedKey}`);
+  }
+}

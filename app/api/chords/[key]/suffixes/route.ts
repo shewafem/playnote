@@ -1,4 +1,3 @@
-// app/api/chords/[key]/suffixes/route.ts
 import { getSuffixes } from "@/lib/chords/utils";
 import { NextResponse } from "next/server";
 

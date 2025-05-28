@@ -175,7 +175,7 @@ export default function AlphaTabPlayer() {
 	const toggleLooping = (pressed: boolean) => {
 		if (!api) return;
 		setIsLoopingActive(pressed);
-		api.isLooping = pressed; //
+		api.isLooping = pressed;
 	};
 
 	const toggleTrackMute = (trackIndex: number) => {
@@ -334,7 +334,7 @@ export default function AlphaTabPlayer() {
 						<Repeat className="h-4 w-4" />
 					</Toggle>
 				</div>
-				{/* Элемент управления: Метроном */}
+				{/* Метроном */}
 				<div className="flex items-center">
 					<Toggle
 						aria-label="Переключить Метроном"
@@ -380,7 +380,7 @@ export default function AlphaTabPlayer() {
 								</p>
 							</div>
 						)}
-						{/* AlphaTab будет отображаться здесь */}
+						{/* AlphaTab */}
 					</div>
 				</div>
 			</div>

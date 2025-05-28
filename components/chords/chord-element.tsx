@@ -1,12 +1,13 @@
 "use client";
 
+import { toggleLearnedPosition } from "@/actions/toggle-learned";
 import { guitar } from "@/lib/chords/constants";
 import { downloadPng, downloadSvg } from "@/lib/chords/image";
 import { playChord } from "@/lib/chords/player";
 import { Position } from "@prisma/client";
 import Chord from "@techies23/react-chords";
-import { Download } from "lucide-react";
-import { useRef } from "react";
+import { CheckCircle, Download, Loader2, XCircle } from "lucide-react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Note } from "tonal";
 
 interface ChordElementProps {
@@ -14,13 +15,32 @@ interface ChordElementProps {
 	chordKey: string;
 	suffix: string;
 	posIndex: number;
+	isInitiallyLearned: boolean;
 }
 
-const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix, posIndex }) => {
+const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix, posIndex, isInitiallyLearned }) => {
 	const chordRef = useRef<HTMLDivElement>(null);
 	const fileName = `${chordKey}${suffix.replace(/[^a-zA-Z0-9]/g, "")}_pos${posIndex + 1}`;
 	const notes = position["midi"].map((midi) => Note.fromMidi(midi)).join(" ");
 	const formattedNotes = notes.replace(/\d/g, "");
+
+	const [isLearned, setIsLearned] = useState(isInitiallyLearned);
+	const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+		setIsLearned(isInitiallyLearned);
+	}, [isInitiallyLearned]);
+
+	const handleToggleLearned = () => {
+		startTransition(async () => {
+			const result = await toggleLearnedPosition(position.id);
+			if (result.success) {
+				setIsLearned(result.learned!); 
+			} else {
+				console.error("Failed to toggle learned state:", result.error);
+			}
+		});
+	};
 
 	const handleDownloadSvg = () => {
 		const svgElement = chordRef.current?.querySelector("svg");
@@ -65,6 +85,29 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 					className="text-xs rounded cursor-pointer transition-transform duration-200 ease-in-out hover:scale-110"
 				>
 					PNG
+				</button>
+			</div>
+			<div className="mt-2 w-[75%]">
+				<button
+					type="button"
+					onClick={handleToggleLearned}
+					disabled={isPending}
+					className={`w-full cursor-pointer border py-1.5 px-3 text-xs rounded-md font-medium flex items-center justify-center gap-1.5 transition-colors duration-150 ease-in-out
+            ${
+							isLearned
+								? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-700 dark:text-green-100 dark:hover:bg-green-600"
+								: "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+						}
+            ${isPending ? "cursor-not-allowed opacity-70" : ""}`}
+				>
+					{isPending ? (
+						<Loader2 size={14} className="animate-spin" />
+					) : isLearned ? (
+						<CheckCircle size={14} />
+					) : (
+						<XCircle size={14} />
+					)}
+					<span>{isPending ? "Обновление..." : isLearned ? "Выучено" : "Выучить"}</span>
 				</button>
 			</div>
 		</div>

@@ -1,10 +1,7 @@
-// Define database connection via the `DATABASE_URL` env var
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-// Define custom output path for generated Prisma Client
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,25 +13,25 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
   hashedPassword String?
-  image         String?
-  role          UserRole  @default(STUDENT)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  image          String?
+  role           UserRole  @default(STUDENT)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   accounts Account[]
   sessions Session[]
 
   // Admin/Teacher
-  coursesCreated   Course[] @relation("TeacherCourses")
-  // User's learned items
-  learnedScales    UserLearnedScale[]
-  learnedChords    UserLearnedChord[]
-  learnedArpeggios UserLearnedArpeggio[]
+  coursesCreated   Course[]   @relation("TeacherCourses")
+
+  learnedScales    Scale[]
+  learnedPositions Position[]
+  learnedArpeggios Arpeggio[]
 
   // Student
   enrollments Enrollment[]
@@ -134,17 +131,17 @@ model Category {
 }
 
 enum LessonContentType {
-  VIDEO_EMBED // YouTube, Vimeo URL
-  VIDEO_UPLOAD // Path to uploaded video
+  VIDEO_EMBED // YouTube
+  VIDEO_UPLOAD // Path  video
   TEXT
-  PDF_DOCUMENT // Path to uploaded PDF
-  AUDIO_UPLOAD // Path to uploaded audio
+  PDF_DOCUMENT // Path PDF
+  AUDIO_UPLOAD // Path audio
 }
 
 model Lesson {
   id          String            @id @default(cuid())
   title       String
-  content     String            @db.Text // URL for embeds/uploads, or rich text content
+  content     String            @db.Text 
   contentType LessonContentType
   order       Int
   createdAt   DateTime          @default(now())
@@ -157,12 +154,11 @@ model Lesson {
   attachments  Attachment[]
 }
 
-// PDFs, tabs, backing tracks
 model Attachment {
   id        String   @id @default(cuid())
   name      String
-  url       String // URL to the uploaded file (S3, Cloudinary, etc.)
-  fileType  String // e.g., 'pdf', 'gp5', 'mp3'
+  url       String // URL file 
+  fileType  String // 'pdf', 'gp5', 'mp3'
   size      Int? // File size in bytes
   createdAt DateTime @default(now())
 
@@ -180,7 +176,7 @@ model Enrollment {
   courseId String
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  @@unique([studentId, courseId]) // A student can enroll in a course only once
+  @@unique([studentId, courseId])
 }
 
 model LessonProgress {
@@ -194,87 +190,46 @@ model LessonProgress {
   lessonId String
   lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
-  @@unique([studentId, lessonId]) // Progress for a lesson per student
+  @@unique([studentId, lessonId])
 }
 
 model Chord {
-  id        Int      @id @default(autoincrement())
-  key       String // e.g., "C", "C#", "Db"
-  suffix    String // e.g., "major", "minor", "dim"
+  id        Int        @id @default(autoincrement())
+  key       String // "C", "C#", "Db"
+  suffix    String // "major", "minor", "dim"
   positions Position[]
 
-  // This links to users who have learned this chord
-  learnedBy UserLearnedChord[]
-
-  @@unique([key, suffix]) // Ensures each chord (C major, A minor) is unique
-  @@index([key]) // Index for quick search by key
+  @@unique([key, suffix]) // (C major, A minor) unique
+  @@index([key]) // индексация
 }
 
 model Position {
-  id       Int     @id @default(autoincrement())
-  frets    Int[]
-  fingers  Int[]
-  baseFret Int
-  barres   Int[]
-  midi     Int[]
-  capo     Boolean?
-  chordId  Int
-  chord    Chord   @relation(fields: [chordId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  frets     Int[]
+  fingers   Int[]
+  baseFret  Int
+  barres    Int[]
+  midi      Int[]
+  capo      Boolean?
+  chordId   Int
+  learnedBy User[]
+  chord     Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade)
 
   @@index([chordId])
 }
 
 model Scale {
-  id      Int    @id @default(autoincrement())
-  name    String
-  formula String @unique
+  id        Int    @id @default(autoincrement())
+  name      String
+  formula   String @unique
 
-  // This links to users who have learned this scale
-  learnedBy UserLearnedScale[]
+  learnedBy User[]
 }
 
 model Arpeggio {
-  id      Int    @id @default(autoincrement())
-  name    String
-  formula String @unique
+  id        Int    @id @default(autoincrement())
+  name      String
+  formula   String @unique
 
-  // This links to users who have learned this arpeggio
-  learnedBy UserLearnedArpeggio[]
-}
-
-model UserLearnedChord {
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  chordId   Int
-  chord     Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade)
-  learnedAt DateTime @default(now())
-  // You could add more fields here, e.g., proficiency: String?
-
-  @@id([userId, chordId]) // Composite primary key
-  @@index([userId])
-  @@index([chordId])
-}
-
-model UserLearnedScale {
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  scaleId   Int
-  scale     Scale    @relation(fields: [scaleId], references: [id], onDelete: Cascade)
-  learnedAt DateTime @default(now())
-
-  @@id([userId, scaleId])
-  @@index([userId])
-  @@index([scaleId])
-}
-
-model UserLearnedArpeggio {
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  arpeggioId Int
-  arpeggio   Arpeggio @relation(fields: [arpeggioId], references: [id], onDelete: Cascade)
-  learnedAt  DateTime @default(now())
-
-  @@id([userId, arpeggioId])
-  @@index([userId])
-  @@index([arpeggioId])
+  learnedBy User[]
 }

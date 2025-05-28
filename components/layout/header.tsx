@@ -29,7 +29,6 @@ export const Header: React.FC<Props> = ({ className }) => {
 	const { data, status } = useSession();
 	const user = data?.user;
 
-	// Navigation links data
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
 		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },

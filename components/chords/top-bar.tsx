@@ -4,8 +4,7 @@ import { cn } from "@/lib/utils";
 import { keyNotes } from "@/lib/chords/constants";
 import { Categories } from "@/components/chords/categories";
 import { SearchBox } from "@/components/chords/search";
-// formatItem might still be useful on the client for display purposes
-import { formatItem } from "@/lib/chords/utils"; // Or keep it in a client-side utils if it's purely for formatting
+import { formatItem } from "@/lib/chords/utils";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
@@ -15,7 +14,7 @@ interface Props {
 
 export const TopBar: React.FC<Props> = ({ className }) => {
 	const [suffixes, setSuffixes] = useState<string[]>([]);
-	const [isLoading, setIsLoading] = useState(false); // Optional: for loading state
+	const [isLoading, setIsLoading] = useState(false); 
 	const params = useParams<{ key?: string; type?: string }>();
 	const keyFromUrl = params?.key;
 	const typeFromUrl = params?.type as string;
@@ -56,7 +55,6 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 		>
 			<p>Выберите тональность</p>
 			<Categories items={keyNotes} selected={formattedKeyForDisplay} />
-			{/* You might want to show a loading indicator for SearchBox items */}
 			{keyFromUrl &&
 					<SearchBox isLoading={isLoading} keyNote={keyFromUrl} items={suffixes} value={typeFromUrl} />
       }
