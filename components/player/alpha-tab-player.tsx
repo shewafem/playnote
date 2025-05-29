@@ -104,7 +104,6 @@ export default function AlphaTabPlayer() {
 
 		return () => {
 			console.log("очистка плеера");
-			api?.destroy();
 			setApi(null);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,7 +153,7 @@ export default function AlphaTabPlayer() {
 	const handleLayoutChange = (value: string) => {
 		if (!api || !viewportRef.current) return;
 		const newLayout = value === "horizontal" ? LayoutMode.Horizontal : LayoutMode.Page;
-    setCurrentLayoutMode(newLayout);
+		setCurrentLayoutMode(newLayout);
 		api.settings.display.layoutMode = newLayout;
 		api.updateSettings();
 		api.render();
@@ -189,7 +188,7 @@ export default function AlphaTabPlayer() {
 	const handlePlaybackSpeedChange = (value: string) => {
 		if (!api) return;
 		const newSpeed = parseFloat(value);
-		setPlaybackSpeed(value); 
+		setPlaybackSpeed(value);
 		api.playbackSpeed = newSpeed;
 	};
 
@@ -366,10 +365,7 @@ export default function AlphaTabPlayer() {
 						isPlayerReady={isPlayerReady}
 					/>
 				</div>
-				<div
-					ref={viewportRef}
-					className="at-viewport overflow-y-auto absolute top-0 right-0 bottom-0 bg-background"
-				>
+				<div ref={viewportRef} className="at-viewport overflow-y-auto absolute top-0 right-0 bottom-0 bg-background">
 					<div ref={alphaTabMainRef} className="at-main h-fit">
 						{!api && <p className="p-4 text-center text-lg text-muted-foreground">Инициализация AlphaTab...</p>}
 						{api && tracks.length === 0 && (

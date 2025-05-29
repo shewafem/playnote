@@ -50,7 +50,7 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 				const data = await response.json();
 
 				if (!response.ok) {
-					setError(data.error || "An unexpected error occurred.");
+					setError(data.error || "Непредвиденная ошибка.");
 					return;
 				}
 
@@ -63,12 +63,12 @@ export default function RegistrationForm({ className, ...props }: React.Componen
 				});
 
 				if (signInResult?.error) {
-					setError("Registration successful, but auto-login failed. Please log in manually.");
+					setError("Регистрация успешна, но автоматическая авторизация не удалась.");
 				} else if (signInResult?.ok) {
 					router.push("/profile");
 				}
 			} catch {
-				setError("Failed to connect to the server. Please try again.");
+				setError("Ошибка подключения к серверу, попробуйте еще раз.");
 			}
 		});
 	};

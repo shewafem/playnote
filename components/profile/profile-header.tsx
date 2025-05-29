@@ -1,4 +1,7 @@
+"use-client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 const roleText = {
 	STUDENT: "Студент",
 	TEACHER: "Учитель",
@@ -17,8 +20,8 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader({ user }: ProfileHeaderProps) {
 	return (
-		<div className="flex flex-col items-center md:flex-row md:items-start gap-4 p-4 bg-card rounded-lg shadow">
-			<Avatar className="w-24 h-24">
+		<div className="flex flex-col max-w-200 mx-auto items-center md:flex-row gap-4 p-4 bg-card rounded-lg shadow">
+			<Avatar className="w-24 h-24 ">
 				<AvatarImage src={user.image || ""} alt={user.name || "Пользователь"} />
 				<AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
 			</Avatar>
@@ -32,6 +35,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 						<dd className="text-sm">{new Date(user.createdAt).toLocaleDateString()}</dd>
 					</dl>
 			</div>
+      <Link className="text-background dark:text-foreground ml-auto self-end bg-primary p-3 rounded-lg" href="/profile/settings">Редактировать профиль ✍</Link>
 		</div>
 	);
 }

@@ -15,3 +15,19 @@ export type ChordWithPositions = Prisma.ChordGetPayload<{
     positions: true;
   };
 }>;
+
+export type PositionWithChord = Prisma.PositionGetPayload<{
+  include: {
+    chord: true;
+  };
+}>;
+
+export type UserWithPositions = Prisma.UserGetPayload<{
+  include: {
+    learnedPositions: {
+      include: {
+        chord: true;
+      }
+    }
+  };
+}>;

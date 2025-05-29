@@ -12,7 +12,6 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed"
-    
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -26,7 +25,7 @@
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-dropdown-menu": "^2.1.14",
-    "@radix-ui/react-label": "^2.1.6",
+    "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-navigation-menu": "^1.2.12",
     "@radix-ui/react-popover": "^1.1.13",
     "@radix-ui/react-select": "^2.2.4",
@@ -35,6 +34,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toggle": "^1.1.9",
     "@radix-ui/react-tooltip": "^1.2.6",
+    "@tanstack/react-table": "^8.21.3",
     "@techies23/react-chords": "^1.0.7",
     "@uidotdev/usehooks": "^2.4.1",
     "argon2": "^0.43.0",
@@ -50,8 +50,10 @@
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.0.0",
+    "react-email": "^4.0.15",
     "react-hook-form": "^7.56.4",
     "react-icons": "^5.5.0",
+    "resend": "^4.5.1",
     "smplr": "^0.16.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
@@ -59,12 +61,13 @@
     "tone": "^15.1.22",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
-    "zod": "^3.25.23",
+    "zod": "^3.25.34",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.17.50",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",

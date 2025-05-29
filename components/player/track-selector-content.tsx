@@ -56,10 +56,10 @@ const TrackSelectorContent: React.FC<TrackSelectorContentProps> = ({
 									!isPlayerReady
 										? "Плеер не готов"
 										: isTrackSoloed(track)
-										? `Показана только дорожка: ${
-												track.name || `Дорожка ${track.index + 1}`
-										  }. Кликните снова, чтобы показать все.`
-										: `Кликните, чтобы показать только: ${track.name || `Дорожка ${track.index + 1}`}`
+											? `Показана только дорожка: ${
+													track.name || `Дорожка ${track.index + 1}`
+												}. Кликните снова, чтобы показать все.`
+											: `Кликните, чтобы показать только: ${track.name || `Дорожка ${track.index + 1}`}`
 								}
 							>
 								<div className="flex justify-between items-center mb-0.5">

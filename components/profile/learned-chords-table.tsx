@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import ChordElement from "@/components/chords/chord-element";
-import { LearnedPositionWithChordDetails } from "./student-info";
+import { PositionWithChord } from "@/lib/chords/types"
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, ExternalLink} from "lucide-react";
+import Link from "next/link";
 
 interface LearnedChordsTableProps {
-  learnedPositions: LearnedPositionWithChordDetails[];
+  learnedPositions: PositionWithChord[];
 }
 
 interface GroupedLearnedChord {
@@ -24,7 +25,7 @@ interface GroupedLearnedChord {
   key: string;
   suffix: string;
   fullName: string;
-  positions: LearnedPositionWithChordDetails[];
+  positions: PositionWithChord[];
 }
 
 type SortKey = "chordKey" | "chordSuffix" | "none";
@@ -119,20 +120,21 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("chordKey")}
+                  className="w-full"
                 >
-                  Аккорд
+                  Аккорд 🎶
                   {sortKey === 'chordKey' && <ArrowUpDown className="ml-2 h-4 w-4" />}
                 </Button>
               </TableHead>
-              <TableHead>Выученные позиции</TableHead>
+              <TableHead className="text-center">Выученные позиции 🤟</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {groupedAndSortedChords.length > 0 ? (
               groupedAndSortedChords.map((group) => (
-                <TableRow key={group.chordId}>
-                  <TableCell className="font-medium text-center align-top pt-4">
-                    {group.key} {group.suffix}
+                <TableRow className="border-b" key={group.chordId}>
+                  <TableCell className="align-middle">
+                    <Link className="flex font-bold text-md lg:text-xl items-center gap-2 justify-center" href={`/chords/${group.key}/${group.suffix}`}>{group.key} {group.suffix} <ExternalLink /></Link>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-4">

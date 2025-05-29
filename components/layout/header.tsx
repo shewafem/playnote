@@ -61,8 +61,8 @@ export const Header: React.FC<Props> = ({ className }) => {
 									<DropdownMenuTrigger asChild>
 										<Avatar className="cursor-pointer">
 											<AvatarImage src={user?.image as string} alt="avatar" />
-											<AvatarFallback>
-												<UserRoundCog />
+											<AvatarFallback className="bg-background">
+												<UserRoundCog/>
 											</AvatarFallback>
 										</Avatar>
 									</DropdownMenuTrigger>
