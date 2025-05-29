@@ -21,6 +21,7 @@ const segmentTranslations: { [key: string]: string } = {
   player: "Проигрыватель",
   "sign-in": "Вход",
   "sign-up": "Регистрация",
+  "settings": "Настройки",
 };
 
 export function AppBreadcrumbs() {

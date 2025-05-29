@@ -48,7 +48,7 @@ export default function StudentInfo({ user }: StudentInfoProps) {
 	];
 
 	return (
-		<div className="flex max-w-200 mx-auto align-center justify-between gap-4">
+		<div className="flex max-w-200 mx-auto flex-col sm:flex-row align-center justify-between gap-4">
 			{cardItems.map((card, index) => (
 				<motion.div key={index} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className="flex-grow ">
 					<Link href={card.link}>

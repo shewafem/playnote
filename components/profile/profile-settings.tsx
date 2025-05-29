@@ -129,12 +129,6 @@ export default function ProfileSettings() {
 
 	return (
 		<div className="container mx-auto max-w-4xl p-6 space-y-8">
-			<div className="space-y-2">
-				<h1 className="text-3xl font-bold tracking-tight">Настройки Профиля</h1>
-				<p className="text-muted-foreground">
-					Управляйте настройками своего аккаунта и устанавливайте предпочтения для электронной почты.
-				</p>
-			</div>
 
 			<div className="grid gap-6">
 				{/* Секция Фото Профиля (remains largely the same, not part of RHF forms here) */}
@@ -227,8 +221,6 @@ export default function ProfileSettings() {
 						</form>
 					</CardContent>
 				</Card>
-
-				{/* Секция Сменить Пароль */}
 				<Card>
 					<CardHeader>
 						<CardTitle>Сменить Пароль</CardTitle>
@@ -261,9 +253,7 @@ export default function ProfileSettings() {
 									</div>
 								</div>
 								<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
-
 								<Separator />
-
 								<div className="space-y-4">
 									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
 										<Label htmlFor="new-password" className="sm:w-1/3 mb-1 sm:mb-0">
@@ -289,7 +279,6 @@ export default function ProfileSettings() {
 										</div>
 									</div>
 									<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
-
 									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
 										<Label htmlFor="confirm-new-password" className="sm:w-1/3 mb-1 sm:mb-0">
 											Подтвердите Новый Пароль

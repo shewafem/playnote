@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Container } from "@/components/layout/container";
 import { SessionProvider } from "next-auth/react";
 import { AppBreadcrumbs } from "@/components/layout/breadcrumbs";
+import { Toaster } from "sonner";
 
 const geologica = Geologica({
 	variable: "--font-geologica",
@@ -48,6 +49,7 @@ export default function RootLayout({
                 {children}
 							</Container>
 						</main>
+            <Toaster richColors/>
 						<Footer></Footer>
 					</SessionProvider>
 				</ThemeProvider>
