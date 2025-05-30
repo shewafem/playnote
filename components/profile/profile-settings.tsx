@@ -1,6 +1,6 @@
 "use client";
 import type React from "react";
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react"; 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -9,30 +9,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Save, Eye, EyeOff, Loader2 } from "lucide-react"; // Added Loader2 for busy state
+import { Camera, Save, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-// Assuming your schemas are exported from a file (e.g., @/lib/schemas or ./schemas)
-// If they are in the same file, you don't need this import line.
 import {
 	ProfileInfoSchema,
 	type ProfileInfoFormValues,
 	UpdatePasswordSchema,
 	type UpdatePasswordFormValues,
-} from "@/schemas/auth-schema"; // Adjust path as needed
+} from "@/schemas/auth-schema";
 
-// Helper component to display field errors
 const FieldError: React.FC<{ message?: string }> = ({ message }) => {
 	if (!message) return null;
 	return <p className="text-sm text-red-500 mt-1">{message}</p>;
 };
 
-// Mock current user data - replace with actual data fetching logic
-// e.g., from a context, useSession(), or an API call
 const MOCK_USER_DATA = {
 	email: "ivan.ivanov@example.com",
-	name: "Ivan Ivanov", // Assuming this maps to "Имя пользователя"
-	// You'd fetch profile image URL too
+	name: "Ivan Ivanov",
 };
 
 export default function ProfileSettings() {
@@ -51,12 +45,11 @@ export default function ProfileSettings() {
 	//   }
 	// }, [user, personalInfoForm]);
 
-	// React Hook Form for Personal Information
 	const personalInfoForm = useForm<ProfileInfoFormValues>({
 		resolver: zodResolver(ProfileInfoSchema),
 		defaultValues: {
-			email: MOCK_USER_DATA.email, // Populate with fetched user data
-			name: MOCK_USER_DATA.name, // Populate with fetched user data
+			email: MOCK_USER_DATA.email,
+			name: MOCK_USER_DATA.name,
 		},
 	});
 
@@ -73,9 +66,7 @@ export default function ProfileSettings() {
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
 		if (file) {
-			// Basic client-side validation (optional, Zod could handle this if part of a form)
 			if (file.size > 1024 * 1024) {
-				// 1MB
 				toast.error("Файл слишком большой. Максимум 1МБ.");
 				return;
 			}
@@ -99,7 +90,7 @@ export default function ProfileSettings() {
 		console.log("Personal Info Data:", data);
 		// TODO: API call to update personal information
 		// await updateProfileApi(data);
-		await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 		toast.success("Личная информация успешно сохранена");
 	};
 
@@ -107,13 +98,11 @@ export default function ProfileSettings() {
 		console.log("Password Update Data:", data);
 		// TODO: API call to update password
 		// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
-		await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 		toast.success("Пароль успешно обновлен");
-		passwordUpdateForm.reset(); // Clear password fields after successful update
+		passwordUpdateForm.reset();
 	};
 
-	// Effect to populate form with fetched data if not using defaultValues directly with fetched data
-	// This is more useful if defaultValues are not available on initial render
 	useEffect(() => {
 		// Replace MOCK_USER_DATA with your actual fetched user data
 		// if (fetchedUserData) {
@@ -129,13 +118,11 @@ export default function ProfileSettings() {
 
 	return (
 		<div className="container mx-auto max-w-4xl p-6 space-y-8">
-
 			<div className="grid gap-6">
-				{/* Секция Фото Профиля (remains largely the same, not part of RHF forms here) */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Фото Профиля</CardTitle>
-						<CardDescription>Это фото будет отображаться в вашем профиле и в комментариях.</CardDescription>
+						<CardTitle>Фото профиля</CardTitle>
+						<CardDescription>Это фото будет отображаться в вашем профиле.</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-6">
 						<div className="flex items-center gap-6">
@@ -146,7 +133,7 @@ export default function ProfileSettings() {
 										?.split(" ")
 										.map((n) => n[0])
 										.join("")
-										.toUpperCase() || "ПП"}
+										.toUpperCase() || "🧑"}
 								</AvatarFallback>
 							</Avatar>
 							<div className="space-y-2">
@@ -154,7 +141,7 @@ export default function ProfileSettings() {
 									<Button variant="outline" className="gap-2" asChild>
 										<span>
 											<Camera className="h-4 w-4" />
-											Изменить Фото
+											Изменить фото
 										</span>
 									</Button>
 								</Label>
@@ -165,57 +152,56 @@ export default function ProfileSettings() {
 									className="hidden"
 									onChange={handleImageUpload}
 								/>
-								<p className="text-sm text-muted-foreground">JPG, GIF или PNG. Максимум 1МБ.</p>
+								<p className="text-sm text-muted-foreground">JPG или PNG. Максимум 1МБ.</p>
 							</div>
 						</div>
 					</CardContent>
 				</Card>
-
-				{/* Секция Личная Информация */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Личная Информация</CardTitle>
+						<CardTitle>Личная информация</CardTitle>
 						<CardDescription>Обновите ваши личные данные здесь.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={personalInfoForm.handleSubmit(onPersonalInfoSubmit)} className="space-y-6">
 							<div className="space-y-4">
-								<div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
+								<div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
 									<Label htmlFor="email-personal" className="sm:w-1/3 mb-1 sm:mb-0 sm:pt-2">
-										Адрес Электронной Почты
+										Адрес электронной почты
 									</Label>
 									<div className="flex-1">
 										<Input
 											id="email-personal"
+                      className="text-sm"
 											type="email"
 											placeholder="ivan.ivanov@example.com"
 											{...personalInfoForm.register("email")}
 										/>
 										<FieldError message={personalInfoForm.formState.errors.email?.message} />
-										<p className="text-sm text-muted-foreground mt-1">
+										<p className="text-sm text-muted-foreground mt-2">
 											Этот email будет использоваться для уведомлений аккаунта.
 										</p>
 									</div>
 								</div>
-								<div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
+								<div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
 									<Label htmlFor="name-personal" className="sm:w-1/3 mb-1 sm:mb-0 sm:pt-2">
 										Имя пользователя
 									</Label>
 									<div className="flex-1">
-										<Input id="name-personal" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
+										<Input id="name-personal" className="text-sm" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
 										<FieldError message={personalInfoForm.formState.errors.name?.message} />
-										<p className="text-sm text-muted-foreground mt-1">Это ваше публичное отображаемое имя.</p>
+										<p className="text-sm text-muted-foreground mt-2">Это ваше публичное отображаемое имя.</p>
 									</div>
 								</div>
 							</div>
 							<div className="flex justify-center mt-6">
-								<Button type="submit" className="gap-2" disabled={personalInfoForm.formState.isSubmitting}>
+								<Button type="submit" className="gap-2 cursor-pointer" disabled={personalInfoForm.formState.isSubmitting}>
 									{personalInfoForm.formState.isSubmitting ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (
 										<Save className="h-4 w-4" />
 									)}
-									{personalInfoForm.formState.isSubmitting ? "Сохранение..." : "Сохранить Изменения"}
+									{personalInfoForm.formState.isSubmitting ? "Сохранение..." : "Сохранить изменения"}
 								</Button>
 							</div>
 						</form>
@@ -223,23 +209,25 @@ export default function ProfileSettings() {
 				</Card>
 				<Card>
 					<CardHeader>
-						<CardTitle>Сменить Пароль</CardTitle>
+						<CardTitle>Сменить пароль</CardTitle>
 						<CardDescription>Обновите ваш пароль, чтобы обеспечить безопасность аккаунта.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={passwordUpdateForm.handleSubmit(onPasswordUpdateSubmit)} className="space-y-6">
 							<div className="space-y-4">
-								<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+								<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
 									<Label htmlFor="current-password" className="sm:w-1/3 mb-1 sm:mb-0">
-										Текущий Пароль
+										Текущий пароль
 									</Label>
 									<div className="relative flex-1">
 										<Input
+                    className="text-sm"
 											id="current-password"
 											type={showCurrentPassword ? "text" : "password"}
 											placeholder="Введите текущий пароль"
 											{...passwordUpdateForm.register("currentPassword")}
 										/>
+										<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
 										<Button
 											type="button"
 											variant="ghost"
@@ -252,20 +240,21 @@ export default function ProfileSettings() {
 										</Button>
 									</div>
 								</div>
-								<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
 								<Separator />
 								<div className="space-y-4">
-									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-2">
 										<Label htmlFor="new-password" className="sm:w-1/3 mb-1 sm:mb-0">
-											Новый Пароль
+											Новый пароль
 										</Label>
 										<div className="relative flex-1">
 											<Input
+                      className="text-sm"
 												id="new-password"
 												type={showNewPassword ? "text" : "password"}
 												placeholder="Введите новый пароль"
 												{...passwordUpdateForm.register("newPassword")}
 											/>
+											<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
 											<Button
 												type="button"
 												variant="ghost"
@@ -278,18 +267,20 @@ export default function ProfileSettings() {
 											</Button>
 										</div>
 									</div>
-									<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
-									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+
+									<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
 										<Label htmlFor="confirm-new-password" className="sm:w-1/3 mb-1 sm:mb-0">
-											Подтвердите Новый Пароль
+											Подтвердите новый пароль
 										</Label>
 										<div className="relative flex-1">
 											<Input
+                        className="text-sm"
 												id="confirm-new-password"
 												type={showConfirmPassword ? "text" : "password"}
 												placeholder="Подтвердите новый пароль"
 												{...passwordUpdateForm.register("confirmNewPassword")}
 											/>
+											<FieldError message={passwordUpdateForm.formState.errors.confirmNewPassword?.message} />
 											<Button
 												type="button"
 												variant="ghost"
@@ -306,29 +297,16 @@ export default function ProfileSettings() {
 											</Button>
 										</div>
 									</div>
-									<FieldError message={passwordUpdateForm.formState.errors.confirmNewPassword?.message} />
 								</div>
 							</div>
-
-							<div className="rounded-lg bg-muted p-4">
-								<h4 className="text-sm font-medium mb-2">Требования к паролю:</h4>
-								<ul className="text-sm text-muted-foreground space-y-1">
-									<li>• Не менее 8 символов</li>
-									<li>• Содержит хотя бы одну заглавную букву</li>
-									<li>• Содержит хотя бы одну строчную букву</li>
-									<li>• Содержит хотя бы одну цифру</li>
-									<li>• Содержит хотя бы один специальный символ (@, #, $, %, и т.д.)</li>
-								</ul>
-							</div>
-
 							<div className="flex justify-center">
-								<Button type="submit" className="gap-2" disabled={passwordUpdateForm.formState.isSubmitting}>
+								<Button type="submit" className="gap-2 cursor-pointer" disabled={passwordUpdateForm.formState.isSubmitting}>
 									{passwordUpdateForm.formState.isSubmitting ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (
 										<Save className="h-4 w-4" />
 									)}
-									{passwordUpdateForm.formState.isSubmitting ? "Обновление..." : "Обновить Пароль"}
+									{passwordUpdateForm.formState.isSubmitting ? "Обновление..." : "Обновить пароль"}
 								</Button>
 							</div>
 						</form>

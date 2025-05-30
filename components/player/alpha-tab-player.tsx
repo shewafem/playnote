@@ -315,7 +315,7 @@ export default function AlphaTabPlayer() {
 						onPressedChange={toggleCountIn}
 						disabled={!isPlayerReady || tracks.length === 0}
 						variant="outline"
-						className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
 					>
 						<Timer className="h-4 w-4" />
 					</Toggle>
@@ -328,7 +328,7 @@ export default function AlphaTabPlayer() {
 						onPressedChange={toggleLooping}
 						disabled={!isPlayerReady || tracks.length === 0}
 						variant="outline"
-						className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
 					>
 						<Repeat className="h-4 w-4" />
 					</Toggle>
@@ -341,12 +341,12 @@ export default function AlphaTabPlayer() {
 						onPressedChange={toggleMetronome}
 						disabled={!isPlayerReady || tracks.length === 0}
 						variant="outline"
-						className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
 					>
 						<Triangle className="h-4 w-4" />
 					</Toggle>
 				</div>
-				<Button onClick={handlePrint} disabled={!api || tracks.length === 0} variant="ghost">
+				<Button onClick={handlePrint} className="cursor-pointer" disabled={!api || tracks.length === 0} variant="ghost">
 					<Printer className="h-4 w-4" />
 				</Button>
 			</div>
