@@ -31,7 +31,6 @@ model User {
 
   learnedScales    Scale[]
   learnedPositions Position[]
-  learnedArpeggios Arpeggio[]
 
   // Student
   enrollments Enrollment[]
@@ -219,14 +218,6 @@ model Position {
 }
 
 model Scale {
-  id        Int    @id @default(autoincrement())
-  name      String
-  formula   String @unique
-
-  learnedBy User[]
-}
-
-model Arpeggio {
   id        Int    @id @default(autoincrement())
   name      String
   formula   String @unique

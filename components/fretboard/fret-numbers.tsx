@@ -18,8 +18,8 @@ const FretNumbers: React.FC<FretNumbersProps> = ({ fretCount }) => {
 					<div
 						key={`fret-num-${fretIndex}`}
 						className={cn(
-							"w-18 text-lg text-center text-muted-foreground",
-							markerFrets.includes(fretIndex + 1) ? "font-black text-lg text-primary drop-shadow" : ""
+							"w-18 text-sm sm:text-lg text-center text-muted-foreground",
+							markerFrets.includes(fretIndex + 1) ? "font-black text-sm sm:text-lg text-primary drop-shadow" : ""
 						)}
 					>
 						{fretIndex + 1}

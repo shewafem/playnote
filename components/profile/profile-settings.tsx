@@ -1,6 +1,6 @@
 "use client";
 import type React from "react";
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -24,32 +24,38 @@ const FieldError: React.FC<{ message?: string }> = ({ message }) => {
 	return <p className="text-sm text-red-500 mt-1">{message}</p>;
 };
 
-const MOCK_USER_DATA = {
-	email: "ivan.ivanov@example.com",
-	name: "Ivan Ivanov",
-};
-
 export default function ProfileSettings() {
 	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [profileImage, setProfileImage] = useState("/placeholder.svg?height=100&width=100");
+	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
+	const [isLoading, setIsLoading] = useState(true);
 
-	// TODO: Fetch actual user data and profile image URL
-	// For example:
-	// const { data: user, isLoading: isUserLoading } = useCurrentUser();
-	// useEffect(() => {
-	//   if (user) {
-	//     personalInfoForm.reset({ email: user.email, name: user.name || "" });
-	//     if(user.image) setProfileImage(user.image);
-	//   }
-	// }, [user, personalInfoForm]);
+	// Fetch user profile on mount
+	useEffect(() => {
+		async function fetchProfile() {
+			setIsLoading(true);
+			try {
+				const res = await fetch("/api/profile");
+				if (!res.ok) throw new Error("Ошибка загрузки профиля");
+				const user = await res.json();
+				personalInfoForm.reset({ email: user.email, name: user.name || "" });
+				setProfileImage(user.image || "/placeholder.svg?height=100&width=100");
+			} catch {
+				toast.error("Не удалось загрузить профиль");
+			} finally {
+				setIsLoading(false);
+			}
+		}
+		fetchProfile();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const personalInfoForm = useForm<ProfileInfoFormValues>({
 		resolver: zodResolver(ProfileInfoSchema),
 		defaultValues: {
-			email: MOCK_USER_DATA.email,
-			name: MOCK_USER_DATA.name,
+			email: "",
+			name: "",
 		},
 	});
 
@@ -87,11 +93,22 @@ export default function ProfileSettings() {
 	};
 
 	const onPersonalInfoSubmit: SubmitHandler<ProfileInfoFormValues> = async (data) => {
-		console.log("Personal Info Data:", data);
-		// TODO: API call to update personal information
-		// await updateProfileApi(data);
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		toast.success("Личная информация успешно сохранена");
+		setIsLoading(true);
+		try {
+			const res = await fetch("/api/profile", {
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(data),
+			});
+			if (!res.ok) throw new Error("Ошибка обновления профиля");
+			const updated = await res.json();
+			toast.success("Личная информация успешно сохранена");
+			personalInfoForm.reset({ email: updated.email, name: updated.name });
+		} catch {
+			toast.error("Не удалось обновить профиль");
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
@@ -102,19 +119,6 @@ export default function ProfileSettings() {
 		toast.success("Пароль успешно обновлен");
 		passwordUpdateForm.reset();
 	};
-
-	useEffect(() => {
-		// Replace MOCK_USER_DATA with your actual fetched user data
-		// if (fetchedUserData) {
-		//   personalInfoForm.reset({
-		//     email: fetchedUserData.email || "",
-		//     name: fetchedUserData.name || "",
-		//   });
-		//   if (fetchedUserData.image) {
-		//     setProfileImage(fetchedUserData.image);
-		//   }
-		// }
-	}, [/* fetchedUserData, */ personalInfoForm.reset]);
 
 	return (
 		<div className="container mx-auto max-w-4xl p-6 space-y-8">
@@ -129,7 +133,8 @@ export default function ProfileSettings() {
 							<Avatar className="h-24 w-24">
 								<AvatarImage src={profileImage || "/placeholder.svg"} alt="Фото профиля" />
 								<AvatarFallback className="text-lg">
-									{MOCK_USER_DATA.name
+									{personalInfoForm
+										.watch("name")
 										?.split(" ")
 										.map((n) => n[0])
 										.join("")
@@ -172,7 +177,6 @@ export default function ProfileSettings() {
 									<div className="flex-1">
 										<Input
 											id="email-personal"
-                      className="text-sm"
 											type="email"
 											placeholder="ivan.ivanov@example.com"
 											{...personalInfoForm.register("email")}
@@ -188,20 +192,20 @@ export default function ProfileSettings() {
 										Имя пользователя
 									</Label>
 									<div className="flex-1">
-										<Input id="name-personal" className="text-sm" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
+										<Input id="name-personal" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
 										<FieldError message={personalInfoForm.formState.errors.name?.message} />
 										<p className="text-sm text-muted-foreground mt-2">Это ваше публичное отображаемое имя.</p>
 									</div>
 								</div>
 							</div>
 							<div className="flex justify-center mt-6">
-								<Button type="submit" className="gap-2 cursor-pointer" disabled={personalInfoForm.formState.isSubmitting}>
-									{personalInfoForm.formState.isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<Save className="h-4 w-4" />
-									)}
-									{personalInfoForm.formState.isSubmitting ? "Сохранение..." : "Сохранить изменения"}
+								<Button
+									type="submit"
+									className="gap-2 cursor-pointer"
+									disabled={personalInfoForm.formState.isSubmitting || isLoading}
+								>
+									{isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+									{isLoading ? "Сохранение..." : "Сохранить изменения"}
 								</Button>
 							</div>
 						</form>
@@ -221,7 +225,6 @@ export default function ProfileSettings() {
 									</Label>
 									<div className="relative flex-1">
 										<Input
-                    className="text-sm"
 											id="current-password"
 											type={showCurrentPassword ? "text" : "password"}
 											placeholder="Введите текущий пароль"
@@ -248,7 +251,6 @@ export default function ProfileSettings() {
 										</Label>
 										<div className="relative flex-1">
 											<Input
-                      className="text-sm"
 												id="new-password"
 												type={showNewPassword ? "text" : "password"}
 												placeholder="Введите новый пароль"
@@ -274,7 +276,6 @@ export default function ProfileSettings() {
 										</Label>
 										<div className="relative flex-1">
 											<Input
-                        className="text-sm"
 												id="confirm-new-password"
 												type={showConfirmPassword ? "text" : "password"}
 												placeholder="Подтвердите новый пароль"
@@ -300,7 +301,11 @@ export default function ProfileSettings() {
 								</div>
 							</div>
 							<div className="flex justify-center">
-								<Button type="submit" className="gap-2 cursor-pointer" disabled={passwordUpdateForm.formState.isSubmitting}>
+								<Button
+									type="submit"
+									className="gap-2 cursor-pointer"
+									disabled={passwordUpdateForm.formState.isSubmitting}
+								>
 									{passwordUpdateForm.formState.isSubmitting ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (

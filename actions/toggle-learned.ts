@@ -47,13 +47,12 @@ export async function toggleLearnedPosition(positionId: number) {
 			});
 			newLearnedState = true;
 		}
-        revalidatePath("/chords", "layout");
+		revalidatePath("/chords", "layout");
 		return {
-            success: true,
-            learned: newLearnedState,
-            message: `Позиция ${newLearnedState ? 'выучена' : 'не выучена'}.`
-        };
-
+			success: true,
+			learned: newLearnedState,
+			message: `Позиция ${newLearnedState ? "выучена" : "не выучена"}.`,
+		};
 	} catch (error) {
 		console.error("Ошибка смены статуса позиции", error);
 		return { error: "Ошибка базы данных", success: false };

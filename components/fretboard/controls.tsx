@@ -29,6 +29,10 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	const availableShapeTypes = Object.keys(SHAPES);
 	const availableShapeNames = Object.keys(SHAPES[selectedShapeType] || {});
 
+  if (!selectedTuning) {
+    setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
+  }
+
 	const keyOptions = availableKeys.map((key) => ({ value: key, label: key }));
 	const shapeTypeOptions = availableShapeTypes.map((type) => ({
 		value: type,
@@ -50,7 +54,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		11: "7",
 	};
 
-	const formula = SHAPES[selectedShapeType][selectedShapeName].map((num) => noteNames[num]);
+	const formula = SHAPES[selectedShapeType][selectedShapeName]?.map((note) => noteNames[note]).join(", ")
 
 	return (
 		<div className={cn("flex flex-col gap-4", className)}>
@@ -132,7 +136,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 				</div>
 			</div>
 			<div className="flex flex-wrap justify-center items-center gap-4 w-full">
-				<p className="text-center">Формула: {formula.join(", ")}</p>
+				<p className="text-center">Формула: {formula}</p>
 					<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-red-600 border-2 border-red-700 text-white">
 						1
 					</div>
