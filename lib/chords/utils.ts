@@ -14,11 +14,11 @@ import prisma from "@/lib/prisma"
 import { ChordWithPositions } from "./types";
 
 export function formatItem(item: string): string {
-	if (item === undefined) {
-		return item;
-	}
-	const formattedItem = item.replace(/sharp/g, "#").replace(/over/g, "/");
-	return formattedItem;
+  if (item === undefined) {
+    return item;
+  }
+  const formattedItem = item.replace(/sharp/g, "#").replace(/over/g, "/");
+  return formattedItem;
 }
 
 export async function getChordsByKey(key: string): Promise<ChordWithPositions[]> {
@@ -116,4 +116,28 @@ export async function getChordsByKeyPaginated(
     // It's better to throw or return a specific error structure
     throw new Error(`Ошибка получения пагинированных аккордов для тональности ${formattedKey}`);
   }
+}
+
+export async function getLearnedPositionIdsForChords(userId: string | undefined, chords: ChordWithPositions[]): Promise<number[]> {
+	if (!userId || chords.length === 0) {
+		return [];
+	}
+	const allPositionIds = chords.flatMap(chord => chord.positions.map(p => p.id));
+	if (allPositionIds.length === 0) return [];
+
+	try {
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				learnedPositions: {
+					where: { id: { in: allPositionIds } },
+					select: { id: true },
+				},
+			},
+		});
+		return user?.learnedPositions.map((p) => p.id) || [];
+	} catch (error) {
+		console.error("Ошибка поулчения аккордов с позициями:", error);
+		return [];
+	}
 }

@@ -1,15 +1,13 @@
 "use server";
 
 import { z } from "zod";
-import crypto from "crypto"; // Node.js crypto module for UUID
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import prisma from "@/lib/prisma"; // Assuming you have prisma client exported from lib/db.ts
+import prisma from "@/lib/prisma";
 import { ForgotPasswordSchema, ResetPasswordSchema } from "@/schemas/auth-schema";
 import { sendPasswordResetEmail } from "@/lib/mail";
 //import { getUserByEmail, getUserByPasswordResetToken } from "@/lib/data/user"; // Helper functions
 
-// Helper functions (you can put these in a separate data access file if you prefer)
-// lib/data/user.ts
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
@@ -29,7 +27,6 @@ export const getUserByPasswordResetToken = async (token: string) => {
     return null;
   }
 };
-// End of helper functions
 
 export async function requestPasswordReset(
   values: z.infer<typeof ForgotPasswordSchema>
@@ -44,12 +41,12 @@ export async function requestPasswordReset(
 
   const existingUser = await getUserByEmail(email);
 
-  if (!existingUser || !existingUser.email || !existingUser.hashedPassword) { // Check for hashedPassword to ensure it's not an OAuth only account
+  if (!existingUser || !existingUser.email || !existingUser.hashedPassword) {
     return { error: "Пользователь с таким email не найден или не может сбросить пароль." };
   }
 
   const passwordResetToken = crypto.randomUUID();
-  const passwordResetTokenExpiry = new Date(Date.now() + 3600 * 1000); // 1 hour from now
+  const passwordResetTokenExpiry = new Date(Date.now() + 3600 * 1000);
 
   try {
     await prisma.user.update({
@@ -111,12 +108,10 @@ export async function resetPassword(
       where: { id: existingUser.id },
       data: {
         hashedPassword,
-        passwordResetToken: null, // Clear the token
+        passwordResetToken: null,
         passwordResetTokenExpiry: null,
       },
     });
-
-    // Optionally, send a confirmation email that password was changed.
 
     return { success: "Пароль успешно изменен! Теперь вы можете войти." };
   } catch (error) {

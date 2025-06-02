@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { redirect } from "next/navigation";
 
 const Hero = () => {
 	return (
@@ -23,6 +24,7 @@ const Hero = () => {
       whileTap={{ scale: 0.95 }}>
 				<Button
 					size="lg"
+          onClick={() => redirect("/profile/player")}
 					className="w-57 p-6 cursor-pointer text-xl font-semibold bg-primary hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl"
 				>
 					Начать играть 🎸

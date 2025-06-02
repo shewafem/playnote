@@ -1,25 +1,33 @@
 // components/interactive-fretboard/fret-numbers.tsx
 import React from "react";
-import { DEFAULT_FRETS } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
-const FretNumbers: React.FC = () => {
+interface FretNumbersProps {
+	fretCount: number;
+}
+
+const markerFrets = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
+
+const FretNumbers: React.FC<FretNumbersProps> = ({ fretCount }) => {
 	return (
-		<div className="flex mb-2">
-			<div className="w-10"></div>
-			{[...Array(DEFAULT_FRETS)].map((_, fretIndex) => (
-				<div
-					key={`fret-num-${fretIndex}`}
-					className={cn(
-						"w-18 text-center text-sm text-muted-foreground",
-						[0, , 3, 5, 7, 9, 12].includes(fretIndex + (1 % 12)) && fretIndex !== 0 ? "font-black text-lg" : ""
-					)}
-				>
-					{fretIndex + 1}
-				</div>
-			))}
+		<div className="flex flex-col">
+			{/* Fret numbers row */}
+			<div className="flex mb-1 select-none">
+				<div className="w-10"></div>
+				{[...Array(fretCount)].map((_, fretIndex) => (
+					<div
+						key={`fret-num-${fretIndex}`}
+						className={cn(
+							"w-18 text-lg text-center text-muted-foreground",
+							markerFrets.includes(fretIndex + 1) ? "font-black text-lg text-primary drop-shadow" : ""
+						)}
+					>
+						{fretIndex + 1}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 };
 
-export default FretNumbers;
+export default React.memo(FretNumbers);

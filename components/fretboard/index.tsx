@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import React, { useMemo, useEffect, useRef, useCallback } from "react";
 import * as Tone from "tone";
 import Controls from "./controls";
 import FretboardDisplay from "./fretboard-display";
@@ -14,34 +14,39 @@ import {
 	mapIdsToNoteObjects,
 } from "@/lib/fretboard-utils";
 import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
+import { useFretboardStore } from "@/lib/fretboard-store";
+
 const InteractiveFretboard: React.FC = () => {
-	//state for shapes
-	const [selectedKey, setSelectedKey] = useState<string>("C");
-	const [selectedShapeType, setSelectedShapeType] = useState<string>("Гаммы");
-	const [selectedShapeName, setSelectedShapeName] = useState<string>("Мажор");
+	const selectedKey = useFretboardStore((s) => s.selectedKey);
+	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
+	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
+	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
+	const isToneReady = useFretboardStore((s) => s.isToneReady);
+	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
+	const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
+	const bpm = useFretboardStore((s) => s.bpm);
+	const isPlayingSequence = useFretboardStore((s) => s.isPlayingSequence);
+	const currentPlaybackType = useFretboardStore((s) => s.currentPlaybackType);
+	const toggleNoteSelection = useFretboardStore((s) => s.toggleNoteSelection);
+	const setIsSelectingNotes = useFretboardStore((s) => s.setIsSelectingNotes);
+	const setCurrentlySelectingNotes = useFretboardStore((s) => s.setCurrentlySelectingNotes);
+	const setIsToneReady = useFretboardStore((s) => s.setIsToneReady);
+	const setIsPlayingSequence = useFretboardStore((s) => s.setIsPlayingSequence);
+	const setCurrentPlaybackType = useFretboardStore((s) => s.setCurrentPlaybackType);
+	const setCurrentlyPlayingNoteId = useFretboardStore((s) => s.setCurrentlyPlayingNoteId);
+	const fretCount = useFretboardStore((s) => s.fretCount);
+	//обычный тюнинг
+	useEffect(() => {
+		if (!selectedTuning) {
+			setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
+		}
+	}, [selectedTuning, setSelectedTuning]);
 
-	//state for guitar settings
-	//"Стандартный (E-A-D-G-B-E)"
-	const [selectedTuning, setSelectedTuning] = useState(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
-
-	//state for tonejs
-	const [isToneReady, setIsToneReady] = useState<boolean>(false);
-
-	//states for notes
-	const [isSelectingNotes, setIsSelectingNotes] = useState<boolean>(false);
-	const [currentlySelectingNotes, setCurrentlySelectingNotes] = useState<string[]>([]);
-	const [selectedNotesForPlayback, setSelectedNotesForPlayback] = useState<string[]>([]);
-
-	//states for playback
-	const [bpm, setBpm] = useState<number>(120);
-	const [isPlayingSequence, setIsPlayingSequence] = useState<boolean>(false);
-	const [currentPlaybackType, setCurrentPlaybackType] = useState<string | null>(null);
-	const [currentlyPlayingNoteId, setCurrentlyPlayingNoteId] = useState<string | null>(null);
-
-	//refs for tone
 	const synthRef = useRef<Tone.PolySynth | null>(null);
 	const sequenceRef = useRef<Tone.Sequence<NoteObject> | null>(null);
-
+	//tonejs
 	useEffect(() => {
 		Tone.start();
 		if (Tone && !synthRef.current) {
@@ -50,7 +55,6 @@ const InteractiveFretboard: React.FC = () => {
 					synthRef.current = new Tone.PolySynth(Tone.Synth).toDestination();
 					Tone.getTransport().bpm.value = 30;
 					setIsToneReady(true);
-					//console.log("Tone.js инициализирован.");
 				} catch (error) {
 					console.error("Ошибка инициализации Tone.js synth:", error);
 					setIsToneReady(false);
@@ -64,12 +68,14 @@ const InteractiveFretboard: React.FC = () => {
 				sequenceRef.current.dispose();
 				sequenceRef.current = null;
 			}
-			// Tone.Transport.cancel() и stop()
-			setIsToneReady(false);
+			if (synthRef.current) {
+				synthRef.current.dispose();
+				synthRef.current = null;
+				setIsToneReady(false);
+			}
 			setIsPlayingSequence(false);
-			setCurrentlyPlayingNoteId(null);
-			//console.log("Tone.js очищен.");
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const highlightedNoteValues: Set<NoteValue> = useMemo(() => {
@@ -81,19 +87,17 @@ const InteractiveFretboard: React.FC = () => {
 		if (SHAPES[selectedShapeType] && SHAPES[selectedShapeType][selectedShapeName]) {
 			return getNoteValuesInShape(rootNoteValue, selectedShapeType, selectedShapeName);
 		}
-
 		const availableShapes = Object.keys(SHAPES[selectedShapeType] || {});
 		if (availableShapes.length > 0) {
 			const firstShapeName = availableShapes[0];
 			console.warn(
 				`Выбранная форма "${selectedShapeName}" не найдена для типа "${selectedShapeType}". Фоллбэк: "${firstShapeName}".`
 			);
-			setSelectedShapeName(firstShapeName); // Автоматически выбрать первую доступную форму
 			return getNoteValuesInShape(rootNoteValue, selectedShapeType, firstShapeName);
 		}
 		console.warn(`Для типа "${selectedShapeType}" не найдено доступных форм/гамм.`);
 		return new Set();
-	}, [selectedKey, selectedShapeType, selectedShapeName, setSelectedShapeName]);
+	}, [selectedKey, selectedShapeType, selectedShapeName]);
 
 	const rootNoteValue: NoteValue = getNoteValue(selectedKey);
 
@@ -114,25 +118,16 @@ const InteractiveFretboard: React.FC = () => {
 	const handleNoteSelection = useCallback(
 		(identifier: string) => {
 			if (!isSelectingNotes || !identifier) return;
-			setCurrentlySelectingNotes((prev) => {
-				const existingIndex = prev.indexOf(identifier);
-				if (existingIndex > -1) {
-					// удалить, если уже существует
-					return [...prev.slice(0, existingIndex), ...prev.slice(existingIndex + 1)];
-				} else {
-					// добавить, если не существует
-					return [...prev, identifier];
-				}
-			});
+			toggleNoteSelection(identifier);
 		},
-		[isSelectingNotes]
+		[isSelectingNotes, toggleNoteSelection]
 	);
 
 	const stopPlayback = useCallback(() => {
 		console.log("Остановка воспроизведения...");
 		if (Tone && Tone.getTransport() && Tone.getContext()?.state !== "closed") {
 			Tone.getTransport().stop();
-			Tone.getTransport().cancel(0); 
+			Tone.getTransport().cancel(0);
 			if (sequenceRef.current) {
 				sequenceRef.current.stop(0);
 				sequenceRef.current.dispose();
@@ -144,44 +139,30 @@ const InteractiveFretboard: React.FC = () => {
 
 		setIsPlayingSequence(false);
 		setCurrentPlaybackType(null);
-		setCurrentlyPlayingNoteId(null);
 		console.log("Воспроизведение остановлено.");
-	}, []);
+	}, [setIsPlayingSequence, setCurrentPlaybackType]);
 
 	const toggleSelectionMode = useCallback(() => {
 		if (isPlayingSequence) {
 			stopPlayback();
 		}
-		setIsSelectingNotes((prev) => {
-			const nextState = !prev;
-			if (nextState) {
-				setCurrentlySelectingNotes([...selectedNotesForPlayback]);
-				console.log("Включен режим выбора нот.");
-			} else {
-				setCurrentlySelectingNotes([]);
-				console.log("Выход из режима выбора нот (отменено).");
-			}
-			return nextState;
-		});
-	}, [isPlayingSequence, selectedNotesForPlayback, stopPlayback]);
-
-	const confirmSelection = useCallback(() => {
-		// Установить подтвержденный выбор для воспроизведения
-		setSelectedNotesForPlayback([...currentlySelectingNotes]);
-		setIsSelectingNotes(false); // Выйти из режима выбора
-		console.log(`Выбор подтвержден: ${currentlySelectingNotes.length} нот.`);
-	}, [currentlySelectingNotes]);
-
-	const resetSelection = useCallback(() => {
-		console.log("Сброс выбранных нот...");
-		setCurrentlySelectingNotes([]);
-		setSelectedNotesForPlayback([]);
-		if (isPlayingSequence) {
-			stopPlayback();
+		const nextState = !isSelectingNotes;
+		if (nextState) {
+			setCurrentlySelectingNotes([...selectedNotesForPlayback]);
+			console.log("Включен режим выбора нот.");
+		} else {
+			setCurrentlySelectingNotes([]);
+			console.log("Выход из режима выбора нот (отменено).");
 		}
-		setCurrentlyPlayingNoteId(null);
-		console.log("Выбор нот сброшен.");
-	}, [isPlayingSequence, stopPlayback]);
+		setIsSelectingNotes(nextState);
+	}, [
+		isPlayingSequence,
+		selectedNotesForPlayback,
+		stopPlayback,
+		isSelectingNotes,
+		setIsSelectingNotes,
+		setCurrentlySelectingNotes,
+	]);
 
 	const startPlayback = useCallback(
 		async (sequenceEvents: NoteObject[], loop: boolean = true, type: string = "pingpong") => {
@@ -196,7 +177,7 @@ const InteractiveFretboard: React.FC = () => {
 				)
 			) {
 				console.error("Не выполнены условия для начала воспроизведения или неверные данные последовательности.");
-				stopPlayback(); 
+				stopPlayback();
 				return;
 			}
 
@@ -212,7 +193,6 @@ const InteractiveFretboard: React.FC = () => {
 
 				setIsPlayingSequence(true);
 				setCurrentPlaybackType(type);
-				setCurrentlyPlayingNoteId(null);
 
 				console.log(
 					`Создание новой последовательности: ${type}, Цикл: ${loop}, Количество событий: ${sequenceEvents.length}`
@@ -223,13 +203,13 @@ const InteractiveFretboard: React.FC = () => {
 							const { id, note } = event;
 							const nonNegativeTime = Math.max(0, time);
 
-							Tone.getTransport().schedule(() => {
+							Tone.Draw.schedule(() => {
 								setCurrentlyPlayingNoteId(id);
 							}, time);
 
 							const highlightDuration = Tone.Time("16n").toSeconds();
-							Tone.getTransport().schedule(() => {
-								setCurrentlyPlayingNoteId((prevId) => (prevId === id ? null : prevId));
+							Tone.Draw.schedule(() => {
+								setCurrentlyPlayingNoteId(null);
 							}, time + highlightDuration);
 
 							try {
@@ -255,7 +235,14 @@ const InteractiveFretboard: React.FC = () => {
 				stopPlayback();
 			}
 		},
-		[stopPlayback, isToneReady, isPlayingSequence]
+		[
+			stopPlayback,
+			isToneReady,
+			isPlayingSequence,
+			setIsPlayingSequence,
+			setCurrentPlaybackType,
+			setCurrentlyPlayingNoteId,
+		]
 	);
 
 	const playPingPongSequence = useCallback(() => {
@@ -284,11 +271,7 @@ const InteractiveFretboard: React.FC = () => {
 		const forwardEvents = [...events];
 		startPlayback(forwardEvents, true, "forward");
 
-		// Запланировать остановку транспорта после завершения последовательности
 		if (Tone && Tone.getTransport() && sequenceRef.current && !sequenceRef.current.loop) {
-			// Расчет длительности последовательности
-			// sequenceRef.current.subdivision содержит интервал, например "4n"
-			// sequenceRef.current.length содержит количество событий
 			const subdivisionDuration = Tone.Time(sequenceRef.current.subdivision).toSeconds();
 			const totalDurationInSeconds = sequenceRef.current.length * subdivisionDuration;
 
@@ -310,7 +293,6 @@ const InteractiveFretboard: React.FC = () => {
 	}, [selectedNotesForPlayback, startPlayback, stopPlayback, currentPlaybackType]);
 
 	const noteClickHandler = isSelectingNotes ? handleNoteSelection : playSingleNote;
-	const notesToVisuallySelect = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
 
 	useEffect(() => {
 		if (Tone && Tone.getTransport()) {
@@ -318,53 +300,37 @@ const InteractiveFretboard: React.FC = () => {
 		}
 	}, [bpm]);
 
+	useEffect(() => {
+		const availableShapes = Object.keys(SHAPES[selectedShapeType] || {});
+		if (availableShapes.length > 0 && !availableShapes.includes(selectedShapeName)) {
+			setSelectedShapeName(availableShapes[0]);
+		}
+	}, [selectedShapeType, selectedShapeName, setSelectedShapeName]);
+
 	return (
 		<section className="flex flex-col gap-4 justify-center items-center">
 			<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-center text-transparent bg-gradient-to-r from-foreground to-primary">
 				Интерактивный гриф
 			</h1>
 			<Controls
-				selectedKey={selectedKey}
-				setSelectedKey={setSelectedKey}
-				selectedShapeType={selectedShapeType}
-				setSelectedShapeType={setSelectedShapeType}
-				selectedShapeName={selectedShapeName}
-				setSelectedShapeName={setSelectedShapeName}
-				selectedTuning={selectedTuning}
-				setSelectedTuning={setSelectedTuning}
 				availableKeys={NOTE_NAMES}
 				availableShapeTypes={Object.keys(SHAPES)}
 				availableShapeNames={Object.keys(SHAPES[selectedShapeType] || {})}
 			/>
 			<PlaybackControls
-				isSelectingNotes={isSelectingNotes}
-				currentlySelectingNotes={currentlySelectingNotes}
-				selectedNotesForPlayback={selectedNotesForPlayback}
-				isPlayingSequence={isPlayingSequence}
-				currentPlaybackType={currentPlaybackType}
-				bpm={bpm}
-				setBpm={setBpm}
-				toggleSelectionMode={toggleSelectionMode}
-				confirmSelection={confirmSelection}
-				resetSelection={resetSelection}
 				playPingPongSequence={playPingPongSequence}
 				playSelectedNotes={playSelectedNotes}
 				stopPlayback={stopPlayback}
-				isToneReady={isToneReady}
-				selectedTuning={selectedTuning}
+				toggleSelectionMode={toggleSelectionMode}
 			/>
 			<FretboardDisplay
 				highlightedNotes={highlightedNoteValues}
 				rootNoteValue={rootNoteValue}
 				onNoteClick={noteClickHandler}
-				selectedNotesForPlayback={notesToVisuallySelect} // Ноты, которые выбраны пользователем
-				currentlyPlayingNoteId={currentlyPlayingNoteId} // ID текущей воспроизводимой ноты для подсветки
-				isSelectingMode={isSelectingNotes}
-				isToneReady={isToneReady}
-				selectedTuning={selectedTuning}
+				fretCount={fretCount}
 			/>
 		</section>
 	);
 };
 
-export default InteractiveFretboard;
+export default React.memo(InteractiveFretboard);

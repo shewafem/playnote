@@ -1,7 +1,7 @@
 // components/interactive-fretboard/guitar-string.tsx
 import React from "react";
 import Fret from "./fret";
-import { DEFAULT_FRETS, GUITAR_TUNING_DEFAULT } from "@/lib/fretboard-utils";
+import { GUITAR_TUNING_DEFAULT } from "@/lib/fretboard-utils";
 import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +10,11 @@ interface GuitarStringProps {
 	highlightedNotes: Set<NoteValue>;
 	rootNoteValue: NoteValue;
 	selectedNotesForPlayback: Set<string>;
-	currentlyPlayingNoteId: string | null;
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
 	selectedTuning: string;
+	fretCount: number;
 }
 
 const GuitarString: React.FC<GuitarStringProps> = ({
@@ -22,22 +22,22 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	highlightedNotes,
 	rootNoteValue,
 	selectedNotesForPlayback,
-	currentlyPlayingNoteId,
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
 	selectedTuning,
+	fretCount,
 }) => {
 	// обратный порядок
 	const displayStringIndex = GUITAR_TUNING_DEFAULT.length - 1 - stringIndex;
 
 	return (
 		<div
-			className={cn("flex items-center gap-4 h-10 relative", "border-b-2 border-gray-500", {
+			className={cn("flex items-center h-10", "border-b-2 border-gray-500", {
 				"last:border-b-0": displayStringIndex === 0,
 			})}
 		>
-			{[...Array(DEFAULT_FRETS + 1)].map((_, fretNumber) => (
+			{[...Array(fretCount + 1)].map((_, fretNumber) => (
 				<Fret
 					key={fretNumber}
 					stringIndex={stringIndex}
@@ -45,7 +45,6 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 					highlightedNotes={highlightedNotes}
 					rootNoteValue={rootNoteValue}
 					selectedNotesForPlayback={selectedNotesForPlayback}
-					currentlyPlayingNoteId={currentlyPlayingNoteId}
 					isSelectingMode={isSelectingMode}
 					onNoteClick={onNoteClick}
 					isToneReady={isToneReady}
@@ -56,4 +55,4 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	);
 };
 
-export default GuitarString;
+export default React.memo(GuitarString);

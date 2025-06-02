@@ -3,35 +3,25 @@ import React from "react";
 import { GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-
+import { useFretboardStore } from "@/lib/fretboard-store";
 interface ControlsProps {
-	selectedKey: string;
-	setSelectedKey: (key: string) => void;
-	selectedShapeType: string;
-	setSelectedShapeType: (type: string) => void;
-	selectedShapeName: string;
-	setSelectedShapeName: (name: string) => void;
-	selectedTuning: string;
-	setSelectedTuning: (tuning: string) => void;
 	availableKeys: string[];
 	availableShapeTypes: string[];
 	availableShapeNames: string[];
 }
 
-const Controls: React.FC<ControlsProps> = ({
-	selectedKey,
-	setSelectedKey,
-	selectedShapeType,
-	setSelectedShapeType,
-	selectedShapeName,
-	setSelectedShapeName,
-	selectedTuning,
-	setSelectedTuning,
-	availableKeys,
-	availableShapeTypes,
-	availableShapeNames,
-}) => {
-	// Map options for Shadcn Select
+const Controls: React.FC<ControlsProps> = ({ availableKeys, availableShapeTypes, availableShapeNames }) => {
+	const selectedKey = useFretboardStore((s) => s.selectedKey);
+	const setSelectedKey = useFretboardStore((s) => s.setSelectedKey);
+	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
+	const setSelectedShapeType = useFretboardStore((s) => s.setSelectedShapeType);
+	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
+	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
+	const fretCount = useFretboardStore((s) => s.fretCount);
+	const setFretCount = useFretboardStore((s) => s.setFretCount);
+
 	const keyOptions = availableKeys.map((key) => ({ value: key, label: key }));
 	const shapeTypeOptions = availableShapeTypes.map((type) => ({
 		value: type,
@@ -102,9 +92,22 @@ const Controls: React.FC<ControlsProps> = ({
 						</SelectContent>
 					</Select>
 				</div>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="fret-count-input">Лады</Label>
+					<input
+						id="fret-count-input"
+						type="number"
+						min={1}
+						max={24}
+						value={fretCount}
+						onChange={(e) => setFretCount(Number(e.target.value))}
+						className="w-[80px] border rounded px-2 py-1"
+						placeholder="Лады"
+					/>
+				</div>
 			</div>
 		</div>
 	);
 };
 
-export default Controls;
+export default React.memo(Controls);

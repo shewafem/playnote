@@ -5,11 +5,11 @@ import { Midi } from "tonal";
 export type NoteValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
 export interface NoteObject {
-  id: string; // "stringIdx-fretNum"
-  note: string; // "C4"
+	id: string; // "stringIdx-fretNum"
+	note: string; // "C4"
 }
 
-export const NOTE_NAMES: string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+export const NOTE_NAMES: string[] = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 
 export const MAX_FRETS: number = 20;
 
@@ -23,14 +23,14 @@ const transformNotesToMidi = (notes: string[]): number[] => {
 export const GUITAR_TUNINGS_MIDI: { [key: string]: number[] } = {
 	"Стандартный (E-A-D-G-B-E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
 	"Drop D (D-A-D-G-B-E)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "E4"]),
-  "Double Drop D (D-A-D-G-B-D)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "D4"]),
-  "Drop C (C-G-C-F-A-D)": transformNotesToMidi(["C2", "G2", "C3", "D3", "G3", "C4"]),
+	"Double Drop D (D-A-D-G-B-D)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "D4"]),
+	"Drop C (C-G-C-F-A-D)": transformNotesToMidi(["C2", "G2", "C3", "D3", "G3", "C4"]),
 	"Open G (D-G-D-G-B-D)": transformNotesToMidi(["D2", "G2", "D3", "G3", "B3", "D4"]),
 	"Open D (D-A-D-F♯-A-D)": transformNotesToMidi(["D2", "A2", "D3", "F#3", "A3", "D4"]),
 	"Фолк (D-A-D-G-A-D)": transformNotesToMidi(["D2", "A2", "D3", "G3", "A3", "D4"]),
 	"E♭ (E♭-A♭-D♭-G♭-B♭-E♭)": transformNotesToMidi(["Eb2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"]),
 	"Math rock (F-A-C-G-B-E)": transformNotesToMidi(["F2", "A2", "C3", "G3", "B3", "E4"]),
-  "Семиструнная (D-G-B-D-G-B-D)": transformNotesToMidi(["D2", "G2", "B2", "D3", "G3", "B3", "D4"]),
+	"Семиструнная (D-G-B-D-G-B-D)": transformNotesToMidi(["D2", "G2", "B2", "D3", "G3", "B3", "D4"]),
 };
 
 export const GUITAR_TUNING_DEFAULT = Object.values(GUITAR_TUNINGS_MIDI)[0];
@@ -38,7 +38,7 @@ export const GUITAR_TUNING_DEFAULT = Object.values(GUITAR_TUNINGS_MIDI)[0];
 //(0-11)
 export function getNoteValue(noteName: string): NoteValue {
 	const value = NOTE_NAMES.indexOf(noteName.toUpperCase());
-	return value as NoteValue
+	return value as NoteValue;
 }
 
 //(C, C#, ...)
@@ -67,6 +67,7 @@ export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tu
 
 export const SHAPES: { [key: string]: { [key: string]: NoteValue[] } } = {
 	Гаммы: {
+		Хроматическая: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 		Мажор: [0, 2, 4, 5, 7, 9, 11],
 		"Натуральный Минор": [0, 2, 3, 5, 7, 8, 10],
 		"Гармонический Минор": [0, 2, 3, 5, 7, 8, 11],
@@ -80,7 +81,6 @@ export const SHAPES: { [key: string]: { [key: string]: NoteValue[] } } = {
 		Миксолидийский: [0, 2, 4, 5, 7, 9, 10],
 		Локрийский: [0, 1, 3, 5, 6, 8, 10],
 		Целотон: [0, 2, 4, 6, 8, 10],
-		Хроматический: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 		"Уменьшенный (H-W)": [0, 1, 3, 4, 6, 7, 9, 10],
 		Альтерированный: [0, 1, 3, 4, 6, 8, 10],
 		"Лидийский Доминант": [0, 2, 4, 6, 7, 9, 10],

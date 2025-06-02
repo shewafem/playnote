@@ -6,42 +6,33 @@ import { Label } from "@/components/ui/label";
 import { GUITAR_TUNINGS_MIDI, mapIdsToNoteObjects } from "@/lib/fretboard-utils"; // Assuming this is now in lib/musicUtils.ts
 import { Chord } from "tonal";
 import { Pause, Play } from "lucide-react";
+import { useFretboardStore } from "@/lib/fretboard-store";
 
 interface PlaybackControlsProps {
-	isSelectingNotes: boolean;
-	currentlySelectingNotes: string[];
-	selectedNotesForPlayback: string[];
-	isPlayingSequence: boolean;
-	currentPlaybackType: string | null;
-	bpm: number;
-	setBpm: (bpm: number) => void;
-	toggleSelectionMode: () => void;
-	confirmSelection: () => void;
-	resetSelection: () => void;
 	playPingPongSequence: () => void;
 	playSelectedNotes: () => void;
 	stopPlayback: () => void;
-	isToneReady: boolean;
-	selectedTuning: string;
+	toggleSelectionMode: () => void;
 }
 
 const PlaybackControls: React.FC<PlaybackControlsProps> = ({
-	isSelectingNotes,
-	currentlySelectingNotes,
-	selectedNotesForPlayback,
-	isPlayingSequence,
-	currentPlaybackType,
-	bpm,
-	setBpm,
-	toggleSelectionMode,
-	confirmSelection,
-	resetSelection,
 	playPingPongSequence,
 	playSelectedNotes,
 	stopPlayback,
-	isToneReady,
-	selectedTuning,
+	toggleSelectionMode,
 }) => {
+	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
+	const currentlySelectingNotes = useFretboardStore((s) => s.currentlySelectingNotes);
+	const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
+	const isPlayingSequence = useFretboardStore((s) => s.isPlayingSequence);
+	const currentPlaybackType = useFretboardStore((s) => s.currentPlaybackType);
+	const bpm = useFretboardStore((s) => s.bpm);
+	const setBpm = useFretboardStore((s) => s.setBpm);
+	const confirmSelection = useFretboardStore((s) => s.confirmSelection);
+	const resetSelection = useFretboardStore((s) => s.resetSelection);
+	const isToneReady = useFretboardStore((s) => s.isToneReady);
+	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+
 	const midiTuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 	const handleBpmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
@@ -66,6 +57,11 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 		item.note.replace(/[0-9]/g, "")
 	);
 
+	const handleReset = React.useCallback(() => {
+		stopPlayback();
+		resetSelection();
+	}, [stopPlayback, resetSelection]);
+
 	return (
 		<div className="flex gap-8 p-4 border border-dashed border-border rounded-md bg-card">
 			<div className="flex flex-col gap-5">
@@ -73,7 +69,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 				<div className="flex flex-wrap items-center gap-3">
 					{currentlySelectingNotes.length !== 0 && (
 						<Button
-							onClick={resetSelection}
+							onClick={handleReset}
 							disabled={
 								currentlySelectingNotes.length === 0 && selectedNotesForPlayback.length === 0 && !isPlayingSequence
 							}
@@ -162,4 +158,4 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 	);
 };
 
-export default PlaybackControls;
+export default React.memo(PlaybackControls);

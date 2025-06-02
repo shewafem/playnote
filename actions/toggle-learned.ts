@@ -8,7 +8,7 @@ export async function toggleLearnedPosition(positionId: number) {
 	const session = await auth();
 
 	if (!session?.user?.id) {
-		return { error: "Unauthenticated", success: false };
+		return { error: "Неавторизован", success: false };
 	}
 
 	const userId = session.user.id;
@@ -20,7 +20,7 @@ export async function toggleLearnedPosition(positionId: number) {
 		});
 
 		if (!user) {
-			return { error: "User not found", success: false };
+			return { error: "Пользователь не найден", success: false };
 		}
 
 		const isCurrentlyLearned = user.learnedPositions.length > 0;
@@ -51,11 +51,11 @@ export async function toggleLearnedPosition(positionId: number) {
 		return {
             success: true,
             learned: newLearnedState,
-            message: `Position ${newLearnedState ? 'marked as learned' : 'marked as unlearned'}.`
+            message: `Позиция ${newLearnedState ? 'выучена' : 'не выучена'}.`
         };
 
 	} catch (error) {
-		console.error("Error toggling learned position:", error);
-		return { error: "Database error", success: false };
+		console.error("Ошибка смены статуса позиции", error);
+		return { error: "Ошибка базы данных", success: false };
 	}
 }

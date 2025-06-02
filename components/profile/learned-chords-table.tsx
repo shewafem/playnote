@@ -137,7 +137,7 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
                     <Link className="flex font-bold text-md lg:text-xl items-center gap-2 justify-center" href={`/chords/${group.key}/${group.suffix}`}>{group.key} {group.suffix} <ExternalLink /></Link>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-4 items-center justify-center">
                       {group.positions.map((pos, posIndex) => (
                         <div key={pos.id} className="w-32 md:w-40">
                           <ChordElement

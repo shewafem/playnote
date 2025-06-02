@@ -30,7 +30,7 @@ async function getLearnedPositionIdsForGivenChords(userId: string | undefined, c
     });
     return user?.learnedPositions.map((p) => p.id) || [];
   } catch (error) {
-    console.error("Error fetching learned positions for given chords in action:", error);
+    console.error("Ошибка запроса аккорда с выученными позициями:", error);
     return [];
   }
 }
@@ -51,7 +51,7 @@ export async function fetchMoreChordsAction(
 
     return { newChords, newLearnedPositionIds };
   } catch (error) {
-    console.error("Error in fetchMoreChordsAction:", error);
+    console.error("Ошибка получения больше аккордов:", error);
 
     return { newChords: [], newLearnedPositionIds: [], error: "Не удалось загрузить больше аккордов." };
   }
