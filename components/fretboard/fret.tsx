@@ -52,7 +52,7 @@ const Fret: React.FC<FretProps> = ({
 	return (
 		<div
 			className={cn(
-				"flex border-zinc-600 dark:border-zinc-300  border-x-4 items-center justify-center h-full",
+				"flex border-foreground/80 border-x-3 items-center justify-center h-full",
 				fretNumber === 0 ? "w-10 border-0" : "w-18"
 			)}
 		>

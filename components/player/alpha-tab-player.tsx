@@ -323,7 +323,7 @@ export default function AlphaTabPlayer() {
 				{/* цикл */}
 				<div className="flex items-center">
 					<Toggle
-						aria-label="Переключить Петлю"
+						aria-label="Переключить цикл"
 						pressed={isLoopingActive}
 						onPressedChange={toggleLooping}
 						disabled={!isPlayerReady || tracks.length === 0}
@@ -336,7 +336,7 @@ export default function AlphaTabPlayer() {
 				{/* Метроном */}
 				<div className="flex items-center">
 					<Toggle
-						aria-label="Переключить Метроном"
+						aria-label="Переключить метроном"
 						pressed={isMetronomeActive}
 						onPressedChange={toggleMetronome}
 						disabled={!isPlayerReady || tracks.length === 0}

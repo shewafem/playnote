@@ -73,6 +73,21 @@ const NoteDot: React.FC<NoteDotProps> = ({
 		}
 	};
 
+	const noteNames: Record<string, string> = {
+		C: "До",
+		"C#": "До♯",
+		D: "Ре",
+		"D#": "Ре♯",
+		E: "Ми",
+		F: "Фа",
+		"F#": "Фа♯",
+		G: "Соль",
+		"G#": "Соль♯",
+		A: "Ля",
+		"A#": "Ля♯",
+		B: "Си",
+	};
+
 	// Interval label for tooltip/aria
 	let intervalLabel = "";
 	if (isRoot) intervalLabel = "Тоника";
@@ -99,7 +114,7 @@ const NoteDot: React.FC<NoteDotProps> = ({
 		// Color hierarchy
 		{
 			"bg-red-600 border-2 border-red-700 text-white": isRoot && !isSelected,
-			"bg-amber-400 border-2 border-amber-600 text-white": isThird && !isRoot && !isSelected,
+			"bg-amber-500 border-2 border-amber-700 text-white": isThird && !isRoot && !isSelected,
 			"bg-blue-500 border-2 border-blue-700 text-white": isFifth && !isRoot && !isThird && !isSelected,
 			"bg-purple-500 border-2 border-purple-700 text-white":
 				isSeventh && !isRoot && !isThird && !isFifth && !isSelected,
@@ -137,7 +152,7 @@ const NoteDot: React.FC<NoteDotProps> = ({
 			{/* Tooltip */}
 			{hovered && (
 				<div className="absolute -top-5 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black/90 text-xs text-white z-100 pointer-events-none whitespace-nowrap shadow-lg">
-					{displayName} {intervalLabel && <span className="text-primary font-bold">({intervalLabel})</span>}
+					{noteNames[displayName]} {intervalLabel && <span className="font-bold">({intervalLabel})</span>}
 				</div>
 			)}
 			{/* Note name */}

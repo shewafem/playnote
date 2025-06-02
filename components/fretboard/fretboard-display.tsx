@@ -30,7 +30,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 
 	return (
-		<div className={cn("flex flex-col p-4 bg-card border border-border rounded-md shadow-lg", "w-fit")}>
+		<div className={cn("flex flex-col p-4 bg-card border rotate-90 sm:rotate-0 my-90 sm:my-0 border-border rounded-md shadow-lg", "sm:max-w-[95vw] w-fit")}>
 			<FretNumbers fretCount={fretCount} />
 			{tuning.map((_, stringIndex) => (
 				<GuitarString

@@ -88,7 +88,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 					)}
 				</div>
 				{selectedNotesForPlayback.length > 0 && !isSelectingNotes && (
-					<p className="text-sm text-muted-foreground">
+					<p className="text-sm text-muted-foreground max-w-[30ch]">
 						Выбранные ноты: <span className="text-foreground font-mono text-xs">{selectedNoteNames || "Нет"}</span>
 					</p>
 				)}
@@ -136,18 +136,16 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 				<div className="flex flex-col gap-2">
 					<div className="">
 						<div className="text-sm text-muted-foreground">
-							Вероятные аккорды:{" "}
+							Вероятные аккорды:
 							<p className="font-mono font-black text-primary text-sm">
-								{" "}
 								{Chord.detect(detectableNotes).join(", ") || "пока неизвестно"}
 							</p>
 						</div>
 					</div>
 					<div className="">
 						<div className="text-sm text-muted-foreground">
-							Выбранные ноты:{" "}
-							<p className="text-primary font-bold font-mono text-sm">
-								{" "}
+							Выбранные ноты:
+							<p className="text-primary font-bold font-mono text-sm max-w-[30ch]">
 								{detectableNotes.join(", ") || "выберите ноты"}
 							</p>
 						</div>

@@ -36,7 +36,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 				</dl>
 			</div>
 			<Link
-				className="text-background dark:text-foreground ml-auto self-end bg-primary p-3 rounded-lg"
+				className="text-background dark:text-foreground ml-auto mr-auto self-end bg-primary p-3 rounded-lg"
 				href="/profile/settings"
 			>
 				Редактировать профиль ✍

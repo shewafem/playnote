@@ -7,7 +7,6 @@ import FretboardDisplay from "./fretboard-display";
 import PlaybackControls from "./playback-controls";
 import {
 	GUITAR_TUNINGS_MIDI,
-	NOTE_NAMES,
 	SHAPES,
 	getNoteValue,
 	getNoteValuesInShape,
@@ -17,6 +16,7 @@ import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
 
 const InteractiveFretboard: React.FC = () => {
+	console.log("render")
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
@@ -283,7 +283,7 @@ const InteractiveFretboard: React.FC = () => {
 						}
 					}, `+${totalDurationInSeconds}`);
 				} catch (e) {
-					console.error("Ошибка планирования остановки обратной последовательности:", e);
+					console.error("Ошибка планирования остановки последовательности:", e);
 					console.warn("Не удалось запланировать остановку. Возможно, потребуется остановить вручную.");
 				}
 			} else {
@@ -309,13 +309,10 @@ const InteractiveFretboard: React.FC = () => {
 
 	return (
 		<section className="flex flex-col gap-4 justify-center items-center">
-			<h1 className="text-4xl font-bold tracking-tight lg:text-5xl bg-clip-text text-center text-transparent bg-gradient-to-r from-foreground to-primary">
+			<h1 className="text-4xl font-bold mb-4 tracking-tight lg:text-5xl bg-clip-text text-center text-transparent bg-gradient-to-r from-foreground to-primary">
 				Интерактивный гриф
 			</h1>
 			<Controls
-				availableKeys={NOTE_NAMES}
-				availableShapeTypes={Object.keys(SHAPES)}
-				availableShapeNames={Object.keys(SHAPES[selectedShapeType] || {})}
 			/>
 			<PlaybackControls
 				playPingPongSequence={playPingPongSequence}

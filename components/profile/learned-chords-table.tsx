@@ -116,7 +116,7 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[250px]">
+              <TableHead className="w-30 md:w-40 lg:w-50">
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("chordKey")}
@@ -133,10 +133,10 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
             {groupedAndSortedChords.length > 0 ? (
               groupedAndSortedChords.map((group) => (
                 <TableRow className="border-b" key={group.chordId}>
-                  <TableCell className="align-middle">
-                    <Link className="flex font-bold text-md lg:text-xl items-center gap-2 justify-center" href={`/chords/${group.key}/${group.suffix}`}>{group.key} {group.suffix} <ExternalLink /></Link>
+                  <TableCell className="sm:align-middle align-top">
+                    <Link className="flex font-bold sm:text-xl justify-center items-center gap-2" href={`/chords/${group.key}/${group.suffix}`}>{group.key} {group.suffix} <ExternalLink /></Link>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="border-border border-x-2 ">
                     <div className="flex flex-wrap gap-4 items-center justify-center">
                       {group.positions.map((pos, posIndex) => (
                         <div key={pos.id} className="w-32 md:w-40">
