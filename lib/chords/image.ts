@@ -27,8 +27,8 @@ export const downloadPng = (svgElement: SVGSVGElement, fileName: string) => {
   const url = URL.createObjectURL(svgBlob);
 
   img.onload = () => {
-    canvas.width = svgElement.width.baseVal.value * 4;
-    canvas.height = svgElement.height.baseVal.value * 4;
+    canvas.width = 700;
+    canvas.height = 680;
     ctx?.drawImage(img, 0, 0);
     const pngUrl = canvas.toDataURL("image/png");
     const link = document.createElement("a");
