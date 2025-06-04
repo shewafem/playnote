@@ -1,6 +1,10 @@
 import { create } from "zustand";
+//import { NoteValue } from "./fretboard-utils";
 
 export interface FretboardStore {
+  //selectedRootNoteValue: NoteValue;
+  //setSelectedRootNoteValue: (noteValue: NoteValue) => void;
+
 	selectedKey: string;
 	setSelectedKey: (key: string) => void;
 

@@ -2,6 +2,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,16 +24,22 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
+  tabFiles TabFile[]
+  quizes   Quiz[]
+
   accounts Account[]
   sessions Session[]
 
-  // Admin/Teacher
-  coursesCreated   Course[]   @relation("TeacherCourses")
+  coursesCreated Course[] @relation("TeacherCourses")
+
+  scalesCreated    Int[]
+  arpeggiosCreated Int[]
+  tuningsCreated   Int[]
 
   learnedScales    Scale[]
+  learnedArpeggios Arpeggio[]
   learnedPositions Position[]
 
-  // Student
   enrollments Enrollment[]
   progress    LessonProgress[]
 
@@ -140,7 +147,7 @@ enum LessonContentType {
 model Lesson {
   id          String            @id @default(cuid())
   title       String
-  content     String            @db.Text 
+  content     String            @db.Text
   contentType LessonContentType
   order       Int
   createdAt   DateTime          @default(now())
@@ -218,9 +225,48 @@ model Position {
 }
 
 model Scale {
-  id        Int    @id @default(autoincrement())
-  name      String
-  formula   String @unique
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  formula Int[]  @unique
 
   learnedBy User[]
+}
+
+model Arpeggio {
+  id      Int    @id @default(autoincrement())
+  name    String @unique
+  formula Int[]  @unique
+
+  learnedBy User[]
+}
+
+model Tuning {
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  notes String[] @unique
+}
+
+model TabFile {
+  id          String   @id @default(cuid())
+  fileName    String
+  title       String?
+  artist      String?
+  fileContent Bytes // Store the file content as bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Quiz {
+  id        String   @id @default(cuid())
+  title     String
+  userId    String   // Who created the quiz
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Add questions, etc.
 }

@@ -6,7 +6,7 @@ import { downloadPng, downloadSvg } from "@/lib/chords/image";
 import { playChord } from "@/lib/chords/player";
 import { Position } from "@prisma/client";
 import Chord from "@techies23/react-chords";
-import { CheckCircle, Download, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, Download, GraduationCap, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Note } from "tonal";
@@ -107,14 +107,14 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 						}
             ${isPending ? "cursor-not-allowed opacity-70" : ""}`}
 					>
+            <span>{isPending ? "Обновление" : isLearned ? "Выучено" : "Выучить"}</span>
 						{isPending ? (
 							<Loader2 size={14} className="animate-spin" />
 						) : isLearned ? (
 							<CheckCircle size={14} />
 						) : (
-							<XCircle size={14} />
+							<GraduationCap size={14}/>
 						)}
-						<span>{isPending ? "Обновление..." : isLearned ? "Выучено" : "Выучить"}</span>
 					</button>
 				) : (
 					<button

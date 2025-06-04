@@ -16,7 +16,7 @@ import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
 
 const InteractiveFretboard: React.FC = () => {
-	console.log("render")
+	console.log("render");
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
@@ -203,12 +203,12 @@ const InteractiveFretboard: React.FC = () => {
 							const { id, note } = event;
 							const nonNegativeTime = Math.max(0, time);
 
-							Tone.Draw.schedule(() => {
+							Tone.getDraw().schedule(() => {
 								setCurrentlyPlayingNoteId(id);
 							}, time);
 
 							const highlightDuration = Tone.Time("16n").toSeconds();
-							Tone.Draw.schedule(() => {
+							Tone.getDraw().schedule(() => {
 								setCurrentlyPlayingNoteId(null);
 							}, time + highlightDuration);
 
@@ -312,8 +312,7 @@ const InteractiveFretboard: React.FC = () => {
 			<h1 className="text-4xl font-bold mb-4 tracking-tight lg:text-5xl bg-clip-text text-center text-transparent bg-gradient-to-r from-foreground to-primary">
 				Интерактивный гриф
 			</h1>
-			<Controls
-			/>
+			<Controls />
 			<PlaybackControls
 				playPingPongSequence={playPingPongSequence}
 				playSelectedNotes={playSelectedNotes}
