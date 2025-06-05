@@ -4,7 +4,7 @@ import Fret from "./fret";
 // GUITAR_TUNING_DEFAULT не нужен здесь, если selectedTuning передается
 import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
-// import { useFretboardStore } from "@/lib/fretboard-store"; // Не нужен здесь, если startFret и fretCount передаются как props
+import { useFretboardStore } from "@/lib/fretboard-store";
 
 interface GuitarStringProps {
 	stringIndex: number;
@@ -15,8 +15,6 @@ interface GuitarStringProps {
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
 	selectedTuning: string;
-	startFret: number;
-	endFret: number;
 	// Вместо передачи пропсами, возьмем из FretboardDisplay или напрямую из стора, если удобнее
 }
 
@@ -29,10 +27,9 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	onNoteClick,
 	isToneReady,
 	selectedTuning,
-	startFret, // Начальный абсолютный лад для отображения
-	endFret, // Конечный абсолютный лад для отображения
 }) => {
-	// const displayStringIndex = GUITAR_TUNING_DEFAULT.length - 1 - stringIndex; // Зависит от GUITAR_TUNING_DEFAULT, лучше передать количество струн или вычислить из selectedTuning
+  const startFret = useFretboardStore((s) => s.startFret);
+  const endFret = useFretboardStore((s) => s.endFret)
 
 	const fretsOnString = [];
 	// Если startFret === 0, включаем "nut" (лад 0)
@@ -62,7 +59,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 				<Fret
 					key={`${stringIndex}-${absoluteFretNumber}`}
 					stringIndex={stringIndex}
-					fretNumber={absoluteFretNumber} // Передаем АБСОЛЮТНЫЙ номер лада
+					fretNumber={absoluteFretNumber}
 					highlightedNotes={highlightedNotes}
 					rootNoteValue={rootNoteValue}
 					selectedNotesForPlayback={selectedNotesForPlayback}

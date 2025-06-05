@@ -60,7 +60,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 	};
 
 	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
-	if (!tuning) return <div>Выбранный строй не найден</div>; // Защита
+	if (!tuning) return <div>Выбранный строй не найден</div>;
 	// Вычисляем количество столбцов для маркеров под грифом
 	const fretsForMarkers = [];
 	const firstNumberedFretForMarker = startFret === 0 ? 1 : startFret;
@@ -77,7 +77,6 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 					"flex flex-col flex-wrap p-1 sm:p-2.5 bg-card border sm:max-w-[90vw] max-w-[90vh] rotate-90 sm:rotate-0 my-50 sm:my-0 border-border rounded-md shadow-lg overflow-auto"
 				)}
 			>
-				{/* FretNumbers теперь берет startFret и fretCount из стора */}
 				<FretNumbers />
 				{tuning.map((_, stringIndex) => (
 					<GuitarString
@@ -90,8 +89,6 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
             onNoteClick={isToneReady ? onNoteClick : undefined}
             isToneReady={isToneReady}
             selectedTuning={selectedTuning}
-            startFret={startFret} // Передаем
-            endFret={endFret} // Передаем
 				/>
 				))}
 				{/* Маркеры под грифом */}
@@ -124,6 +121,9 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
 				Скачать текущий гриф <Download />
 			</Button>
+      {/*<Button className="cursor-pointer" onClick={saveConfiguration}>
+				Сохранить текущую конфигурацию грифа <Download />
+			</Button>*/}
 		</>
 	);
 };

@@ -1,4 +1,4 @@
-import { getSuffixes } from "@/lib/chords/utils";
+import { getSuffixes } from "@/actions/chords/get-chords";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: { params: Promise<{ key: string }> }) {

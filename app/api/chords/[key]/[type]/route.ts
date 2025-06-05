@@ -1,4 +1,4 @@
-import { getChord } from "@/lib/chords/utils";
+import { getChord } from "@/actions/chords/get-chords";
 import { NextResponse } from "next/server";
 
 export async function GET(

@@ -8,9 +8,6 @@ import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
 	className?: string;
-	//availableKeys: string[];
-	//availableShapeTypes: string[];
-	//availableShapeNames: string[];
 }
 
 const Controls: React.FC<ControlsProps> = ({ className }) => {

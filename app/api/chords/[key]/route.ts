@@ -1,4 +1,4 @@
-import { getChordsByKey } from "@/lib/chords/utils";
+import { getChordsByKey } from "@/actions/chords/get-chords";
 import { NextResponse } from "next/server";
 export async function GET(
 	request: Request,
