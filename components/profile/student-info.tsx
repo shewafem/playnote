@@ -2,33 +2,33 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PositionWithChord } from "@/lib/chords/types";
-import { Enrollment } from "@prisma/client";
+//import { Enrollment } from "@prisma/client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { BookOpen, Guitar, PlayCircle } from "lucide-react";
+import { Guitar, PlayCircle } from "lucide-react";
 
 interface StudentInfoProps {
 	user: {
-		enrollments: Enrollment[];
+		//enrollments: Enrollment[];
 		learnedPositions: PositionWithChord[];
 	};
 }
 
 export default function StudentInfo({ user }: StudentInfoProps) {
-	const enrolledCourses = user.enrollments || [];
+	//const enrolledCourses = user.enrollments || [];
 	const learnedPositions = user.learnedPositions || [];
 
 	const cardItems = [
-		{
-			title: "Мои курсы",
-			icon: <BookOpen size={16} className="text-primary" />,
-			description: (
-				<p>
-					Вы записаны на <span className="text-primary text-lg"> {enrolledCourses.length}</span> курсов
-				</p>
-			),
-			link: "/profile/courses",
-		},
+		//{
+		//	title: "Мои курсы",
+		//	icon: <BookOpen size={16} className="text-primary" />,
+		//	description: (
+		//		<p>
+		//			Вы записаны на <span className="text-primary text-lg"> {enrolledCourses.length}</span> курсов
+		//		</p>
+		//	),
+		//	link: "/profile/courses",
+		//},
 		{
 			title: "Мои аккорды",
 			icon: <Guitar size={16} className="text-primary" />,

@@ -6,7 +6,8 @@ import InfiniteScroll from "@/components/ui/infinite-scroll";
 import { Loader2 } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { ChordWithPositions } from "@/lib/chords/types";
-import { fetchMoreChordsAction } from "@/actions/chord-actions";
+import { fetchMoreChordsAction } from "@/actions/chords/get-chords";
+import Link from "next/link";
 
 type ChordListProps = {
 	initialChords: ChordWithPositions[];
@@ -84,7 +85,7 @@ const ChordList: React.FC<ChordListProps> = ({
 								key={`${chord.id}-${chordIndex}`}
 								className="self-start flex flex-col gap-4 bg-card text-card-foreground rounded-lg border border-border shadow-sm p-4 md:p-6"
 							>
-								<h2 className="text-xl text-center md:text-2xl font-semibold">{`${chord.key} ${chord.suffix}`}</h2>
+								<Link href={`/chords/${chord.key}/${chord.suffix}`}><h2 className="text-xl text-center md:text-2xl font-semibold">{`${chord.key} ${chord.suffix}`}</h2></Link>
 								<div className="grid gap-y-8 grid-cols-2 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 									{chord.positions.map((position, posIndex) => (
 										<ChordElement

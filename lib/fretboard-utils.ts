@@ -20,11 +20,6 @@ const transformNotesToMidi = (notes: string[]): number[] => {
 	return midiValues.filter((midi): midi is number => midi !== null).reverse();
 };
 
-export async function fetchTunings() {
-  const tunings = await fetch("api/fretboard/tunings").then((res) => res.json());
-  return tunings as { [key: string]: string[] };
-}
-
 export const GUITAR_TUNINGS_MIDI: { [key: string]: number[] } = {
 	"Стандартный (E-A-D-G-B-E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
 	"Drop D (D-A-D-G-B-E)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "E4"]),
