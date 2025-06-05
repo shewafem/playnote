@@ -3,7 +3,7 @@ import { formatItem } from "@/lib/chords/utils";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Position } from "@prisma/client";
-import React from "react";
+import React, { Suspense } from "react";
 import { getChord } from "@/actions/chords/get-chords";
 async function getCurrentUserLearnedPositionIds(userId: string | undefined): Promise<number[]> {
 	if (!userId) {
@@ -51,18 +51,20 @@ export default async function TypeOfChordsOfKey({ params }: { params: Promise<{ 
 	return (
 		<div className="self-start flex flex-col gap-4 bg-card text-card-foreground rounded-lg border border-border shadow-sm p-4 md:p-6">
 			<h2 className="text-xl text-center md:text-2xl font-semibold">{`${chord.key} ${chord.suffix}`}</h2>
-			<div className="grid gap-y-8 grid-cols-2 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-				{chord.positions.map((position: Position, posIndex: number) => (
-					<ChordElement
-						key={`${position.id}-${posIndex}`}
-						position={position}
-						chordKey={chord.key}
-						suffix={chord.suffix}
-						posIndex={posIndex}
-						isInitiallyLearned={learnedIdsSet.has(position.id)}
-					/>
-				))}
-			</div>
+			<Suspense>
+			  <div className="grid gap-y-8 grid-cols-2 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  				{chord.positions.map((position: Position, posIndex: number) => (
+  					<ChordElement
+  						key={`${position.id}-${posIndex}`}
+  						position={position}
+  						chordKey={chord.key}
+  						suffix={chord.suffix}
+  						posIndex={posIndex}
+  						isInitiallyLearned={learnedIdsSet.has(position.id)}
+  					/>
+  				))}
+  			</div>
+			</Suspense>
 		</div>
 	);
 }
