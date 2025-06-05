@@ -53,6 +53,7 @@ const Fret: React.FC<FretProps> = ({
 		<div
 			className={cn(
 				"flex border-foreground/80 border-x-3 items-center justify-center h-full",
+				// Ширина для "nut" (лад 0)
 				fretNumber === 0 ? "w-10 border-0" : "w-18"
 			)}
 		>

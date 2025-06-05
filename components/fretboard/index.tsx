@@ -7,6 +7,7 @@ import FretboardDisplay from "./fretboard-display";
 import PlaybackControls from "./playback-controls";
 import {
 	GUITAR_TUNINGS_MIDI,
+	NOTE_NAMES,
 	SHAPES,
 	getNoteValue,
 	getNoteValuesInShape,
@@ -14,15 +15,22 @@ import {
 } from "@/lib/fretboard-utils";
 import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const InteractiveFretboard: React.FC = () => {
-	console.log("render");
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
+	const setSelectedKey = useFretboardStore((s) => s.setSelectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
+	const setSelectedShapeType = useFretboardStore((s) => s.setSelectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
 	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
 	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
-	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
+	const fretCount = useFretboardStore((s) => s.fretCount); // Количество отображаемых
+	const setFretCount = useFretboardStore((s) => s.setFretCount);
+	const startFret = useFretboardStore((s) => s.startFret); // Начальный лад
+	const setStartFret = useFretboardStore((s) => s.setStartFret);
+
 	const isToneReady = useFretboardStore((s) => s.isToneReady);
 	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
 	const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
@@ -36,7 +44,102 @@ const InteractiveFretboard: React.FC = () => {
 	const setIsPlayingSequence = useFretboardStore((s) => s.setIsPlayingSequence);
 	const setCurrentPlaybackType = useFretboardStore((s) => s.setCurrentPlaybackType);
 	const setCurrentlyPlayingNoteId = useFretboardStore((s) => s.setCurrentlyPlayingNoteId);
-	const fretCount = useFretboardStore((s) => s.fretCount);
+
+	// --- Query Params Logic ---
+	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+
+	const initializedFromUrl = useRef(false);
+	const isInitializingFromUrl = useRef(false); // Renamed for clarity
+
+	// Effect to initialize state from URL params
+	useEffect(() => {
+		if (initializedFromUrl.current || !searchParams) return;
+
+		isInitializingFromUrl.current = true;
+
+		const keyFromUrl = searchParams.get("key");
+		if (keyFromUrl && NOTE_NAMES.includes(keyFromUrl) && selectedKey !== keyFromUrl) {
+			setSelectedKey(keyFromUrl);
+		}
+
+		const startFretFromUrl = searchParams.get("startFret");
+		if (startFretFromUrl) {
+			const numStartFret = parseInt(startFretFromUrl, 10);
+			// Валидация для startFret (должна быть согласована с логикой в сторе)
+			if (!isNaN(numStartFret) && numStartFret >= 0 && startFret !== numStartFret) {
+				setStartFret(numStartFret); // Стор сделает clamping
+			}
+		}
+
+		let typeToUseForNameValidation = selectedShapeType;
+		const typeFromUrl = searchParams.get("type");
+		if (typeFromUrl && Object.keys(SHAPES).includes(typeFromUrl) && selectedShapeType !== typeFromUrl) {
+			setSelectedShapeType(typeFromUrl);
+			typeToUseForNameValidation = typeFromUrl;
+		}
+
+		const nameFromUrl = searchParams.get("name");
+		const availableShapesForType = Object.keys(SHAPES[typeToUseForNameValidation] || {});
+		if (nameFromUrl && availableShapesForType.includes(nameFromUrl) && selectedShapeName !== nameFromUrl) {
+			setSelectedShapeName(nameFromUrl);
+		}
+		// Note: The dependent effect for selectedShapeName based on selectedShapeType will ensure consistency.
+
+		const tuningFromUrl = searchParams.get("tuning");
+		if (tuningFromUrl && Object.keys(GUITAR_TUNINGS_MIDI).includes(tuningFromUrl) && selectedTuning !== tuningFromUrl) {
+			setSelectedTuning(tuningFromUrl);
+		}
+
+		const fretsFromUrl = searchParams.get("frets");
+		if (fretsFromUrl) {
+			const numFrets = parseInt(fretsFromUrl, 10);
+			if (!isNaN(numFrets) && numFrets >= 1 && numFrets <= 24 && fretCount !== numFrets) {
+				setFretCount(numFrets);
+			}
+		}
+
+		initializedFromUrl.current = true;
+		// Defer unsetting isInitializingFromUrl slightly to allow all initial state updates to settle
+		requestAnimationFrame(() => {
+			isInitializingFromUrl.current = false;
+		});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchParams]); // Depends only on searchParams to run once they are available.
+	// Store state variables and setters are intentionally not in dependencies here.
+
+	// Effect to update URL when relevant store state changes
+	useEffect(() => {
+		if (!initializedFromUrl.current || isInitializingFromUrl.current) {
+			// Don't update URL if not yet initialized from it, or if currently in the process of initializing
+			return;
+		}
+
+		const newParams = new URLSearchParams();
+		newParams.set("key", selectedKey);
+		newParams.set("type", selectedShapeType);
+
+		const currentShapeConfig = SHAPES[selectedShapeType];
+		if (currentShapeConfig && currentShapeConfig[selectedShapeName]) {
+			newParams.set("name", selectedShapeName);
+		} else {
+			const availableShapes = Object.keys(currentShapeConfig || {});
+			if (availableShapes.length > 0) {
+				newParams.set("name", availableShapes[0]); // Fallback to the first available shape name
+			}
+		}
+		newParams.set("tuning", selectedTuning);
+		newParams.set("startFret", startFret.toString());
+		newParams.set("frets", fretCount.toString()); // fretCount - это кол-во отображаемых
+
+		const currentUrlSearchParams = new URLSearchParams(window.location.search);
+		if (currentUrlSearchParams.toString() !== newParams.toString()) {
+			router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+		}
+	}, [selectedKey, selectedShapeType, selectedShapeName, selectedTuning, fretCount, router, pathname, startFret]);
+
 	//обычный тюнинг
 	useEffect(() => {
 		if (!selectedTuning) {
@@ -322,7 +425,6 @@ const InteractiveFretboard: React.FC = () => {
 				highlightedNotes={highlightedNoteValues}
 				rootNoteValue={rootNoteValue}
 				onNoteClick={noteClickHandler}
-				fretCount={fretCount}
 			/>
 		</section>
 	);

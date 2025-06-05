@@ -1,9 +1,10 @@
 import { create } from "zustand";
+import { DEFAULT_FRETS, MAX_FRETS, MIN_FRETS } from "./fretboard-utils";
 //import { NoteValue } from "./fretboard-utils";
 
 export interface FretboardStore {
-  //selectedRootNoteValue: NoteValue;
-  //setSelectedRootNoteValue: (noteValue: NoteValue) => void;
+	//selectedRootNoteValue: NoteValue;
+	//setSelectedRootNoteValue: (noteValue: NoteValue) => void;
 
 	selectedKey: string;
 	setSelectedKey: (key: string) => void;
@@ -47,6 +48,9 @@ export interface FretboardStore {
 
 	fretCount: number;
 	setFretCount: (count: number) => void;
+
+	startFret: number;
+	setStartFret: (startFret: number) => void;
 }
 
 export const useFretboardStore = create<FretboardStore>((set, get) => ({
@@ -103,6 +107,22 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 		set({ selectedNotesForPlayback: get().currentlySelectingNotes, isSelectingNotes: false });
 	},
 
-	fretCount: 12,
-	setFretCount: (count) => set({ fretCount: count }),
+	fretCount: DEFAULT_FRETS,
+	setFretCount: (count) => {
+		const clampedCount = Math.min(Math.max(Number(count), MIN_FRETS), MAX_FRETS);
+		if (!isNaN(clampedCount)) {
+			set({ fretCount: clampedCount });
+		}
+	},
+
+	startFret: MIN_FRETS, // По умолчанию начинаем с открытых струн 0
+	setStartFret: (newStartFret) => {
+		const currentFretCount = get().fretCount;
+		const maxPossibleStartFret = MAX_FRETS + 1 - currentFretCount;
+		const clampedStartFret = Math.min(Math.max(Number(newStartFret), 0), maxPossibleStartFret);
+
+		if (!isNaN(clampedStartFret)) {
+			set({ startFret: clampedStartFret });
+		}
+	},
 }));

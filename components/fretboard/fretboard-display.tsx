@@ -9,68 +9,74 @@ import { useFretboardStore } from "@/lib/fretboard-store";
 import { Button } from "../ui/button";
 import html2canvas from "html2canvas-pro";
 import { Download } from "lucide-react";
+
 interface FretboardDisplayProps {
 	highlightedNotes: Set<NoteValue>;
 	rootNoteValue: NoteValue;
 	onNoteClick?: (value: string) => void;
-	fretCount: number;
+	// fretCount и startFret теперь из стора
 }
 
 const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
-	highlightedNotes,
-	rootNoteValue,
-	onNoteClick,
-	fretCount,
+    highlightedNotes,
+    rootNoteValue,
+    onNoteClick,
 }) => {
-	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
-	const currentlySelectingNotes = useFretboardStore((s) => s.currentlySelectingNotes);
-	const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
-	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
-	const isToneReady = useFretboardStore((s) => s.isToneReady);
-	const selectedNotes = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
-	const selectedNotesSet = React.useMemo(() => new Set(selectedNotes || []), [selectedNotes]);
-	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+    const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
+    const currentlySelectingNotes = useFretboardStore((s) => s.currentlySelectingNotes);
+    const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
+    const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+    const isToneReady = useFretboardStore((s) => s.isToneReady);
+    const fretCountToDisplay = useFretboardStore((s) => s.fretCount); // Количество отображаемых
+    const firstFretToDisplay = useFretboardStore((s) => s.startFret); // Начальный абсолютный
+    const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
 
-  const rootNote = getNoteName(rootNoteValue);
+    const selectedNotes = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
+    const selectedNotesSet = React.useMemo(() => new Set(selectedNotes || []), [selectedNotes]);
+    
+    const rootNote = getNoteName(rootNoteValue);
+    const fretboardDisplayRef = useRef<HTMLDivElement>(null);
 
-  const fretboardDisplayRef = useRef<HTMLDivElement>(null);
+	const downloadFretboardImage = async () => {
+		const element = fretboardDisplayRef.current;
+		if (!element) {
+			console.warn("Элемент не найден");
+			return;
+		}
 
-  const downloadFretboardImage = async () => {
-    const element = fretboardDisplayRef.current;
-    if (!element) {
-      console.warn("Элемент не найден");
-      return;
-    }
+		try {
+			const canvas = await html2canvas(element, {
+				width: element.clientWidth,
+				backgroundColor: null,
+			});
 
-    try {
-      const canvas = await html2canvas(element, {
-        width: element.clientWidth,
-        backgroundColor: null,
-      });
+			const dataURL = canvas.toDataURL("image/png");
 
-      const dataURL = canvas.toDataURL("image/png");
+			const link = document.createElement("a");
+			link.href = dataURL;
+			link.download = `Гриф-${rootNote}-${selectedShapeName}-${selectedTuning}.png`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (error) {
+			console.error("Ошибка генерации изображения:", error);
+		}
+	};
 
-      const link = document.createElement("a");
-      link.href = dataURL;
-      link.download = `Гриф-${rootNote}-${selectedShapeName}-${selectedTuning}.png`
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Ошибка генерации изображения:", error);
-    }
-  };
 	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
+	if (!tuning) return <div>Выбранный строй не найден</div>; // Защита
 
 	return (
-		<>		<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
+		<>
+			<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
 			<div
 				ref={fretboardDisplayRef}
 				className={cn(
 					"flex flex-col flex-wrap p-1 sm:p-2.5 bg-card border sm:max-w-[90vw] max-w-[90vh] rotate-90 sm:rotate-0 my-50 sm:my-0 border-border rounded-md shadow-lg overflow-auto"
 				)}
 			>
-				<FretNumbers fretCount={fretCount} />
+				{/* FretNumbers теперь берет startFret и fretCount из стора */}
+				<FretNumbers />
 				{tuning.map((_, stringIndex) => (
 					<GuitarString
 						key={stringIndex}
@@ -82,17 +88,21 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 						onNoteClick={isToneReady ? onNoteClick : undefined}
 						isToneReady={isToneReady}
 						selectedTuning={selectedTuning}
-						fretCount={fretCount}
+						fretCountToDisplay={fretCountToDisplay} // Передаем кол-во отображаемых
+						firstFretToDisplay={firstFretToDisplay} // Передаем начальный абсолютный
 					/>
 				))}
-				{/* Marker */}
+				{/* Маркеры под грифом */}
 				<div className="flex h-2 sm:h-5 items-center select-none mt-1">
-					<div className="w-10"></div>
-					{[...Array(fretCount)].map((_, fretIndex) => {
-						const fret = fretIndex + 1;
-						if (fret === 12 || fret === 24) {
+					{/* Отступ слева для нут/открытых струн */}
+					<div className={cn(firstFretToDisplay === 0 ? "w-10" : "w-0")}></div>
+					{[...Array(fretCountToDisplay)].map((_, index) => {
+						// Абсолютный номер лада для текущей позиции маркера
+						const absoluteFretNumber = firstFretToDisplay + index + (firstFretToDisplay === 0 ? 1 : 0);
+
+						if (absoluteFretNumber === 12 || absoluteFretNumber === 24) {
 							return (
-								<div key={`fret-dot-${fretIndex}`} className="w-18 flex flex-col items-center justify-center">
+								<div key={`fret-dot-${absoluteFretNumber}`} className="w-18 flex flex-col items-center justify-center">
 									<div className="h-1"></div>
 									<div className="flex gap-1 items-center">
 										<span className="w-2 h-2 xs:w-3 xs:h-3 rounded-full bg-black/70 dark:bg-white/70 block"></span>
@@ -101,18 +111,20 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 								</div>
 							);
 						}
-						if ([3, 5, 7, 9, 15, 17, 19, 21].includes(fret)) {
+						if ([3, 5, 7, 9, 15, 17, 19, 21].includes(absoluteFretNumber)) {
 							return (
-								<div key={`fret-dot-${fretIndex}`} className="w-18 flex items-center justify-center">
+								<div key={`fret-dot-${absoluteFretNumber}`} className="w-18 flex items-center justify-center">
 									<span className="w-2 h-2 xs:w-3 xs:h-3 rounded-full dark:bg-white/70 bg-black/70 block"></span>
 								</div>
 							);
 						}
-						return <div key={`fret-dot-${fretIndex}`} className="w-18"></div>;
+						return <div key={`fret-dot-${absoluteFretNumber}`} className="w-18"></div>;
 					})}
 				</div>
 			</div>
-			<Button className="cursor-pointer" onClick={downloadFretboardImage}>Скачать текущий гриф <Download /></Button>
+			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
+				Скачать текущий гриф <Download />
+			</Button>
 		</>
 	);
 };

@@ -1,10 +1,9 @@
 // components/interactive-fretboard/controls.tsx
 import React from "react";
-import { GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { NOTE_NAMES, SHAPES } from "@/lib/fretboard-utils";
+import { GUITAR_TUNINGS_MIDI, NOTE_NAMES, SHAPES, MAX_FRETS } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
@@ -25,6 +24,8 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
 	const fretCount = useFretboardStore((s) => s.fretCount);
 	const setFretCount = useFretboardStore((s) => s.setFretCount);
+	const startFret = useFretboardStore((s) => s.startFret);
+	const setStartFret = useFretboardStore((s) => s.setStartFret);
 
 	const availableKeys = NOTE_NAMES;
 	const availableShapeTypes = Object.keys(SHAPES);
@@ -72,7 +73,9 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		11: "7",
 	};
 
-	const formula = SHAPES[selectedShapeType][selectedShapeName]?.map((note) => noteNames[note]);
+	const shapeIntervals = SHAPES[selectedShapeType]?.[selectedShapeName];
+	// Ensure formula is always an array, even if the shape is temporarily not found
+	const formula = shapeIntervals ? shapeIntervals.map((noteValue) => noteNames[noteValue]) : [];
 
 	return (
 		<div className={cn("flex flex-col gap-3", className)}>
@@ -138,13 +141,33 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 							</SelectContent>
 						</Select>
 					</div>
+          <div className="flex flex-col gap-1.5">
+						<Label htmlFor="start-fret-input">Начальный лад</Label>
+						<input
+							id="start-fret-input"
+							type="number"
+							min={0}
+							max={fretCount - 1}
+							value={startFret}
+							onChange={(e) => {
+								const rawValue = e.target.value;
+								if (rawValue === "") return;
+								const numValue = parseInt(rawValue, 10);
+								if (!isNaN(numValue)) {
+									setStartFret(numValue);
+								}
+							}}
+							className="w-[80px] border rounded px-2 py-1"
+							placeholder="Начало"
+						/>
+					</div>
 					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="fret-count-input">Лады</Label>
 						<input
 							id="fret-count-input"
 							type="number"
 							min={1}
-							max={24}
+							max={MAX_FRETS}
 							value={fretCount}
 							onChange={(e) => setFretCount(Number(e.target.value))}
 							className="w-[80px] border rounded px-2 py-1"
@@ -168,48 +191,48 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 					))}
 				</div>
 				<div className="flex gap-3 flex-col items-center">
-          <p className="text-center text-xs text-muted-foreground">Цветовые обозначения нот:</p>
+					<p className="text-center text-xs text-muted-foreground">Цветовые обозначения нот:</p>
 					<div className="flex gap-2 items-center">
-					  <Tooltip>
-  						<TooltipTrigger>
-  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-red-600 border-2 border-red-700 text-white">
-  								1
-  							</div>
-  						</TooltipTrigger>
-  						<TooltipContent>
-  							<p>Тоника</p>
-  						</TooltipContent>
-  					</Tooltip>
-  					<Tooltip>
-  						<TooltipTrigger>
-  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-amber-500 border-2 border-amber-700 text-white">
-  								3
-  							</div>
-  						</TooltipTrigger>
-  						<TooltipContent>
-  							<p>Большая терция</p>
-  						</TooltipContent>
-  					</Tooltip>
-  					<Tooltip>
-  						<TooltipTrigger>
-  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-blue-500 border-2 border-blue-700 text-white">
-  								5
-  							</div>
-  						</TooltipTrigger>
-  						<TooltipContent>
-  							<p>Чистая квинта</p>
-  						</TooltipContent>
-  					</Tooltip>
-  					<Tooltip>
-  						<TooltipTrigger>
-  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-purple-500 border-2 border-purple-700 text-white">
-  								7
-  							</div>
-  						</TooltipTrigger>
-  						<TooltipContent>
-  							<p>Большая септима</p>
-  						</TooltipContent>
-  					</Tooltip>
+						<Tooltip>
+							<TooltipTrigger>
+								<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-red-600 border-2 border-red-700 text-white">
+									1
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Тоника</p>
+							</TooltipContent>
+						</Tooltip>
+						<Tooltip>
+							<TooltipTrigger>
+								<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-amber-500 border-2 border-amber-700 text-white">
+									3
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Большая терция</p>
+							</TooltipContent>
+						</Tooltip>
+						<Tooltip>
+							<TooltipTrigger>
+								<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-blue-500 border-2 border-blue-700 text-white">
+									5
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Чистая квинта</p>
+							</TooltipContent>
+						</Tooltip>
+						<Tooltip>
+							<TooltipTrigger>
+								<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-purple-500 border-2 border-purple-700 text-white">
+									7
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>Большая септима</p>
+							</TooltipContent>
+						</Tooltip>
 					</div>
 				</div>
 			</div>
