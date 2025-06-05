@@ -52,7 +52,7 @@ const ChordList: React.FC<ChordListProps> = ({
 			const result = await fetchMoreChordsAction(chordKey, offset, itemsPerPage);
 
 			if (result.error) {
-				console.error("Failed to load more chords:", result.error);
+				console.error("Ошибка загруки аккордов:", result.error);
 				setHasMore(false); 
 				return;
 			}

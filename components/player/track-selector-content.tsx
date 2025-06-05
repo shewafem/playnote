@@ -58,7 +58,7 @@ const TrackSelectorContent: React.FC<TrackSelectorContentProps> = ({
 										: isTrackSoloed(track)
 											? `Показана только дорожка: ${
 													track.name || `Дорожка ${track.index + 1}`
-												}. Кликните снова, чтобы показать все.`
+												}.`
 											: `Кликните, чтобы показать только: ${track.name || `Дорожка ${track.index + 1}`}`
 								}
 							>
@@ -79,7 +79,7 @@ const TrackSelectorContent: React.FC<TrackSelectorContentProps> = ({
 										toggleTrackMute(arrayIndex);
 									}}
 									disabled={!isPlayerReady}
-									className="mt-1 w-full h-auto py-1 text-[10px] leading-tight px-1.5"
+									className="mt-1 w-full h-auto py-1 text-[10px] leading-tight px-1.5 cursor-pointer"
 									title={trackMuteStates[arrayIndex] ? "Включить звук дорожки" : "Выключить звук дорожки"}
 								>
 									{trackMuteStates[arrayIndex] ? <VolumeX className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}

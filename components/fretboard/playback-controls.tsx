@@ -63,7 +63,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 	}, [stopPlayback, resetSelection]);
 
 	return (
-		<div className="flex gap-8 p-4 border border-dashed border-border rounded-md bg-card">
+		<div className="flex gap-8 flex-col sm:flex-row p-4 border border-dashed border-border rounded-md bg-card">
 			<div className="flex flex-col gap-5">
 				<h4 className="text-lg font-semibold text-center">Выбор нот и воспроизведение 🎶</h4>
 				<div className="flex flex-wrap items-center gap-3">
@@ -89,7 +89,7 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 				</div>
 				{selectedNotesForPlayback.length > 0 && !isSelectingNotes && (
 					<p className="text-sm text-muted-foreground max-w-[30ch]">
-						Выбранные ноты: <span className="text-foreground font-mono text-xs">{selectedNoteNames || "Нет"}</span>
+						Выбранные ноты: <span className="text-foreground font-bold font-mono text-md">{selectedNoteNames || "Нет"}</span>
 					</p>
 				)}
 			</div>

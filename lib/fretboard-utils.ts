@@ -20,6 +20,11 @@ const transformNotesToMidi = (notes: string[]): number[] => {
 	return midiValues.filter((midi): midi is number => midi !== null).reverse();
 };
 
+export async function fetchTunings() {
+  const tunings = await fetch("api/fretboard/tunings").then((res) => res.json());
+  return tunings as { [key: string]: string[] };
+}
+
 export const GUITAR_TUNINGS_MIDI: { [key: string]: number[] } = {
 	"Стандартный (E-A-D-G-B-E)": transformNotesToMidi(["E2", "A2", "D3", "G3", "B3", "E4"]),
 	"Drop D (D-A-D-G-B-E)": transformNotesToMidi(["D2", "A2", "D3", "G3", "B3", "E4"]),
@@ -89,7 +94,7 @@ export const SHAPES: { [key: string]: { [key: string]: NoteValue[] } } = {
 		"Доминантный Бебоп": [0, 2, 4, 5, 7, 9, 10, 11],
 	},
 
-	Аккорды: {
+	Арпеджио: {
 		"Major 7": [0, 4, 7, 11],
 		"Minor 7": [0, 3, 7, 10],
 		"Dominant 7": [0, 4, 7, 10],

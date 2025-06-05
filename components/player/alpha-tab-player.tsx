@@ -27,6 +27,7 @@ import {
 	UploadCloud,
 } from "lucide-react";
 import TrackSelectorContent from "./track-selector-content";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function AlphaTabPlayer() {
 	const alphaTabMainRef = useRef<HTMLDivElement>(null);
@@ -72,7 +73,7 @@ export default function AlphaTabPlayer() {
 
 		if (api) {
 			api.countInVolume = isCountInActive ? 0.5 : 0;
-			api.metronomeVolume = isMetronomeActive ? 8 : 0;
+			api.metronomeVolume = isMetronomeActive ? 2 : 0;
 			api.playbackSpeed = parseFloat(playbackSpeed);
 			api.isLooping = isLoopingActive;
 		}
@@ -168,7 +169,7 @@ export default function AlphaTabPlayer() {
 	const toggleMetronome = (pressed: boolean) => {
 		if (!api) return;
 		setIsMetronomeActive(pressed);
-		api.metronomeVolume = pressed ? 8 : 0; // 0-16
+		api.metronomeVolume = pressed ? 2 : 0; // 0-16
 	};
 
 	const toggleLooping = (pressed: boolean) => {
@@ -240,36 +241,39 @@ export default function AlphaTabPlayer() {
 			</div>
 			<div className="settings-flex-container flex flex-wrap items-center gap-x-4 gap-y-3">
 				{/* Вид отображения */}
-				<div className="flex gap-1.5">
-					<Label htmlFor="layout-select" className="text-xs font-medium text-primary-foreground/80 flex items-center">
-						<LayoutDashboard className="h-4 w-4" />
-					</Label>
-					<Select
-						onValueChange={handleLayoutChange}
-						value={currentLayoutMode === LayoutMode.Horizontal ? "horizontal" : "page"}
-						disabled={!api || tracks.length === 0}
-					>
-						<SelectTrigger
-							id="layout-select"
-							className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
-						>
-							<SelectValue placeholder="Макет" />
-						</SelectTrigger>
-						<SelectContent className="bg-popover text-popover-foreground border-border">
-							<SelectItem value="page">Страница</SelectItem>
-							<SelectItem value="horizontal">Горизонтальный</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
+						<div className="flex gap-1.5 cursor-pointer">
+							<Label
+								htmlFor="layout-select"
+								className="text-xs font-medium text-primary-foreground/80 flex items-center"
+							>
+								<LayoutDashboard className="h-4 w-4" />
+							</Label>
+							<Select
+								onValueChange={handleLayoutChange}
+								value={currentLayoutMode === LayoutMode.Horizontal ? "horizontal" : "page"}
+								disabled={!api || tracks.length === 0}
+							>
+								<SelectTrigger
+									id="layout-select"
+									className="bg-primary-foreground/10 cursor-pointer border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
+								>
+									<SelectValue placeholder="Макет" />
+								</SelectTrigger>
+								<SelectContent className="bg-popover text-popover-foreground border-border">
+									<SelectItem value="page">Страница</SelectItem>
+									<SelectItem value="horizontal">Горизонтальный</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 				{/* Масштаб */}
-				<div className="flex gap-1.5 ">
+				<div className="flex gap-1.5 cursor-pointer">
 					<Label htmlFor="zoom-select" className="text-xs font-medium text-primary-foreground/80 flex items-center">
 						<ZoomIn className="h-4 w-4" />
 					</Label>
 					<Select onValueChange={handleZoomChange} value={zoomLevel} disabled={!api || tracks.length === 0}>
 						<SelectTrigger
 							id="zoom-select"
-							className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
+							className="cursor-pointer bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
 						>
 							<SelectValue placeholder="Масштаб" />
 						</SelectTrigger>
@@ -283,7 +287,7 @@ export default function AlphaTabPlayer() {
 					</Select>
 				</div>
 				{/* Скорость */}
-				<div className="flex gap-1.5">
+				<div className="flex gap-1.5 cursor-pointer">
 					<Label htmlFor="speed-select" className="text-xs font-medium text-primary-foreground/80 flex items-center">
 						<Gauge className="h-4 w-4" />
 					</Label>
@@ -294,7 +298,7 @@ export default function AlphaTabPlayer() {
 					>
 						<SelectTrigger
 							id="speed-select"
-							className="bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
+							className="cursor-pointer bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 data-[disabled]:opacity-60"
 						>
 							<SelectValue placeholder="Скорость" />
 						</SelectTrigger>
@@ -308,47 +312,80 @@ export default function AlphaTabPlayer() {
 					</Select>
 				</div>
 				{/*  Отсчёт */}
-				<div className="flex items-center">
-					<Toggle
-						aria-label="Переключить Отсчёт"
-						pressed={isCountInActive}
-						onPressedChange={toggleCountIn}
-						disabled={!isPlayerReady || tracks.length === 0}
-						variant="outline"
-						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
-					>
-						<Timer className="h-4 w-4" />
-					</Toggle>
-				</div>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<div className="flex items-center">
+							<Toggle
+								aria-label="Переключить Отсчёт"
+								pressed={isCountInActive}
+								onPressedChange={toggleCountIn}
+								disabled={!isPlayerReady || tracks.length === 0}
+								variant="outline"
+								className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+							>
+								<Timer className="h-4 w-4" />
+							</Toggle>
+						</div>
+					</TooltipTrigger>
+					<TooltipContent className="border">
+						<p>Отсчёт</p>
+					</TooltipContent>
+				</Tooltip>
 				{/* цикл */}
-				<div className="flex items-center">
-					<Toggle
-						aria-label="Переключить цикл"
-						pressed={isLoopingActive}
-						onPressedChange={toggleLooping}
-						disabled={!isPlayerReady || tracks.length === 0}
-						variant="outline"
-						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
-					>
-						<Repeat className="h-4 w-4" />
-					</Toggle>
-				</div>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<div className="flex items-center">
+							<Toggle
+								aria-label="Переключить цикл"
+								pressed={isLoopingActive}
+								onPressedChange={toggleLooping}
+								disabled={!isPlayerReady || tracks.length === 0}
+								variant="outline"
+								className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+							>
+								<Repeat className="h-4 w-4" />
+							</Toggle>
+						</div>
+					</TooltipTrigger>
+					<TooltipContent className="border">
+						<p>Выделите фрагмент для повтора</p>
+					</TooltipContent>
+				</Tooltip>
 				{/* Метроном */}
-				<div className="flex items-center">
-					<Toggle
-						aria-label="Переключить метроном"
-						pressed={isMetronomeActive}
-						onPressedChange={toggleMetronome}
-						disabled={!isPlayerReady || tracks.length === 0}
-						variant="outline"
-						className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
-					>
-						<Triangle className="h-4 w-4" />
-					</Toggle>
-				</div>
-				<Button onClick={handlePrint} className="cursor-pointer" disabled={!api || tracks.length === 0} variant="ghost">
-					<Printer className="h-4 w-4" />
-				</Button>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<div className="flex items-center">
+							<Toggle
+								aria-label="Переключить метроном"
+								pressed={isMetronomeActive}
+								onPressedChange={toggleMetronome}
+								disabled={!isPlayerReady || tracks.length === 0}
+								variant="outline"
+								className="data-[state=on]:bg-accent cursor-pointer data-[state=on]:text-accent-foreground text-primary-foreground hover:bg-primary-foreground/10 border-primary-foreground/40 hover:text-primary-foreground data-[disabled]:opacity-60"
+							>
+								<Triangle className="h-4 w-4" />
+							</Toggle>
+						</div>
+					</TooltipTrigger>
+					<TooltipContent className="border">
+						<p>Метроном</p>
+					</TooltipContent>
+				</Tooltip>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							onClick={handlePrint}
+							className="cursor-pointer"
+							disabled={!api || tracks.length === 0}
+							variant="ghost"
+						>
+							<Printer className="h-4 w-4" />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent className="border">
+						<p>Печать</p>
+					</TooltipContent>
+				</Tooltip>
 			</div>
 		</div>
 	);

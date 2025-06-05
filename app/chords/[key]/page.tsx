@@ -32,6 +32,7 @@ export default async function ChordsOfKey({ params }: { params: Promise<{ key: s
       <h1 className="text-center mb-4 font-bold text-4xl">
         {`Аккорды тональности ${displayKey}`}
       </h1>
+      <p className="text-center text-muted-foreground mb-2 text-sm">(нажмите на схему аккорда для его воспроизведения)</p>
       <ChordList
         initialChords={initialChords}
         initialLearnedPositionIds={initialLearnedPositionIds}

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import { NOTE_NAMES, SHAPES } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
 	className?: string;
 	//availableKeys: string[];
@@ -29,9 +30,9 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	const availableShapeTypes = Object.keys(SHAPES);
 	const availableShapeNames = Object.keys(SHAPES[selectedShapeType] || {});
 
-  if (!selectedTuning) {
-    setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
-  }
+	if (!selectedTuning) {
+		setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
+	}
 
 	const keyOptions = availableKeys.map((key) => ({ value: key, label: key }));
 	const shapeTypeOptions = availableShapeTypes.map((type) => ({
@@ -39,6 +40,23 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		label: type.charAt(0).toUpperCase() + type.slice(1),
 	}));
 	const shapeNameOptions = availableShapeNames.map((name) => ({ value: name, label: name }));
+	const intervalFullNames: { [key: string]: string } = {
+		"1": "Тоника",
+		"♭2": "Малая секунда",
+		"2": "Большая секунда",
+		"♭3": "Малая терция",
+		"3": "Большая терция",
+		"4": "Чистая кварта",
+		"♭5": "Уменьшенная квинта (тритон)",
+		"5": "Чистая квинта",
+		"♯5": "Увеличенная квинта",
+		"6": "Большая секста",
+		"♭7": "Малая септима",
+		"7": "Большая септима",
+		// 12: "Октава",
+		// 13: "Малая нона",
+		// 14: "Большая нона",
+	};
 	const noteNames = {
 		0: "1",
 		1: "♭2",
@@ -54,12 +72,12 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		11: "7",
 	};
 
-	const formula = SHAPES[selectedShapeType][selectedShapeName]?.map((note) => noteNames[note]).join(", ")
+	const formula = SHAPES[selectedShapeType][selectedShapeName]?.map((note) => noteNames[note]);
 
 	return (
-		<div className={cn("flex flex-col gap-4", className)}>
-			<div className="flex flex-wrap items-center gap-4 p-4 border border-border rounded-md bg-card shadow-sm">
-				<div className="flex flex-wrap items-center gap-4">
+		<div className={cn("flex flex-col gap-3", className)}>
+			<div className="flex flex-wrap items-center justify-center gap-4 p-4 border border-border rounded-md bg-card shadow-sm">
+				<div className="flex flex-wrap items-center justify-center gap-4">
 					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="key-select">Тоника</Label>
 						<Select value={selectedKey} onValueChange={setSelectedKey}>
@@ -135,20 +153,65 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 					</div>
 				</div>
 			</div>
-			<div className="flex flex-wrap justify-center items-center gap-4 w-full">
-				<p className="text-center">Формула: {formula}</p>
-					<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-red-600 border-2 border-red-700 text-white">
-						1
+			<div className="flex flex-wrap justify-center items-center gap-3 w-full">
+				<div className="flex gap-2">
+					<p className="text-center font-bold">Формула:</p>{" "}
+					{formula.map((degree) => (
+						<Tooltip key={degree}>
+							<TooltipTrigger>
+								<p>{degree}</p>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>{intervalFullNames[degree]}</p>
+							</TooltipContent>
+						</Tooltip>
+					))}
+				</div>
+				<div className="flex gap-3 flex-col items-center">
+          <p className="text-center text-xs text-muted-foreground">Цветовые обозначения нот:</p>
+					<div className="flex gap-2 items-center">
+					  <Tooltip>
+  						<TooltipTrigger>
+  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-red-600 border-2 border-red-700 text-white">
+  								1
+  							</div>
+  						</TooltipTrigger>
+  						<TooltipContent>
+  							<p>Тоника</p>
+  						</TooltipContent>
+  					</Tooltip>
+  					<Tooltip>
+  						<TooltipTrigger>
+  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-amber-500 border-2 border-amber-700 text-white">
+  								3
+  							</div>
+  						</TooltipTrigger>
+  						<TooltipContent>
+  							<p>Большая терция</p>
+  						</TooltipContent>
+  					</Tooltip>
+  					<Tooltip>
+  						<TooltipTrigger>
+  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-blue-500 border-2 border-blue-700 text-white">
+  								5
+  							</div>
+  						</TooltipTrigger>
+  						<TooltipContent>
+  							<p>Чистая квинта</p>
+  						</TooltipContent>
+  					</Tooltip>
+  					<Tooltip>
+  						<TooltipTrigger>
+  							<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-purple-500 border-2 border-purple-700 text-white">
+  								7
+  							</div>
+  						</TooltipTrigger>
+  						<TooltipContent>
+  							<p>Большая септима</p>
+  						</TooltipContent>
+  					</Tooltip>
 					</div>
-					<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-amber-500 border-2 border-amber-700 text-white">
-						3
-					</div>
-					<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-blue-500 border-2 border-blue-700 text-white">
-						5
-					</div>
-					<div className="w-8 h-8 flex items-center justify-center outline-none rounded-md bg-purple-500 border-2 border-purple-700 text-white">
-						7
-					</div>
+				</div>
 			</div>
 		</div>
 	);

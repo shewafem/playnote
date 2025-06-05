@@ -43,8 +43,8 @@ const navItems: NavItem[] = [
 		text: "Теория",
 		items: [
 			{ href: "/chords", text: "Аккорды", description: "Энциклопедия аккордов.", icon: <Music size={17} /> },
-			{ href: "/courses", text: "Курсы", description: "Обучающие курсы по гитаре." },
-			{ href: "/blog", text: "Статьи", description: "Статьи и уроки." },
+			//{ href: "/courses", text: "Курсы", description: "Обучающие курсы по гитаре." },
+			//{ href: "/blog", text: "Статьи", description: "Статьи и уроки." },
 		],
 	},
 	//{

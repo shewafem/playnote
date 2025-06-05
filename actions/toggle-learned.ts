@@ -2,7 +2,6 @@
 
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 
 export async function toggleLearnedPosition(positionId: number) {
 	const session = await auth();
@@ -47,7 +46,6 @@ export async function toggleLearnedPosition(positionId: number) {
 			});
 			newLearnedState = true;
 		}
-		revalidatePath("/chords", "layout");
 		return {
 			success: true,
 			learned: newLearnedState,

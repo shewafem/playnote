@@ -63,7 +63,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 
 	return (
-		<>
+		<>		<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
 			<div
 				ref={fretboardDisplayRef}
 				className={cn(

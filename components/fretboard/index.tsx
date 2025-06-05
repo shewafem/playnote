@@ -169,7 +169,6 @@ const InteractiveFretboard: React.FC = () => {
 			if (
 				!synthRef.current ||
 				!isToneReady ||
-				!Tone ||
 				!Array.isArray(sequenceEvents) ||
 				sequenceEvents.length === 0 ||
 				!sequenceEvents.every(
