@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DEFAULT_FRETS, MAX_FRETS, MIN_FRETS } from "./fretboard-utils";
+import { DEFAULT_FRETS, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "./fretboard-utils";
 //import { NoteValue } from "./fretboard-utils";
 
 export interface FretboardStore {
@@ -46,11 +46,11 @@ export interface FretboardStore {
 	resetSelection: () => void;
 	confirmSelection: () => void;
 
-	fretCount: number;
-	setFretCount: (count: number) => void;
-
 	startFret: number;
 	setStartFret: (startFret: number) => void;
+
+	endFret: number;
+	setEndFret: (endFret: number) => void;
 }
 
 export const useFretboardStore = create<FretboardStore>((set, get) => ({
@@ -107,22 +107,30 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 		set({ selectedNotesForPlayback: get().currentlySelectingNotes, isSelectingNotes: false });
 	},
 
-	fretCount: DEFAULT_FRETS,
-	setFretCount: (count) => {
-		const clampedCount = Math.min(Math.max(Number(count), MIN_FRETS), MAX_FRETS);
-		if (!isNaN(clampedCount)) {
-			set({ fretCount: clampedCount });
-		}
-	},
+	startFret: MIN_FRETS, // Начальное значение
+	endFret: DEFAULT_FRETS, // Начальное значение
 
-	startFret: MIN_FRETS, // По умолчанию начинаем с открытых струн 0
 	setStartFret: (newStartFret) => {
-		const currentFretCount = get().fretCount;
-		const maxPossibleStartFret = MAX_FRETS + 1 - currentFretCount;
-		const clampedStartFret = Math.min(Math.max(Number(newStartFret), 0), maxPossibleStartFret);
+		const currentEndFret = get().endFret;
+		let clampedStartFret = Math.max(Number(newStartFret), MIN_FRETS);
+		// startFret не должен быть больше endFret минус (минимальное количество отображаемых ладов - 1)
+		// И endFret не должен превышать ABSOLUTE_MAX_FRET
+		clampedStartFret = Math.min(clampedStartFret, currentEndFret - MIN_DISPLAYED_FRETS_COUNT + 1);
+		clampedStartFret = Math.min(clampedStartFret, MAX_FRETS - MIN_DISPLAYED_FRETS_COUNT + 1);
 
 		if (!isNaN(clampedStartFret)) {
 			set({ startFret: clampedStartFret });
+		}
+	},
+
+	setEndFret: (newEndFret) => {
+		const currentStartFret = get().startFret;
+		let clampedEndFret = Math.min(Number(newEndFret), MAX_FRETS);
+		// endFret не должен быть меньше startFret плюс (минимальное количество отображаемых ладов - 1)
+		clampedEndFret = Math.max(clampedEndFret, currentStartFret + MIN_DISPLAYED_FRETS_COUNT - 1);
+
+		if (!isNaN(clampedEndFret)) {
+			set({ endFret: clampedEndFret });
 		}
 	},
 }));

@@ -3,7 +3,7 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { GUITAR_TUNINGS_MIDI, NOTE_NAMES, SHAPES, MAX_FRETS } from "@/lib/fretboard-utils";
+import { GUITAR_TUNINGS_MIDI, NOTE_NAMES, SHAPES, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
@@ -22,10 +22,10 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
 	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
 	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
-	const fretCount = useFretboardStore((s) => s.fretCount);
-	const setFretCount = useFretboardStore((s) => s.setFretCount);
 	const startFret = useFretboardStore((s) => s.startFret);
 	const setStartFret = useFretboardStore((s) => s.setStartFret);
+	const endFret = useFretboardStore((s) => s.endFret);
+	const setEndFret = useFretboardStore((s) => s.setEndFret);
 
 	const availableKeys = NOTE_NAMES;
 	const availableShapeTypes = Object.keys(SHAPES);
@@ -146,32 +146,39 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 						<input
 							id="start-fret-input"
 							type="number"
-							min={0}
-							max={fretCount - 1}
+							min={MIN_FRETS}
+							max={endFret - MIN_DISPLAYED_FRETS_COUNT + 1} // Зависит от endFret
 							value={startFret}
 							onChange={(e) => {
-								const rawValue = e.target.value;
-								if (rawValue === "") return;
-								const numValue = parseInt(rawValue, 10);
-								if (!isNaN(numValue)) {
-									setStartFret(numValue);
-								}
-							}}
+                                const rawValue = e.target.value;
+                                if (rawValue === "") return;
+                                const numValue = parseInt(rawValue, 10);
+                                if (!isNaN(numValue)) {
+                                    setStartFret(numValue);
+                                }
+                            }}
 							className="w-[80px] border rounded px-2 py-1"
 							placeholder="Начало"
 						/>
 					</div>
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="fret-count-input">Лады</Label>
+						<Label htmlFor="end-fret-input">Конечный лад</Label>
 						<input
-							id="fret-count-input"
+							id="end-fret-input"
 							type="number"
-							min={1}
+							min={startFret + MIN_DISPLAYED_FRETS_COUNT - 1} // Зависит от startFret
 							max={MAX_FRETS}
-							value={fretCount}
-							onChange={(e) => setFretCount(Number(e.target.value))}
+							value={endFret}
+							onChange={(e) => {
+                                const rawValue = e.target.value;
+                                if (rawValue === "") return;
+                                const numValue = parseInt(rawValue, 10);
+                                if (!isNaN(numValue)) {
+                                    setEndFret(numValue);
+                                }
+                            }}
 							className="w-[80px] border rounded px-2 py-1"
-							placeholder="Лады"
+							placeholder="Конец"
 						/>
 					</div>
 				</div>

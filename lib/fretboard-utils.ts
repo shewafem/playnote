@@ -12,7 +12,7 @@ export interface NoteObject {
 export const NOTE_NAMES: string[] = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 
 export const MAX_FRETS: number = 24;
-
+export const MIN_DISPLAYED_FRETS_COUNT = 1;
 export const MIN_FRETS: number = 0;
 
 export const DEFAULT_FRETS: number = 12;

@@ -17,25 +17,21 @@ interface FretboardDisplayProps {
 	// fretCount и startFret теперь из стора
 }
 
-const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
-    highlightedNotes,
-    rootNoteValue,
-    onNoteClick,
-}) => {
-    const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
-    const currentlySelectingNotes = useFretboardStore((s) => s.currentlySelectingNotes);
-    const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
-    const selectedTuning = useFretboardStore((s) => s.selectedTuning);
-    const isToneReady = useFretboardStore((s) => s.isToneReady);
-    const fretCountToDisplay = useFretboardStore((s) => s.fretCount); // Количество отображаемых
-    const firstFretToDisplay = useFretboardStore((s) => s.startFret); // Начальный абсолютный
-    const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, rootNoteValue, onNoteClick }) => {
+	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
+	const currentlySelectingNotes = useFretboardStore((s) => s.currentlySelectingNotes);
+	const selectedNotesForPlayback = useFretboardStore((s) => s.selectedNotesForPlayback);
+	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+	const isToneReady = useFretboardStore((s) => s.isToneReady);
+	const startFret = useFretboardStore((s) => s.startFret);
+	const endFret = useFretboardStore((s) => s.endFret);
+	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
 
-    const selectedNotes = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
-    const selectedNotesSet = React.useMemo(() => new Set(selectedNotes || []), [selectedNotes]);
-    
-    const rootNote = getNoteName(rootNoteValue);
-    const fretboardDisplayRef = useRef<HTMLDivElement>(null);
+	const selectedNotes = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
+	const selectedNotesSet = React.useMemo(() => new Set(selectedNotes || []), [selectedNotes]);
+
+	const rootNote = getNoteName(rootNoteValue);
+	const fretboardDisplayRef = useRef<HTMLDivElement>(null);
 
 	const downloadFretboardImage = async () => {
 		const element = fretboardDisplayRef.current;
@@ -65,6 +61,12 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 
 	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
 	if (!tuning) return <div>Выбранный строй не найден</div>; // Защита
+	// Вычисляем количество столбцов для маркеров под грифом
+	const fretsForMarkers = [];
+	const firstNumberedFretForMarker = startFret === 0 ? 1 : startFret;
+	for (let i = firstNumberedFretForMarker; i <= endFret; i++) {
+		if (i > 0) fretsForMarkers.push(i);
+	}
 
 	return (
 		<>
@@ -79,27 +81,24 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({
 				<FretNumbers />
 				{tuning.map((_, stringIndex) => (
 					<GuitarString
-						key={stringIndex}
-						stringIndex={stringIndex}
-						highlightedNotes={highlightedNotes}
-						rootNoteValue={rootNoteValue}
-						selectedNotesForPlayback={selectedNotesSet}
-						isSelectingMode={isSelectingNotes}
-						onNoteClick={isToneReady ? onNoteClick : undefined}
-						isToneReady={isToneReady}
-						selectedTuning={selectedTuning}
-						fretCountToDisplay={fretCountToDisplay} // Передаем кол-во отображаемых
-						firstFretToDisplay={firstFretToDisplay} // Передаем начальный абсолютный
-					/>
+            key={stringIndex}
+            stringIndex={stringIndex}
+            highlightedNotes={highlightedNotes}
+            rootNoteValue={rootNoteValue}
+            selectedNotesForPlayback={selectedNotesSet}
+            isSelectingMode={isSelectingNotes}
+            onNoteClick={isToneReady ? onNoteClick : undefined}
+            isToneReady={isToneReady}
+            selectedTuning={selectedTuning}
+            startFret={startFret} // Передаем
+            endFret={endFret} // Передаем
+				/>
 				))}
 				{/* Маркеры под грифом */}
 				<div className="flex h-2 sm:h-5 items-center select-none mt-1">
-					{/* Отступ слева для нут/открытых струн */}
-					<div className={cn(firstFretToDisplay === 0 ? "w-10" : "w-0")}></div>
-					{[...Array(fretCountToDisplay)].map((_, index) => {
-						// Абсолютный номер лада для текущей позиции маркера
-						const absoluteFretNumber = firstFretToDisplay + index + (firstFretToDisplay === 0 ? 1 : 0);
-
+					<div className={cn(startFret === 0 ? "w-10" : "w-0")}></div>
+					{fretsForMarkers.map((absoluteFretNumber) => {
+						// Логика для маркеров (двойные на 12, 24; одинарные на 3,5,7,9 и т.д.)
 						if (absoluteFretNumber === 12 || absoluteFretNumber === 24) {
 							return (
 								<div key={`fret-dot-${absoluteFretNumber}`} className="w-18 flex flex-col items-center justify-center">

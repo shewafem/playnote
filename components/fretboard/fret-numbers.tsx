@@ -3,40 +3,51 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
 
-const markerFrets = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
+
+
+const markerFrets = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24]; // Абсолютные маркеры
 
 const FretNumbers: React.FC = () => {
-    const fretCountToDisplay = useFretboardStore((s) => s.fretCount);
-    const firstFretToDisplay = useFretboardStore((s) => s.startFret);
+	const startFret = useFretboardStore((s) => s.startFret);
+	const endFret = useFretboardStore((s) => s.endFret);
 
-    return (
-        <div className="flex flex-col">
-            <div className="flex mb-1 select-none">
-                {/* Отступ слева для нут/открытых струн, если firstFretToDisplay === 0 */}
-                <div className={cn(firstFretToDisplay === 0 ? "w-10" : "w-0")}></div>
-                
-                {/* Генерируем номера для отображаемых ладов */}
-                {[...Array(fretCountToDisplay)].map((_, index) => {
-                    // Абсолютный номер лада, который мы отображаем на этой позиции
-                    // Если firstFretToDisplay = 0, то первый лад (index=0) это 1, второй (index=1) это 2 ...
-                    // Если firstFretToDisplay = 5, то первый лад (index=0) это 5, второй (index=1) это 6 ...
-                    const absoluteFretNumber = firstFretToDisplay + index + (firstFretToDisplay === 0 ? 1 : 0);
-                    
-                    return (
-                        <div
-                            key={`fret-num-${absoluteFretNumber}`} // Ключ по абсолютному номеру
-                            className={cn(
-                                "w-18 text-sm sm:text-lg text-center text-muted-foreground",
-                                markerFrets.includes(absoluteFretNumber) ? "font-black text-sm sm:text-lg text-primary drop-shadow" : ""
-                            )}
-                        >
-                            {absoluteFretNumber}
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
+	// Количество ладов для отображения (включая начальный и конечный)
+	// Если startFret=0, endFret=12, то отображаем лады 0,1,2...12 (13 позиций, но лад "0" - это nut)
+	// Фактически номера ладов будут от 1 до endFret, если startFret=0.
+	// Если startFret > 0, то номера от startFret до endFret.
+
+	const fretsToDisplay = [];
+	// Если startFret равен 0, он представляет открытые струны (nut).
+	// Номера ладов начинаются с 1.
+	// Мы отображаем лады от (startFret === 0 ? 1 : startFret) до endFret.
+	const firstNumberedFret = startFret === 0 ? 1 : startFret;
+
+	for (let i = firstNumberedFret; i <= endFret; i++) {
+		if (i > 0) {
+			fretsToDisplay.push(i);
+		}
+	}
+
+	return (
+		<div className="flex flex-col">
+			<div className="flex mb-1 select-none">
+				{/* Отступ слева для nut/открытых струн, если startFret === 0 */}
+				<div className={cn(startFret === 0 ? "w-10" : "w-0")}></div>
+
+				{fretsToDisplay.map((fretNumber) => (
+					<div
+						key={`fret-num-${fretNumber}`}
+						className={cn(
+							"w-18 text-sm sm:text-lg text-center text-muted-foreground",
+							markerFrets.includes(fretNumber) ? "font-black text-sm sm:text-lg text-primary drop-shadow" : ""
+						)}
+					>
+						{fretNumber}
+					</div>
+				))}
+			</div>
+		</div>
+	);
 };
 
 export default React.memo(FretNumbers);

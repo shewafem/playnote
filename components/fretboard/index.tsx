@@ -26,10 +26,10 @@ const InteractiveFretboard: React.FC = () => {
 	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
 	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
 	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
-	const fretCount = useFretboardStore((s) => s.fretCount); // Количество отображаемых
-	const setFretCount = useFretboardStore((s) => s.setFretCount);
-	const startFret = useFretboardStore((s) => s.startFret); // Начальный лад
+	const startFret = useFretboardStore((s) => s.startFret);
 	const setStartFret = useFretboardStore((s) => s.setStartFret);
+	const endFret = useFretboardStore((s) => s.endFret);
+	const setEndFret = useFretboardStore((s) => s.setEndFret);
 
 	const isToneReady = useFretboardStore((s) => s.isToneReady);
 	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
@@ -45,15 +45,13 @@ const InteractiveFretboard: React.FC = () => {
 	const setCurrentPlaybackType = useFretboardStore((s) => s.setCurrentPlaybackType);
 	const setCurrentlyPlayingNoteId = useFretboardStore((s) => s.setCurrentlyPlayingNoteId);
 
-	// --- Query Params Logic ---
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
 	const initializedFromUrl = useRef(false);
-	const isInitializingFromUrl = useRef(false); // Renamed for clarity
+	const isInitializingFromUrl = useRef(false);
 
-	// Effect to initialize state from URL params
 	useEffect(() => {
 		if (initializedFromUrl.current || !searchParams) return;
 
@@ -65,13 +63,25 @@ const InteractiveFretboard: React.FC = () => {
 		}
 
 		const startFretFromUrl = searchParams.get("startFret");
+		let tempStartFret = useFretboardStore.getState().startFret;
 		if (startFretFromUrl) {
 			const numStartFret = parseInt(startFretFromUrl, 10);
-			// Валидация для startFret (должна быть согласована с логикой в сторе)
-			if (!isNaN(numStartFret) && numStartFret >= 0 && startFret !== numStartFret) {
-				setStartFret(numStartFret); // Стор сделает clamping
+			if (!isNaN(numStartFret)) {
+				tempStartFret = numStartFret; 
 			}
 		}
+
+		const endFretFromUrl = searchParams.get("endFret");
+		let tempEndFret = useFretboardStore.getState().endFret;
+		if (endFretFromUrl) {
+			const numEndFret = parseInt(endFretFromUrl, 10);
+			if (!isNaN(numEndFret)) {
+				tempEndFret = numEndFret;
+			}
+		}
+
+		if (startFretFromUrl) setStartFret(tempStartFret);
+		if (endFretFromUrl) setEndFret(tempEndFret);
 
 		let typeToUseForNameValidation = selectedShapeType;
 		const typeFromUrl = searchParams.get("type");
@@ -85,35 +95,22 @@ const InteractiveFretboard: React.FC = () => {
 		if (nameFromUrl && availableShapesForType.includes(nameFromUrl) && selectedShapeName !== nameFromUrl) {
 			setSelectedShapeName(nameFromUrl);
 		}
-		// Note: The dependent effect for selectedShapeName based on selectedShapeType will ensure consistency.
 
 		const tuningFromUrl = searchParams.get("tuning");
 		if (tuningFromUrl && Object.keys(GUITAR_TUNINGS_MIDI).includes(tuningFromUrl) && selectedTuning !== tuningFromUrl) {
 			setSelectedTuning(tuningFromUrl);
 		}
 
-		const fretsFromUrl = searchParams.get("frets");
-		if (fretsFromUrl) {
-			const numFrets = parseInt(fretsFromUrl, 10);
-			if (!isNaN(numFrets) && numFrets >= 1 && numFrets <= 24 && fretCount !== numFrets) {
-				setFretCount(numFrets);
-			}
-		}
-
 		initializedFromUrl.current = true;
-		// Defer unsetting isInitializingFromUrl slightly to allow all initial state updates to settle
 		requestAnimationFrame(() => {
 			isInitializingFromUrl.current = false;
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchParams]); // Depends only on searchParams to run once they are available.
-	// Store state variables and setters are intentionally not in dependencies here.
+	}, [searchParams]);
 
-	// Effect to update URL when relevant store state changes
 	useEffect(() => {
 		if (!initializedFromUrl.current || isInitializingFromUrl.current) {
-			// Don't update URL if not yet initialized from it, or if currently in the process of initializing
 			return;
 		}
 
@@ -127,18 +124,18 @@ const InteractiveFretboard: React.FC = () => {
 		} else {
 			const availableShapes = Object.keys(currentShapeConfig || {});
 			if (availableShapes.length > 0) {
-				newParams.set("name", availableShapes[0]); // Fallback to the first available shape name
+				newParams.set("name", availableShapes[0]);
 			}
 		}
 		newParams.set("tuning", selectedTuning);
 		newParams.set("startFret", startFret.toString());
-		newParams.set("frets", fretCount.toString()); // fretCount - это кол-во отображаемых
+		newParams.set("endFret", endFret.toString());
 
 		const currentUrlSearchParams = new URLSearchParams(window.location.search);
 		if (currentUrlSearchParams.toString() !== newParams.toString()) {
 			router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
 		}
-	}, [selectedKey, selectedShapeType, selectedShapeName, selectedTuning, fretCount, router, pathname, startFret]);
+	}, [selectedKey, selectedShapeType, selectedShapeName, selectedTuning, router, pathname, startFret, endFret]);
 
 	//обычный тюнинг
 	useEffect(() => {
