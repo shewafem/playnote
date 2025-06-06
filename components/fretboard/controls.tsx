@@ -3,7 +3,14 @@ import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { GUITAR_TUNINGS_MIDI, NOTE_NAMES, SHAPES, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "@/lib/fretboard-utils";
+import {
+	GUITAR_TUNINGS_MIDI,
+	NOTE_NAMES,
+	SHAPES,
+	MAX_FRETS,
+	MIN_DISPLAYED_FRETS_COUNT,
+	MIN_FRETS,
+} from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
@@ -138,7 +145,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 							</SelectContent>
 						</Select>
 					</div>
-          <div className="flex flex-col gap-1.5">
+					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="start-fret-input">Начальный лад</Label>
 						<input
 							id="start-fret-input"
@@ -147,13 +154,8 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 							max={endFret - MIN_DISPLAYED_FRETS_COUNT + 1} // Зависит от endFret
 							value={startFret}
 							onChange={(e) => {
-                                const rawValue = e.target.value;
-                                if (rawValue === "") return;
-                                const numValue = parseInt(rawValue, 10);
-                                if (!isNaN(numValue)) {
-                                    setStartFret(numValue);
-                                }
-                            }}
+								setStartFret(Number(e.target.value));
+							}}
 							className="w-[80px] border rounded px-2 py-1"
 							placeholder="Начало"
 						/>
@@ -167,13 +169,8 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 							max={MAX_FRETS}
 							value={endFret}
 							onChange={(e) => {
-                                const rawValue = e.target.value;
-                                if (rawValue === "") return;
-                                const numValue = parseInt(rawValue, 10);
-                                if (!isNaN(numValue)) {
-                                    setEndFret(numValue);
-                                }
-                            }}
+								setEndFret(Number(e.target.value));
+							}}
 							className="w-[80px] border rounded px-2 py-1"
 							placeholder="Конец"
 						/>

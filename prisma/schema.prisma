@@ -36,6 +36,8 @@ model User {
   arpeggiosCreated Int[]
   tuningsCreated   Int[]
 
+  savedFretboards String[]
+
   learnedScales    Scale[]
   learnedArpeggios Arpeggio[]
   learnedPositions Position[]

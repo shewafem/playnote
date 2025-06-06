@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import { Button } from "../ui/button";
 import html2canvas from "html2canvas-pro";
-import { Download } from "lucide-react";
+import { Download, Save } from "lucide-react";
 
 interface FretboardDisplayProps {
 	highlightedNotes: Set<NoteValue>;
@@ -32,6 +32,14 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 
 	const rootNote = getNoteName(rootNoteValue);
 	const fretboardDisplayRef = useRef<HTMLDivElement>(null);
+
+  const selectedKey = useFretboardStore((s) => s.selectedKey);
+  const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
+
+	const handleSaveConfiguration = async () => {
+		const configurationToSave = `?key=${selectedKey}&type=${selectedShapeType}&name=${selectedShapeName}&tuning=${selectedTuning}&startFret=${startFret}&endFret=${endFret}`;
+		console.log("Сохраняемая конфигурация:", configurationToSave);
+	};
 
 	const downloadFretboardImage = async () => {
 		const element = fretboardDisplayRef.current;
@@ -80,16 +88,16 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 				<FretNumbers />
 				{tuning.map((_, stringIndex) => (
 					<GuitarString
-            key={stringIndex}
-            stringIndex={stringIndex}
-            highlightedNotes={highlightedNotes}
-            rootNoteValue={rootNoteValue}
-            selectedNotesForPlayback={selectedNotesSet}
-            isSelectingMode={isSelectingNotes}
-            onNoteClick={isToneReady ? onNoteClick : undefined}
-            isToneReady={isToneReady}
-            selectedTuning={selectedTuning}
-				/>
+						key={stringIndex}
+						stringIndex={stringIndex}
+						highlightedNotes={highlightedNotes}
+						rootNoteValue={rootNoteValue}
+						selectedNotesForPlayback={selectedNotesSet}
+						isSelectingMode={isSelectingNotes}
+						onNoteClick={isToneReady ? onNoteClick : undefined}
+						isToneReady={isToneReady}
+						selectedTuning={selectedTuning}
+					/>
 				))}
 				{/* Маркеры под грифом */}
 				<div className="flex h-2 sm:h-5 items-center select-none mt-1">
@@ -119,11 +127,11 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 				</div>
 			</div>
 			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
-				Скачать текущий гриф <Download />
+				Скачать текущий гриф как PNG <Download />
 			</Button>
-      {/*<Button className="cursor-pointer" onClick={saveConfiguration}>
-				Сохранить текущую конфигурацию грифа <Download />
-			</Button>*/}
+			<Button className="cursor-pointer" onClick={handleSaveConfiguration}>
+				Сохранить конфигурацию <Save />
+			</Button>
 		</>
 	);
 };

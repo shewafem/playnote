@@ -98,7 +98,8 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
   };
 
   if (!learnedPositions || learnedPositions.length === 0) {
-    return <p className="text-muted-foreground">Вы еще не выучили ни одного аккорда.</p>;
+    return  <div className="flex items-center flex-col gap-6"> <p className="text-muted-foreground text-center">Вы еще не выучили ни одного аккорда. 😔</p>
+        <Link className="text-lg font-bold bg-primary p-3 rounded-lg text-background text-center" href="/chords">Начать учить!</Link></div>
   }
 
   return (
