@@ -12,25 +12,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
 	MoreHorizontal,
 	Pencil,
 	Trash2,
-	AlertTriangle,
 	Music3,
 	ChevronLeft,
 	ChevronRight,
@@ -57,11 +45,8 @@ interface TuningToDelete {
 }
 
 export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_ITEMS_PER_PAGE }: TuningsTableProps) {
-	const router = useRouter();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [tuningToDelete, setTuningToDelete] = useState<TuningToDelete | null>(null);
-	const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
 
 	useEffect(() => {
 		setCurrentPage(1);
@@ -104,21 +89,15 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 		}
 	};
 
-	const handleDeleteRequest = (tuning: TuningToDelete) => {
-		setTuningToDelete(tuning);
-		setIsAlertDialogOpen(true);
-	};
+	const handleDeleteTuning = async (tuning: TuningToDelete) => {
+		if (!tuning) return;
 
-	const confirmDeleteTuning = async () => {
-		if (!tuningToDelete) return;
-
-		toast.promise(deleteTuning(tuningToDelete.id), {
+		toast.promise(deleteTuning(tuning.id), {
 			// Используем числовой ID
 			loading: "Удаление строя...",
 			success: (result) => {
 				if (result.success) {
-					router.refresh();
-					return `Тюнинг "${tuningToDelete.name}" успешно удален.`;
+					return `Тюнинг "${tuning.name}" успешно удален.`;
 				} else {
 					throw new Error(result.error || "Не удалось удалить строй.");
 				}
@@ -127,7 +106,6 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 				return error.message || "Произошла ошибка при удалении.";
 			},
 		});
-		// Закрытие диалога будет обработано onOpenChange
 	};
 
 	const startItemIndex = paginatedTunings.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
@@ -145,10 +123,6 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 					className="w-full max-w-sm pl-10"
 				/>
 			</div>
-
-			{filteredTunings.length === 0 && searchTerm && initialTunings.length > 0 && (
-				<p className="text-center text-muted-foreground py-4">Строи не найдены.</p>
-			)}
 			{initialTunings.length === 0 && !searchTerm && (
 				<p className="text-center text-muted-foreground py-4">
 					Пока нет ни одного строя.
@@ -205,7 +179,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 													</DropdownMenuItem>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
-														onClick={() => handleDeleteRequest({ id: tuning.id, name: tuning.name })}
+														onClick={() => handleDeleteTuning({ id: tuning.id, name: tuning.name })}
 														className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/50 cursor-pointer"
 													>
 														<Trash2 className="mr-2 h-4 w-4" />
@@ -275,33 +249,6 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 				searchTerm &&
 				initialTunings.length > 0 && <p className="text-center text-muted-foreground py-4">Поиск не дал результатов.</p>
 			)}
-
-			<AlertDialog
-				open={isAlertDialogOpen}
-				onOpenChange={(open) => {
-					setIsAlertDialogOpen(open);
-					if (!open) {
-						setTuningToDelete(null);
-					}
-				}}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle className="flex items-center">
-							<AlertTriangle className="h-5 w-5 mr-2 text-destructive" />
-							Подтвердите удаление
-						</AlertDialogTitle>
-						<AlertDialogDescription>
-							Вы уверены, что хотите удалить тюнинг <span className="font-semibold">{tuningToDelete?.name}</span>? Это
-							действие необратимо.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Отмена</AlertDialogCancel>
-						<AlertDialogAction onClick={confirmDeleteTuning}>Удалить</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
 		</div>
 	);
 }
