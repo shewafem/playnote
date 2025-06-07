@@ -1,9 +1,24 @@
-export { auth as middleware } from "@/auth"
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 
-// Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+export default auth((req) => {
+	const { nextUrl } = req;
+	const isLoggedIn = !!req.auth;
+
+	if (!isLoggedIn) {
+		return NextResponse.redirect(new URL("/sign-in", nextUrl));
+	}
+
+	const role = req.auth?.user?.role;
+	if (role !== "ADMIN") {
+		// Перенаправляем на главную страницу или страницу с ошибкой доступа
+		return NextResponse.redirect(new URL("/", nextUrl));
+	}
+
+	return NextResponse.next();
+});
+
+
 export const config = {
-	matcher: [
-		"/((?!api|_next/static|_next/image|favicon.ico).*)",
-	],
+	matcher: ["/admin/:path*"],
 };
-

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 		if (!validatedFields.success) {
 			// Для отладки на сервере можно логировать детальные ошибки валидации:
 			// console.warn("REGISTRATION_VALIDATION_FAILED", validatedFields.error.flatten());
-			return NextResponse.json({ error: "Invalid fields" }, { status: 400 });
+			return NextResponse.json({ error: "Невалидные данные" }, { status: 400 });
 		}
 
 		const { email, password } = validatedFields.data;

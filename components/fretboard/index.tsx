@@ -5,31 +5,20 @@ import * as Tone from "tone";
 import Controls from "./controls";
 import FretboardDisplay from "./fretboard-display";
 import PlaybackControls from "./playback-controls";
-import {
-	GUITAR_TUNINGS_MIDI,
-	NOTE_NAMES,
-	SHAPES,
-	getNoteValue,
-	getNoteValuesInShape,
-	mapIdsToNoteObjects,
-} from "@/lib/fretboard-utils";
+import { getNoteValue, getNoteValuesInShape, mapIdsToNoteObjects } from "@/lib/fretboard-utils";
 import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const InteractiveFretboard: React.FC = () => {
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
-	const setSelectedKey = useFretboardStore((s) => s.setSelectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
-	const setSelectedShapeType = useFretboardStore((s) => s.setSelectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
-	const setSelectedShapeName = useFretboardStore((s) => s.setSelectedShapeName);
 	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
-	const setSelectedTuning = useFretboardStore((s) => s.setSelectedTuning);
 	const startFret = useFretboardStore((s) => s.startFret);
-	const setStartFret = useFretboardStore((s) => s.setStartFret);
 	const endFret = useFretboardStore((s) => s.endFret);
-	const setEndFret = useFretboardStore((s) => s.setEndFret);
+	const allTunings = useFretboardStore((s) => s.allTunings);
+	const allShapes = useFretboardStore((s) => s.allShapes);
 
 	const isToneReady = useFretboardStore((s) => s.isToneReady);
 	const isSelectingNotes = useFretboardStore((s) => s.isSelectingNotes);
@@ -47,87 +36,35 @@ const InteractiveFretboard: React.FC = () => {
 
 	const router = useRouter();
 	const pathname = usePathname();
-	const searchParams = useSearchParams();
 
-	const initializedFromUrl = useRef(false);
-	const isInitializingFromUrl = useRef(false);
-
+	const isUpdatingUrlRef = useRef(false);
 	useEffect(() => {
-		if (initializedFromUrl.current || !searchParams) return;
-
-		isInitializingFromUrl.current = true;
-
-		const keyFromUrl = searchParams.get("key");
-		if (keyFromUrl && NOTE_NAMES.includes(keyFromUrl) && selectedKey !== keyFromUrl) {
-			setSelectedKey(keyFromUrl);
-		}
-
-		const startFretFromUrl = searchParams.get("startFret");
-		let tempStartFret = useFretboardStore.getState().startFret;
-		if (startFretFromUrl) {
-			const numStartFret = parseInt(startFretFromUrl, 10);
-			if (!isNaN(numStartFret)) {
-				tempStartFret = numStartFret; 
-			}
-		}
-
-		const endFretFromUrl = searchParams.get("endFret");
-		let tempEndFret = useFretboardStore.getState().endFret;
-		if (endFretFromUrl) {
-			const numEndFret = parseInt(endFretFromUrl, 10);
-			if (!isNaN(numEndFret)) {
-				tempEndFret = numEndFret;
-			}
-		}
-
-		if (startFretFromUrl) setStartFret(tempStartFret);
-		if (endFretFromUrl) setEndFret(tempEndFret);
-
-		let typeToUseForNameValidation = selectedShapeType;
-		const typeFromUrl = searchParams.get("type");
-		if (typeFromUrl && Object.keys(SHAPES).includes(typeFromUrl) && selectedShapeType !== typeFromUrl) {
-			setSelectedShapeType(typeFromUrl);
-			typeToUseForNameValidation = typeFromUrl;
-		}
-
-		const nameFromUrl = searchParams.get("name");
-		const availableShapesForType = Object.keys(SHAPES[typeToUseForNameValidation] || {});
-		if (nameFromUrl && availableShapesForType.includes(nameFromUrl) && selectedShapeName !== nameFromUrl) {
-			setSelectedShapeName(nameFromUrl);
-		}
-
-		const tuningFromUrl = searchParams.get("tuning");
-		if (tuningFromUrl && Object.keys(GUITAR_TUNINGS_MIDI).includes(tuningFromUrl) && selectedTuning !== tuningFromUrl) {
-			setSelectedTuning(tuningFromUrl);
-		}
-
-		initializedFromUrl.current = true;
-		requestAnimationFrame(() => {
-			isInitializingFromUrl.current = false;
-		});
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchParams]);
-
-	useEffect(() => {
-		if (!initializedFromUrl.current || isInitializingFromUrl.current) {
+		if (!allShapes || !allTunings || isUpdatingUrlRef.current) return;
+		if (!selectedKey || !selectedShapeType || !selectedTuning) return;
+		if (allShapes[selectedShapeType] && Object.keys(allShapes[selectedShapeType]).length > 0 && !selectedShapeName)
 			return;
-		}
 
+		isUpdatingUrlRef.current = true;
 		const newParams = new URLSearchParams();
 		newParams.set("key", selectedKey);
-		newParams.set("type", selectedShapeType);
 
-		const currentShapeConfig = SHAPES[selectedShapeType];
-		if (currentShapeConfig && currentShapeConfig[selectedShapeName]) {
-			newParams.set("name", selectedShapeName);
-		} else {
-			const availableShapes = Object.keys(currentShapeConfig || {});
-			if (availableShapes.length > 0) {
-				newParams.set("name", availableShapes[0]);
+		if (allShapes[selectedShapeType]) {
+			newParams.set("type", selectedShapeType);
+			if (allShapes[selectedShapeType][selectedShapeName]) {
+				newParams.set("name", selectedShapeName);
+			} else if (Object.keys(allShapes[selectedShapeType]).length > 0) {
+				newParams.set("name", Object.keys(allShapes[selectedShapeType])[0]);
 			}
+		} else if (Object.keys(allShapes).length > 0) {
+			newParams.set("type", Object.keys(allShapes)[0]);
 		}
-		newParams.set("tuning", selectedTuning);
+
+		if (allTunings[selectedTuning]) {
+			newParams.set("tuning", selectedTuning);
+		} else if (Object.keys(allTunings).length > 0) {
+			newParams.set("tuning", Object.keys(allTunings)[0]);
+		}
+
 		newParams.set("startFret", startFret.toString());
 		newParams.set("endFret", endFret.toString());
 
@@ -135,14 +72,19 @@ const InteractiveFretboard: React.FC = () => {
 		if (currentUrlSearchParams.toString() !== newParams.toString()) {
 			router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
 		}
-	}, [selectedKey, selectedShapeType, selectedShapeName, selectedTuning, router, pathname, startFret, endFret]);
-
-	//обычный тюнинг
-	useEffect(() => {
-		if (!selectedTuning) {
-			setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
-		}
-	}, [selectedTuning, setSelectedTuning]);
+		isUpdatingUrlRef.current = false;
+	}, [
+		selectedKey,
+		selectedShapeType,
+		selectedShapeName,
+		selectedTuning,
+		startFret,
+		endFret,
+		router,
+		pathname,
+		allShapes,
+		allTunings,
+	]);
 
 	const synthRef = useRef<Tone.PolySynth | null>(null);
 	const sequenceRef = useRef<Tone.Sequence<NoteObject> | null>(null);
@@ -178,28 +120,16 @@ const InteractiveFretboard: React.FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const highlightedNoteValues: Set<NoteValue> = useMemo(() => {
-		const rootNoteValue = getNoteValue(selectedKey);
-		if (rootNoteValue === undefined) {
-			console.warn(`Неверно указана тоника: ${selectedKey}`);
-			return new Set();
-		}
-		if (SHAPES[selectedShapeType] && SHAPES[selectedShapeType][selectedShapeName]) {
-			return getNoteValuesInShape(rootNoteValue, selectedShapeType, selectedShapeName);
-		}
-		const availableShapes = Object.keys(SHAPES[selectedShapeType] || {});
-		if (availableShapes.length > 0) {
-			const firstShapeName = availableShapes[0];
-			console.warn(
-				`Выбранная форма "${selectedShapeName}" не найдена для типа "${selectedShapeType}". Фоллбэк: "${firstShapeName}".`
-			);
-			return getNoteValuesInShape(rootNoteValue, selectedShapeType, firstShapeName);
-		}
-		console.warn(`Для типа "${selectedShapeType}" не найдено доступных форм/гамм.`);
-		return new Set();
-	}, [selectedKey, selectedShapeType, selectedShapeName]);
-
 	const rootNoteValue: NoteValue = getNoteValue(selectedKey);
+
+	const highlightedNoteValues: Set<NoteValue> = useMemo(() => {
+		if (!allShapes || !selectedShapeType || !selectedShapeName) return new Set();
+		return getNoteValuesInShape(rootNoteValue, selectedShapeType, selectedShapeName, allShapes);
+	}, [rootNoteValue, selectedShapeType, selectedShapeName, allShapes]);
+
+	const currentTuningMidi = useMemo(() => {
+		return allTunings && selectedTuning && allTunings[selectedTuning] ? allTunings[selectedTuning] : [];
+	}, [allTunings, selectedTuning]);
 
 	const playSingleNote = useCallback(
 		async (noteNameWithOctave: string) => {
@@ -345,7 +275,7 @@ const InteractiveFretboard: React.FC = () => {
 	);
 
 	const playPingPongSequence = useCallback(() => {
-		const forwardEvents = mapIdsToNoteObjects(selectedNotesForPlayback);
+		const forwardEvents = mapIdsToNoteObjects(selectedNotesForPlayback, currentTuningMidi);
 		if (forwardEvents.length === 0) {
 			console.warn("Нет выбранных нот для пинг-понг воспроизведения.");
 			return;
@@ -359,10 +289,10 @@ const InteractiveFretboard: React.FC = () => {
 			sequenceEvents = [...forwardEvents, ...reversedEvents];
 		}
 		startPlayback(sequenceEvents, true, "pingpong");
-	}, [selectedNotesForPlayback, startPlayback]);
+	}, [selectedNotesForPlayback, startPlayback, currentTuningMidi]);
 
 	const playSelectedNotes = useCallback(() => {
-		const events = mapIdsToNoteObjects(selectedNotesForPlayback);
+		const events = mapIdsToNoteObjects(selectedNotesForPlayback, currentTuningMidi);
 		if (events.length === 0) {
 			console.warn("Нет выбранных нот для воспроизведения.");
 			return;
@@ -389,7 +319,7 @@ const InteractiveFretboard: React.FC = () => {
 				console.warn("Не удалось определить длительность последовательности для планирования остановки.");
 			}
 		}
-	}, [selectedNotesForPlayback, startPlayback, stopPlayback, currentPlaybackType]);
+	}, [selectedNotesForPlayback, startPlayback, stopPlayback, currentPlaybackType, currentTuningMidi]);
 
 	const noteClickHandler = isSelectingNotes ? handleNoteSelection : playSingleNote;
 
@@ -399,12 +329,7 @@ const InteractiveFretboard: React.FC = () => {
 		}
 	}, [bpm]);
 
-	useEffect(() => {
-		const availableShapes = Object.keys(SHAPES[selectedShapeType] || {});
-		if (availableShapes.length > 0 && !availableShapes.includes(selectedShapeName)) {
-			setSelectedShapeName(availableShapes[0]);
-		}
-	}, [selectedShapeType, selectedShapeName, setSelectedShapeName]);
+  
 
 	return (
 		<section className="flex flex-col gap-4 justify-center items-center">

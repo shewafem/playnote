@@ -1,7 +1,6 @@
 // components/interactive-fretboard/fret.tsx
 import React from "react";
 import NoteDot from "./note-dot";
-import { getFretboardNoteMIDI, GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
 import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 
@@ -14,7 +13,7 @@ interface FretProps {
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
-	selectedTuning: string;
+	openStringMidiValue: number;
 }
 
 const Fret: React.FC<FretProps> = ({
@@ -23,16 +22,15 @@ const Fret: React.FC<FretProps> = ({
 	highlightedNotes,
 	rootNoteValue,
 	selectedNotesForPlayback,
-	selectedTuning,
+	openStringMidiValue,
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
 }) => {
-	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
-	const midiValue = getFretboardNoteMIDI(stringIndex, fretNumber, tuning);
 
-	const noteValue = (midiValue % 12) as NoteValue; //(0-11)
-	const identifier = `${stringIndex}-${fretNumber}`; // ID
+	const midiValue = openStringMidiValue + fretNumber;
+	const noteValue = (midiValue % 12) as NoteValue;
+	const identifier = `${stringIndex}-${fretNumber}`;
 
 	const isScaleHighlighted = highlightedNotes.has(noteValue);
 	const isRoot = isScaleHighlighted && noteValue === rootNoteValue;

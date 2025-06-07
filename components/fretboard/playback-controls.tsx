@@ -1,9 +1,9 @@
 // components/interactive-fretboard/playback-controls.tsx
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GUITAR_TUNINGS_MIDI, mapIdsToNoteObjects } from "@/lib/fretboard-utils"; // Assuming this is now in lib/musicUtils.ts
+import { mapIdsToNoteObjects } from "@/lib/fretboard-utils"; // Assuming this is now in lib/musicUtils.ts
 import { Chord } from "tonal";
 import { Pause, Play } from "lucide-react";
 import { useFretboardStore } from "@/lib/fretboard-store";
@@ -32,8 +32,12 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 	const resetSelection = useFretboardStore((s) => s.resetSelection);
 	const isToneReady = useFretboardStore((s) => s.isToneReady);
 	const selectedTuning = useFretboardStore((s) => s.selectedTuning);
+  const allTunings = useFretboardStore((s) => s.allTunings)
 
-	const midiTuning = GUITAR_TUNINGS_MIDI[selectedTuning];
+	const currentTuningMidi = useMemo(() => {
+        return (allTunings && selectedTuning && allTunings[selectedTuning]) ? allTunings[selectedTuning] : [];
+    }, [allTunings, selectedTuning]);
+
 	const handleBpmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
 		if (!isNaN(value)) {
@@ -47,13 +51,13 @@ const PlaybackControls: React.FC<PlaybackControlsProps> = ({
 
 	const selectedNoteNames = React.useMemo(
 		() =>
-			mapIdsToNoteObjects(selectedNotesForPlayback, midiTuning)
+			mapIdsToNoteObjects(selectedNotesForPlayback, currentTuningMidi)
 				.map((item) => item.note)
 				.join(", "),
-		[selectedNotesForPlayback, midiTuning]
+		[selectedNotesForPlayback, currentTuningMidi]
 	);
 
-	const detectableNotes = mapIdsToNoteObjects(currentlySelectingNotes, midiTuning).map((item) =>
+	const detectableNotes = mapIdsToNoteObjects(currentlySelectingNotes, currentTuningMidi).map((item) =>
 		item.note.replace(/[0-9]/g, "")
 	);
 

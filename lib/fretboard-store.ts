@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DEFAULT_FRETS, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "./fretboard-utils";
+import { DEFAULT_FRETS, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS, ShapesObjectType, TuningsMidiObjectType } from "./fretboard-utils";
 //import { NoteValue } from "./fretboard-utils";
 
 export interface FretboardStore {
@@ -51,6 +51,12 @@ export interface FretboardStore {
 
 	endFret: number;
 	setEndFret: (endFret: number) => void;
+
+  allShapes: ShapesObjectType | null;
+	setAllShapes: (shapes: ShapesObjectType) => void;
+
+	allTunings: TuningsMidiObjectType | null;
+	setAllTunings: (tunings: TuningsMidiObjectType) => void;
 }
 
 export const useFretboardStore = create<FretboardStore>((set, get) => ({
@@ -60,11 +66,17 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 	selectedShapeType: "Гаммы",
 	setSelectedShapeType: (type) => set({ selectedShapeType: type }),
 
-	selectedShapeName: "Хроматическая",
+	selectedShapeName: "Хроматическая", //get().allShapes[get().selectedShapeType][0],
 	setSelectedShapeName: (name) => set({ selectedShapeName: name }),
 
-	selectedTuning: "Стандартный (E-A-D-G-B-E)",
+	selectedTuning: "E Стандартный (E-A-D-G-B-E)",
 	setSelectedTuning: (tuning) => set({ selectedTuning: tuning }),
+
+  allShapes: null,
+	setAllShapes: (shapes) => set({ allShapes: shapes }),
+
+	allTunings: null,
+	setAllTunings: (tunings) => set({ allTunings: tunings }),
 
 	isToneReady: false,
 	setIsToneReady: (ready) => set({ isToneReady: ready }),

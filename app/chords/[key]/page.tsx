@@ -4,6 +4,7 @@ import { getChordsByKeyPaginated } from "@/actions/chords/get-chords";
 import { getLearnedPositionIdsForChords } from "@/actions/chords/get-chords";
 import { formatItem } from "@/lib/chords/utils";
 import { Suspense } from "react";
+import ChordsLoading from "./loading";
 
 const ITEMS_PER_PAGE = 4;
 export default async function ChordsOfKey({ params }: { params: Promise<{ key: string }> }) {
@@ -29,7 +30,7 @@ export default async function ChordsOfKey({ params }: { params: Promise<{ key: s
 			<p className="text-center text-muted-foreground mb-2 text-sm">
 				(нажмите на схему аккорда для его воспроизведения)
 			</p>
-			<Suspense>
+			<Suspense fallback={<ChordsLoading />}>
 				<ChordList
 					initialChords={initialChords}
 					initialLearnedPositionIds={initialLearnedPositionIds}

@@ -1,85 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-enum UserRole {
-  ADMIN
-  TEACHER
-  STUDENT
-}
-
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String    @unique
-  emailVerified  DateTime?
-  hashedPassword String?
-  image          String?
-  role           UserRole  @default(STUDENT)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  tabFiles TabFile[]
-
-
-  accounts Account[]
-  sessions Session[]
-
-  coursesCreated Course[] @relation("TeacherCourses")
-
-  scalesCreated    Int[]
-  arpeggiosCreated Int[]
-  tuningsCreated   Int[]
-
-  savedFretboards String[]
-
-  learnedScales    Scale[]
-  learnedArpeggios Arpeggio[]
-  learnedPositions Position[]
-
-  enrollments Enrollment[]
-  progress    LessonProgress[]
-
-  // password reset
-  passwordResetToken       String?   @unique
+  id                       String           @id @default(cuid())
+  name                     String?
+  email                    String           @unique
+  emailVerified            DateTime?
+  image                    String?
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  hashedPassword           String?
+  passwordResetToken       String?          @unique
   passwordResetTokenExpiry DateTime?
+  role                     UserRole         @default(STUDENT)
+  arpeggiosCreated         Int[]
+  scalesCreated            Int[]
+  tuningsCreated           Int[]
+  savedFretboards          String[]
+  accounts                 Account[]
+  coursesCreated           Course[]         @relation("TeacherCourses")
+  enrollments              Enrollment[]
+  progress                 LessonProgress[]
+  sessions                 Session[]
+  tabFiles                 TabFile[]
+  learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
+  learnedPositions         Position[]       @relation("PositionToUser")
+  learnedScales            Scale[]          @relation("ScaleToUser")
 }
 
 model Account {
-  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  id                String   @id @default(cuid())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Session {
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -88,6 +70,145 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Course {
+  id            String          @id @default(cuid())
+  title         String
+  description   String
+  difficulty    DifficultyLevel
+  genre         CourseGenre
+  thumbnailUrl  String?
+  prerequisites String?
+  price         Float?
+  isPublished   Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  teacherId     String
+  categoryId    String?
+  category      Category?       @relation(fields: [categoryId], references: [id])
+  teacher       User            @relation("TeacherCourses", fields: [teacherId], references: [id])
+  enrollments   Enrollment[]
+  lessons       Lesson[]
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Lesson {
+  id           String            @id @default(cuid())
+  title        String
+  content      String
+  contentType  LessonContentType
+  order        Int
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  courseId     String
+  attachments  Attachment[]
+  course       Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress LessonProgress[]
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  fileType  String
+  size      Int?
+  createdAt DateTime @default(now())
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  enrolledAt DateTime @default(now())
+  studentId  String
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  completedAt DateTime @default(now())
+  isCompleted Boolean  @default(false)
+  studentId   String
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, lessonId])
+}
+
+model Chord {
+  id        Int        @id @default(autoincrement())
+  key       String
+  suffix    String
+  positions Position[]
+
+  @@unique([key, suffix])
+  @@index([key])
+}
+
+model Position {
+  id        Int      @id @default(autoincrement())
+  frets     Int[]
+  fingers   Int[]
+  baseFret  Int
+  barres    Int[]
+  midi      Int[]
+  capo      Boolean?
+  chordId   Int
+  chord     Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade)
+  learnedBy User[]   @relation("PositionToUser")
+
+  @@index([chordId])
+}
+
+model Scale {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  formula   Int[]  @unique
+  learnedBy User[] @relation("ScaleToUser")
+}
+
+model Arpeggio {
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  formula   Int[]  @unique
+  learnedBy User[] @relation("ArpeggioToUser")
+}
+
+model Tuning {
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  notes String[] @unique
+}
+
+model TabFile {
+  id          String   @id @default(cuid())
+  fileName    String
+  title       String?
+  artist      String?
+  fileContent Bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
 }
 
 enum DifficultyLevel {
@@ -110,155 +231,10 @@ enum CourseGenre {
   OTHER
 }
 
-model Course {
-  id            String          @id @default(cuid())
-  title         String
-  description   String          @db.Text
-  difficulty    DifficultyLevel
-  genre         CourseGenre
-  thumbnailUrl  String?
-  prerequisites String?         @db.Text
-  price         Float?
-  isPublished   Boolean         @default(false)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-
-  teacherId String
-  teacher   User   @relation("TeacherCourses", fields: [teacherId], references: [id])
-
-  lessons     Lesson[]
-  enrollments Enrollment[]
-  category    Category?    @relation(fields: [categoryId], references: [id])
-  categoryId  String?
-}
-
-model Category {
-  id      String   @id @default(cuid())
-  name    String   @unique
-  courses Course[]
-}
-
 enum LessonContentType {
-  VIDEO_EMBED // YouTube
-  VIDEO_UPLOAD // Path  video
+  VIDEO_EMBED
+  VIDEO_UPLOAD
   TEXT
-  PDF_DOCUMENT // Path PDF
-  AUDIO_UPLOAD // Path audio
-}
-
-model Lesson {
-  id          String            @id @default(cuid())
-  title       String
-  content     String            @db.Text
-  contentType LessonContentType
-  order       Int
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  userProgress LessonProgress[]
-  attachments  Attachment[]
-}
-
-model Attachment {
-  id        String   @id @default(cuid())
-  name      String
-  url       String // URL file 
-  fileType  String // 'pdf', 'gp5', 'mp3'
-  size      Int? // File size in bytes
-  createdAt DateTime @default(now())
-
-  lessonId String
-  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-}
-
-model Enrollment {
-  id         String   @id @default(cuid())
-  enrolledAt DateTime @default(now())
-
-  studentId String
-  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@unique([studentId, courseId])
-}
-
-model LessonProgress {
-  id          String   @id @default(cuid())
-  completedAt DateTime @default(now())
-  isCompleted Boolean  @default(false)
-
-  studentId String
-  student   User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-
-  lessonId String
-  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-
-  @@unique([studentId, lessonId])
-}
-
-model Chord {
-  id        Int        @id @default(autoincrement())
-  key       String // "C", "C#", "Db"
-  suffix    String // "major", "minor", "dim"
-  positions Position[]
-
-  @@unique([key, suffix]) // (C major, A minor) unique
-  @@index([key]) // индексация
-}
-
-model Position {
-  id        Int      @id @default(autoincrement())
-  frets     Int[]
-  fingers   Int[]
-  baseFret  Int
-  barres    Int[]
-  midi      Int[]
-  capo      Boolean?
-  chordId   Int
-  learnedBy User[]
-  chord     Chord    @relation(fields: [chordId], references: [id], onDelete: Cascade)
-
-  @@index([chordId])
-}
-
-model Scale {
-  id      Int    @id @default(autoincrement())
-  name    String @unique
-  formula Int[]  @unique
-
-  learnedBy User[]
-}
-
-model Arpeggio {
-  id      Int    @id @default(autoincrement())
-  name    String @unique
-  formula Int[]  @unique
-
-  learnedBy User[]
-}
-
-model Tuning {
-  id    Int      @id @default(autoincrement())
-  name  String   @unique
-  notes String[] @unique
-}
-
-model TabFile {
-  id          String   @id @default(cuid())
-  fileName    String
-  title       String?
-  artist      String?
-  fileContent Bytes // Store the file content as bytes
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+  PDF_DOCUMENT
+  AUDIO_UPLOAD
 }

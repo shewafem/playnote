@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import ProfileHeader from "@/components/profile/profile-header";
 import StudentInfo from "@/components/profile/student-info";
 import TeacherInfo from "@/components/profile/teacher-info";
-import AdminInfo from "@/components/profile/admin-info";
 import { auth } from "@/auth";
 import { notFound, redirect } from 'next/navigation';
 import { Container } from "@/components/layout/container";
@@ -55,7 +54,7 @@ export default async function ProfilePage() {
         <div className="md:col-span-3 space-y-6">
             {userWithDetails.role === "STUDENT" && <StudentInfo user={userWithDetails} />}
             {userWithDetails.role === "TEACHER" && <TeacherInfo user={userWithDetails} />}
-            {userWithDetails.role === "ADMIN" && <AdminInfo />}
+            {userWithDetails.role === "ADMIN" && redirect("/admin")}
         </div>
       </div>
     </Container>

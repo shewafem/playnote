@@ -1,8 +1,8 @@
 // components/interactive-fretboard/fretboard-display.tsx
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import GuitarString from "./guitar-string";
 import FretNumbers from "./fret-numbers";
-import { getNoteName, GUITAR_TUNINGS_MIDI } from "@/lib/fretboard-utils";
+import { getNoteName} from "@/lib/fretboard-utils";
 import { NoteValue } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
@@ -26,12 +26,17 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 	const startFret = useFretboardStore((s) => s.startFret);
 	const endFret = useFretboardStore((s) => s.endFret);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
+  const allTunings = useFretboardStore((s) => s.allTunings);
 
 	const selectedNotes = isSelectingNotes ? currentlySelectingNotes : selectedNotesForPlayback;
 	const selectedNotesSet = React.useMemo(() => new Set(selectedNotes || []), [selectedNotes]);
 
 	const rootNote = getNoteName(rootNoteValue);
 	const fretboardDisplayRef = useRef<HTMLDivElement>(null);
+
+  const currentTuningMidi = useMemo(() => {
+        return (allTunings && selectedTuning && allTunings[selectedTuning]) ? allTunings[selectedTuning] : null;
+    }, [allTunings, selectedTuning]);
 
   const selectedKey = useFretboardStore((s) => s.selectedKey);
   const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
@@ -66,16 +71,16 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 			console.error("Ошибка генерации изображения:", error);
 		}
 	};
-
-	const tuning = GUITAR_TUNINGS_MIDI[selectedTuning];
-	if (!tuning) return <div>Выбранный строй не найден</div>;
 	// Вычисляем количество столбцов для маркеров под грифом
 	const fretsForMarkers = [];
 	const firstNumberedFretForMarker = startFret === 0 ? 1 : startFret;
 	for (let i = firstNumberedFretForMarker; i <= endFret; i++) {
 		if (i > 0) fretsForMarkers.push(i);
 	}
-
+  
+  if (!currentTuningMidi) {
+		return <div>Загрузка тюнинга...</div>;
+	}
 	return (
 		<>
 			<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
@@ -86,7 +91,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 				)}
 			>
 				<FretNumbers />
-				{tuning.map((_, stringIndex) => (
+				{currentTuningMidi.map((_, stringIndex) => (
 					<GuitarString
 						key={stringIndex}
 						stringIndex={stringIndex}
@@ -96,7 +101,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 						isSelectingMode={isSelectingNotes}
 						onNoteClick={isToneReady ? onNoteClick : undefined}
 						isToneReady={isToneReady}
-						selectedTuning={selectedTuning}
+						tuningMidiValues={currentTuningMidi} // Pass the full MIDI array for the current tuning
 					/>
 				))}
 				{/* Маркеры под грифом */}

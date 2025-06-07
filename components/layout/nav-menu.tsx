@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
 		text: "Практика",
 		items: [
 			{ href: "/fretboard", text: "Гриф", description: "Изучение нот на грифе.", icon: <Guitar size={17} /> },
-			{ href: "/progressions", text: "Прогрессии", description: "Работа с аккордовыми прогрессиями." },
+			//{ href: "/progressions", text: "Прогрессии", description: "Работа с аккордовыми прогрессиями." },
 			{ href: "/profile/player", text: "Плеер", description: "Музыкальный плеер для практики." },
 		],
 	},

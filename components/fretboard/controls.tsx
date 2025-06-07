@@ -1,16 +1,9 @@
 // components/interactive-fretboard/controls.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import {
-	GUITAR_TUNINGS_MIDI,
-	NOTE_NAMES,
-	SHAPES,
-	MAX_FRETS,
-	MIN_DISPLAYED_FRETS_COUNT,
-	MIN_FRETS,
-} from "@/lib/fretboard-utils";
+import { NOTE_NAMES, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
@@ -30,14 +23,27 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	const setStartFret = useFretboardStore((s) => s.setStartFret);
 	const endFret = useFretboardStore((s) => s.endFret);
 	const setEndFret = useFretboardStore((s) => s.setEndFret);
+	const allShapes = useFretboardStore((s) => s.allShapes);
+	const allTunings = useFretboardStore((s) => s.allTunings);
 
 	const availableKeys = NOTE_NAMES;
-	const availableShapeTypes = Object.keys(SHAPES);
-	const availableShapeNames = Object.keys(SHAPES[selectedShapeType] || {});
+	const availableShapeTypes = allShapes ? Object.keys(allShapes) : [];
 
-	if (!selectedTuning) {
-		setSelectedTuning(Object.keys(GUITAR_TUNINGS_MIDI)[0]);
-	}
+	const availableShapeNames =
+		allShapes && selectedShapeType && allShapes[selectedShapeType] ? Object.keys(allShapes[selectedShapeType]) : [];
+    
+	const availableTuningNames = allTunings ? Object.keys(allTunings) : [];
+
+	useEffect(() => {
+		if (allShapes && selectedShapeType && allShapes[selectedShapeType]) {
+			const currentTypeShapes = Object.keys(allShapes[selectedShapeType]);
+			if (currentTypeShapes.length > 0 && !currentTypeShapes.includes(selectedShapeName)) {
+				setSelectedShapeName(currentTypeShapes[0]);
+			} else if (currentTypeShapes.length === 0 && selectedShapeName !== "") {
+				setSelectedShapeName("");
+			}
+		}
+	}, [selectedShapeType, selectedShapeName, allShapes, setSelectedShapeName]);
 
 	const keyOptions = availableKeys.map((key) => ({ value: key, label: key }));
 	const shapeTypeOptions = availableShapeTypes.map((type) => ({
@@ -45,6 +51,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		label: type.charAt(0).toUpperCase() + type.slice(1),
 	}));
 	const shapeNameOptions = availableShapeNames.map((name) => ({ value: name, label: name }));
+	const tuningOptions = availableTuningNames.map((name) => ({ value: name, label: name }));
 	const intervalFullNames: { [key: string]: string } = {
 		"1": "Тоника",
 		"♭2": "Малая секунда",
@@ -77,9 +84,14 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		11: "7",
 	};
 
-	const shapeIntervals = SHAPES[selectedShapeType]?.[selectedShapeName];
+	const shapeIntervals = allShapes?.[selectedShapeType]?.[selectedShapeName];
 	// Ensure formula is always an array, even if the shape is temporarily not found
 	const formula = shapeIntervals ? shapeIntervals.map((noteValue) => noteNames[noteValue]) : [];
+
+	if (!allShapes || !allTunings) {
+		// Basic loading check
+		return <div className={cn("flex flex-col gap-3", className)}>Загружаю панель управления...</div>;
+	}
 
 	return (
 		<div className={cn("flex flex-col gap-3", className)}>
@@ -137,9 +149,9 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 								<SelectValue placeholder="Выбрать строй" />
 							</SelectTrigger>
 							<SelectContent>
-								{Object.keys(GUITAR_TUNINGS_MIDI).map((tuning) => (
-									<SelectItem key={tuning} value={tuning}>
-										{tuning}
+								{tuningOptions.map((o) => (
+									<SelectItem key={o.value} value={o.value}>
+										{o.label}
 									</SelectItem>
 								))}
 							</SelectContent>

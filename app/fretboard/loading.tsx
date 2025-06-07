@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 import React from "react";
 
-function ChordsLoading() {
+function FretboardLoading() {
   return (
     <div className="flex h-full w-full justify-center items-center py-8">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -10,4 +10,4 @@ function ChordsLoading() {
   );
 }
 
-export default ChordsLoading;
+export default FretboardLoading;

@@ -14,7 +14,7 @@ interface GuitarStringProps {
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
-	selectedTuning: string;
+	tuningMidiValues: number[];
 	// Вместо передачи пропсами, возьмем из FretboardDisplay или напрямую из стора, если удобнее
 }
 
@@ -26,21 +26,18 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	isSelectingMode,
 	onNoteClick,
 	isToneReady,
-	selectedTuning,
+	tuningMidiValues,
 }) => {
   const startFret = useFretboardStore((s) => s.startFret);
   const endFret = useFretboardStore((s) => s.endFret)
 
 	const fretsOnString = [];
-	// Если startFret === 0, включаем "nut" (лад 0)
 	if (startFret === 0) {
 		fretsOnString.push(0);
 	}
-	// Добавляем остальные лады от (startFret === 0 ? 1 : startFret) до endFret
 	const firstPhysicalFret = startFret === 0 ? 1 : startFret;
 	for (let i = firstPhysicalFret; i <= endFret; i++) {
 		if (i > 0) {
-			// Убедимся, что не дублируем лад 0, если startFret=0
 			fretsOnString.push(i);
 		}
 	}
@@ -52,6 +49,8 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 	for (let absFret = startFret; absFret <= endFret; absFret++) {
 		absoluteFretsToRender.push(absFret);
 	}
+
+  const openStringMidiValue = tuningMidiValues[stringIndex];
 
 	return (
 		<div className={cn("flex items-center h-10", "border-b-2 border-gray-500")}>
@@ -66,7 +65,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 					isSelectingMode={isSelectingMode}
 					onNoteClick={onNoteClick}
 					isToneReady={isToneReady}
-					selectedTuning={selectedTuning}
+					openStringMidiValue={openStringMidiValue}
 				/>
 			))}
 		</div>
