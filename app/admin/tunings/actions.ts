@@ -13,8 +13,8 @@ export async function getTunings(): Promise<Tuning[]> {
 			orderBy: { name: "asc" },
 		});
 	} catch (error) {
-		console.error("Failed to fetch tunings:", error);
-		return []; // Возвращаем пустой массив в случае ошибки
+		console.error("Ошибка получения строев :", error);
+		return [];
 	}
 }
 
@@ -24,12 +24,11 @@ export async function getTuningById(tuningId: number): Promise<Tuning | null> {
 			where: { id: tuningId },
 		});
 	} catch (error) {
-		console.error(`Failed to fetch tuning with id ${tuningId}:`, error);
+		console.error(`Ошибка получения строя с id ${tuningId}:`, error);
 		return null;
 	}
 }
 
-// Типизируем возвращаемое значение для единообразия с другими формами
 export async function createTuning(
 	formData: TuningFormInput
 ): Promise<{ success: boolean; error?: ServerActionError | string; data?: Tuning }> {
@@ -53,7 +52,7 @@ export async function createTuning(
 		if (existingTuningByName) {
 			return {
 				success: false,
-				error: { fieldErrors: { name: ["Тюнинг с таким названием уже существует."] } },
+				error: { fieldErrors: { name: ["Строй с таким названием уже существует."] } },
 			};
 		}
 
@@ -72,21 +71,21 @@ export async function createTuning(
 		revalidatePath("/admin/tunings"); // Обновляем кеш для страницы списка тюнингов
 		return { success: true, data: newTuning };
 	} catch (error) {
-		console.error("Failed to create tuning:", error);
+		console.error("Ошибка создания тюнинга:", error);
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// P2002 - Unique constraint failed
 			if (error.code === "P2002") {
 				const target = error.meta?.target as string[] | undefined;
 				if (target && target.includes("name")) {
-					return { success: false, error: { fieldErrors: { name: ["Тюнинг с таким названием уже существует."] } } };
+					return { success: false, error: { fieldErrors: { name: ["Строй с таким названием уже существует."] } } };
 				}
 				if (target && target.includes("notes")) {
-					return { success: false, error: { fieldErrors: { notes: ["Тюнинг с таким набором нот уже существует."] } } };
+					return { success: false, error: { fieldErrors: { notes: ["Строй с таким набором нот уже существует."] } } };
 				}
-				return { success: false, error: "Ошибка уникальности: такой тюнинг уже существует." };
+				return { success: false, error: "Ошибка уникальности: строй уже существует." };
 			}
 		}
-		return { success: false, error: "Не удалось создать тюнинг. Попробуйте снова." };
+		return { success: false, error: "Не удалось создать строй. Попробуйте снова." };
 	}
 }
 
@@ -111,7 +110,7 @@ export async function updateTuning(
 		});
 
 		if (!existingTuning) {
-			return { success: false, error: "Тюнинг для обновления не найден." };
+			return { success: false, error: "Строй для обновления не найден." };
 		}
 
 		// Проверка на уникальность имени (если оно изменилось и новое имя уже занято другим тюнингом)
@@ -125,7 +124,7 @@ export async function updateTuning(
 			if (tuningWithNewName) {
 				return {
 					success: false,
-					error: { fieldErrors: { name: ["Тюнинг с таким названием уже существует."] } },
+					error: { fieldErrors: { name: ["Строй с таким названием уже существует."] } },
 				};
 			}
 		}
@@ -143,20 +142,20 @@ export async function updateTuning(
 		revalidatePath(`/admin/tunings/${tuningId}/edit`); // Обновляем кеш для страницы редактирования
 		return { success: true, data: updatedTuning };
 	} catch (error) {
-		console.error(`Failed to update tuning ${tuningId}:`, error);
+		console.error(`Ошибка обновления строя ${tuningId}:`, error);
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
 				const target = error.meta?.target as string[] | undefined;
 				if (target && target.includes("name")) {
-					return { success: false, error: { fieldErrors: { name: ["Тюнинг с таким названием уже существует."] } } };
+					return { success: false, error: { fieldErrors: { name: ["Строй с таким названием уже существует."] } } };
 				}
 				if (target && target.includes("notes")) {
-					return { success: false, error: { fieldErrors: { notes: ["Тюнинг с таким набором нот уже существует."] } } };
+					return { success: false, error: { fieldErrors: { notes: ["Строй с таким набором нот уже существует."] } } };
 				}
-				return { success: false, error: "Ошибка уникальности: такой тюнинг уже существует." };
+				return { success: false, error: "Ошибка уникальности: такой строй уже существует." };
 			}
 		}
-		return { success: false, error: "Не удалось обновить тюнинг. Попробуйте снова." };
+		return { success: false, error: "Не удалось обновить строй. Попробуйте снова." };
 	}
 }
 
@@ -168,15 +167,15 @@ export async function deleteTuning(tuningId: number): Promise<{ success: boolean
 		revalidatePath("/admin/tunings");
 		return { success: true };
 	} catch (error) {
-		console.error(`Failed to delete tuning ${tuningId}:`, error);
+		console.error(`Ошибка удаления тюнинга ${tuningId}:`, error);
 		// Здесь можно добавить более специфическую обработку ошибок, если тюнинг связан с другими сущностями
 		// и не может быть удален из-за ограничений внешнего ключа (хотя в вашей схеме этого не видно для Tuning).
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			// P2025 - Record to delete does not exist.
 			if (error.code === "P2025") {
-				return { success: false, error: "Тюнинг для удаления не найден." };
+				return { success: false, error: "Строй для удаления не найден." };
 			}
 		}
-		return { success: false, error: "Не удалось удалить тюнинг." };
+		return { success: false, error: "Не удалось удалить строй." };
 	}
 }

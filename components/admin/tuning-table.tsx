@@ -114,13 +114,13 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 
 		toast.promise(deleteTuning(tuningToDelete.id), {
 			// Используем числовой ID
-			loading: "Удаление тюнинга...",
+			loading: "Удаление строя...",
 			success: (result) => {
 				if (result.success) {
 					router.refresh();
 					return `Тюнинг "${tuningToDelete.name}" успешно удален.`;
 				} else {
-					throw new Error(result.error || "Не удалось удалить тюнинг.");
+					throw new Error(result.error || "Не удалось удалить строй.");
 				}
 			},
 			error: (error) => {
@@ -147,11 +147,11 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 			</div>
 
 			{filteredTunings.length === 0 && searchTerm && initialTunings.length > 0 && (
-				<p className="text-center text-muted-foreground py-4">Тюнинги не найдены.</p>
+				<p className="text-center text-muted-foreground py-4">Строи не найдены.</p>
 			)}
 			{initialTunings.length === 0 && !searchTerm && (
 				<p className="text-center text-muted-foreground py-4">
-					Пока нет ни одного тюнинга.{" "}
+					Пока нет ни одного строя.
 					<Link href="/admin/tunings/new" className="text-primary hover:underline">
 						Добавить новый?
 					</Link>

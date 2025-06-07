@@ -6,7 +6,7 @@ export default function NewUserPage() {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle className="text-center">Добавить новый тюнинг</CardTitle>
+				<CardTitle className="text-center">Добавить новый строй</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<TuningForm onSubmit={createTuning} />

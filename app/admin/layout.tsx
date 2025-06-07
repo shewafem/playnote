@@ -27,7 +27,7 @@ interface NavLinkItem {
 
 const mainNavLinks: NavLinkItem[] = [
 	{ href: "/admin/users", label: "Пользователи", icon: Users, segment: "users" },
-	{ href: "/admin/tunings", label: "Тюнинг", icon: SlidersHorizontal, segment: "tunings" },
+	{ href: "/admin/tunings", label: "Строй", icon: SlidersHorizontal, segment: "tunings" },
 	{ href: "/admin/arpeggios", label: "Арпеджио", icon: GitFork, segment: "arpeggios" },
 	{ href: "/admin/scales", label: "Гаммы", icon: ListMusic, segment: "scales" },
 ];

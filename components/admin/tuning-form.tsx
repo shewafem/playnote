@@ -37,17 +37,17 @@ export function TuningForm({
 	});
 
 	async function handleSubmit(values: TuningFormInput) {
-		setServerError(null); // Сбрасываем общую ошибку перед отправкой
+		setServerError(null);
 
 		toast.promise(onSubmit(values), {
-			loading: isEditing ? "Сохранение тюнинга..." : "Создание тюнинга...",
+			loading: isEditing ? "Сохранение строя..." : "Создание строя...",
 			success: (result) => {
 				if (result.success) {
 					router.push("/admin/tunings");
 					router.refresh();
-					return isEditing ? "Тюнинг успешно обновлен!" : "Тюнинг успешно создан!";
+					return isEditing ? "Строй успешно обновлен!" : "Строй успешно создан!";
 				} else {
-					throw result.error || new Error("Неизвестная ошибка при сохранении тюнинга.");
+					throw result.error || new Error("Неизвестная ошибка при сохранении строя.");
 				}
 			},
 			error: (error) => {
@@ -105,7 +105,7 @@ export function TuningForm({
 							name="name"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Название тюнинга</FormLabel>
+									<FormLabel>Название строя</FormLabel>
 									<FormControl>
 										<Input placeholder="Например: E Стандартный, Drop D, Open G" {...field} />
 									</FormControl>
@@ -145,8 +145,8 @@ export function TuningForm({
 										? "Сохранение..."
 										: "Создание..."
 									: isEditing
-										? "Сохранить тюнинг"
-										: "Создать тюнинг"}
+										? "Сохранить строй"
+										: "Создать строй"}
 							</Button>
 						</CardFooter>
 					</form>

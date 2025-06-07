@@ -25,7 +25,7 @@ export default async function EditTuningPage({ params }: { params: Promise<{ tun
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Редактировать тюнинг: {tuning.name}</CardTitle>
+				<CardTitle>Редактировать строй: {tuning.name}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<TuningForm defaultValues={defaultValues} onSubmit={handleUpdate} isEditing />

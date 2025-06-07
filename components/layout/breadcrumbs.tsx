@@ -23,7 +23,7 @@ const segmentTranslations: { [key: string]: string } = {
 	settings: "Настройки",
 	admin: "Панель администратора",
 	users: "Пользователи",
-	tunings: "Тюнинг",
+	tunings: "Строй",
 	arpeggios: "Арпеджио",
 	scales: "Гаммы",
 	add: "Создать",

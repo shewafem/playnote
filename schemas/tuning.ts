@@ -15,7 +15,7 @@ export type TuningFormData = z.infer<typeof TuningSchema>;
 
 // For form default values
 export const TuningFormSchema = z.object({
-    name: z.string().min(1, "Укажите название тюнинга"),
+    name: z.string().min(1, "Укажите название строя"),
     notes: z.string().min(1, "Укажите названия нот через запятую"),
 });
 export type TuningFormInput = z.infer<typeof TuningFormSchema>;
