@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { DEFAULT_FRETS, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS, ShapesObjectType, TuningsMidiObjectType } from "./fretboard-utils";
+import { DEFAULT_FRETS, MAX_FRETS, MIN_FRETS, ShapesObjectType, TuningsMidiObjectType } from "./fretboard-utils";
 //import { NoteValue } from "./fretboard-utils";
 
 export interface FretboardStore {
@@ -119,16 +119,14 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 		set({ selectedNotesForPlayback: get().currentlySelectingNotes, isSelectingNotes: false });
 	},
 
-	startFret: MIN_FRETS, // Начальное значение
-	endFret: DEFAULT_FRETS, // Начальное значение
+	startFret: MIN_FRETS,
+	endFret: DEFAULT_FRETS,
 
 	setStartFret: (newStartFret) => {
 		const currentEndFret = get().endFret;
 		let clampedStartFret = Math.max(Number(newStartFret), MIN_FRETS);
-		// startFret не должен быть больше endFret минус (минимальное количество отображаемых ладов - 1)
-		// И endFret не должен превышать ABSOLUTE_MAX_FRET
-		clampedStartFret = Math.min(clampedStartFret, currentEndFret - MIN_DISPLAYED_FRETS_COUNT + 1);
-		clampedStartFret = Math.min(clampedStartFret, MAX_FRETS - MIN_DISPLAYED_FRETS_COUNT + 1);
+		clampedStartFret = Math.min(clampedStartFret, currentEndFret + 1);
+		clampedStartFret = Math.min(clampedStartFret, MAX_FRETS + 1);
 
 		if (!isNaN(clampedStartFret)) {
 			set({ startFret: clampedStartFret });
@@ -138,8 +136,7 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 	setEndFret: (newEndFret) => {
 		const currentStartFret = get().startFret;
 		let clampedEndFret = Math.min(Number(newEndFret), MAX_FRETS);
-		// endFret не должен быть меньше startFret плюс (минимальное количество отображаемых ладов - 1)
-		clampedEndFret = Math.max(clampedEndFret, currentStartFret + MIN_DISPLAYED_FRETS_COUNT - 1);
+		clampedEndFret = Math.max(clampedEndFret, currentStartFret);
 
 		if (!isNaN(clampedEndFret)) {
 			set({ endFret: clampedEndFret });

@@ -28,8 +28,6 @@ import {
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-
-// Предполагаем, что у вас есть эти actions
 import { deleteTuning } from "@/app/admin/tunings/actions";
 
 interface TuningsTableProps {
@@ -40,7 +38,7 @@ interface TuningsTableProps {
 const DEFAULT_ITEMS_PER_PAGE = 10;
 
 interface TuningToDelete {
-	id: number; // ID тюнинга из Prisma - число
+	id: number;
 	name: string;
 }
 

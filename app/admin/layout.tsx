@@ -22,7 +22,7 @@ interface NavLinkItem {
 	href: string;
 	label: string;
 	icon: React.ElementType;
-	segment?: string; // Для точного определения активной ссылки
+	segment?: string;
 }
 
 const mainNavLinks: NavLinkItem[] = [

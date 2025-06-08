@@ -1,20 +1,32 @@
-import { TuningFormInput } from "@/schemas/tuning"; // For defaultValues type
-import { getTuningById, updateTuning } from "../actions";
+import { TuningFormInput, TuningFormShape } from "@/schemas/tuning";
+import { getTuningById, updateTuning } from "@/app/admin/tunings/actions";
 import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TuningForm } from "@/components/admin/tuning-form";
 
 export default async function EditTuningPage({ params }: { params: Promise<{ tuningId: string }> }) {
-	const{ tuningId } = await params
-  const tuningIdNum = Number(tuningId);
-	// ... error handling for tuningId ...
-	const tuning = await getTuningById(tuningIdNum); // Action to fetch tuning
+	const { tuningId } = await params;
+	const tuningIdNum = Number(tuningId);
 
-	if (!tuning) notFound();
+	if (isNaN(tuningIdNum)) {
+		notFound();
+	}
 
-	const defaultValues: TuningFormInput = {
+	const tuning = await getTuningById(tuningIdNum);
+
+	if (!tuning) {
+		notFound();
+	}
+
+	const defaultFormShapeValues: TuningFormShape = {
 		name: tuning.name,
-		notes: tuning.notes.join(", "), // Convert array to string for form
+		notes: tuning.notes.map((noteStr) => {
+			const match = noteStr.match(/^([A-Ga-g][#b]?)([1-6])$/);
+      console.log(match)
+			if (match) {
+				return { note: match[1], octave: match[2] };
+			}
+			return { note: "E", octave: "4" };
+		}),
 	};
 
 	const handleUpdate = async (data: TuningFormInput) => {
@@ -23,13 +35,12 @@ export default async function EditTuningPage({ params }: { params: Promise<{ tun
 	};
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Редактировать строй: {tuning.name}</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<TuningForm defaultValues={defaultValues} onSubmit={handleUpdate} isEditing />
-			</CardContent>
-		</Card>
+		<TuningForm
+			defaultValues={defaultFormShapeValues}
+			onSubmit={handleUpdate}
+			isEditing
+			formTitle={`Редактировать тюнинг: ${tuning.name}`}
+			formDescription="Измените название и ноты для каждой струны."
+		/>
 	);
 }

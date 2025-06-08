@@ -1,17 +1,15 @@
-// lib/musicUtils.ts
-
 import { Midi } from "tonal";
 
 export type NoteValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
 export interface NoteObject {
-	id: string; // "stringIdx-fretNum"
+	id: string; // "струна-лад"
 	note: string; // "C4"
 }
 
 export type ShapeFormulas = { [name: string]: NoteValue[] };
-export type ShapesObjectType = { [type: string]: ShapeFormulas }; // e.g., { "Гаммы": { "Мажор": [...] }, "Арпеджио": { ... } }
-export type TuningsMidiObjectType = { [name: string]: number[] }; // e.g., { "Стандартный": [midi1, midi2, ...] }
+export type ShapesObjectType = { [type: string]: ShapeFormulas };
+export type TuningsMidiObjectType = { [name: string]: number[] };
 
 export const NOTE_NAMES: string[] = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 

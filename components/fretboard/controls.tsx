@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { NOTE_NAMES, MAX_FRETS, MIN_DISPLAYED_FRETS_COUNT, MIN_FRETS } from "@/lib/fretboard-utils";
+import { NOTE_NAMES, MAX_FRETS, MIN_FRETS } from "@/lib/fretboard-utils";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 interface ControlsProps {
@@ -65,9 +65,6 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 		"6": "Большая секста",
 		"♭7": "Малая септима",
 		"7": "Большая септима",
-		// 12: "Октава",
-		// 13: "Малая нона",
-		// 14: "Большая нона",
 	};
 	const noteNames = {
 		0: "1",
@@ -85,11 +82,9 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 	};
 
 	const shapeIntervals = allShapes?.[selectedShapeType]?.[selectedShapeName];
-	// Ensure formula is always an array, even if the shape is temporarily not found
 	const formula = shapeIntervals ? shapeIntervals.map((noteValue) => noteNames[noteValue]) : [];
 
 	if (!allShapes || !allTunings) {
-		// Basic loading check
 		return <div className={cn("flex flex-col gap-3", className)}>Загружаю панель управления...</div>;
 	}
 
@@ -163,7 +158,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 							id="start-fret-input"
 							type="number"
 							min={MIN_FRETS}
-							max={endFret - MIN_DISPLAYED_FRETS_COUNT + 1} // Зависит от endFret
+							max={endFret}
 							value={startFret}
 							onChange={(e) => {
 								setStartFret(Number(e.target.value));
@@ -177,7 +172,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 						<input
 							id="end-fret-input"
 							type="number"
-							min={startFret + MIN_DISPLAYED_FRETS_COUNT - 1} // Зависит от startFret
+							min={startFret}
 							max={MAX_FRETS}
 							value={endFret}
 							onChange={(e) => {

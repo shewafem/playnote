@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { TuningsTable } from "@/components/admin/tuning-table";
-import { getTunings } from "@/app/admin/tunings/actions"; 
+import { getAllTunings } from "@/app/admin/tunings/actions"; 
 import { PlusCircle } from "lucide-react";
 
 export default async function AdminTuningsPage() {
-  const tunings = await getTunings(); 
+  const tunings = await getAllTunings(); 
 
   return (
     <div className="space-y-6">
