@@ -24,7 +24,11 @@ model User {
   tuningsCreated           Int[]
   savedFretboards          String[]
   accounts                 Account[]
+  coursesCreated           Course[]         @relation("TeacherCourses")
+  enrollments              Enrollment[]
+  progress                 LessonProgress[]
   sessions                 Session[]
+  tabFiles                 TabFile[]
   learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
   learnedPositions         Position[]       @relation("PositionToUser")
   learnedScales            Scale[]          @relation("ScaleToUser")
@@ -66,6 +70,80 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Course {
+  id            String          @id @default(cuid())
+  title         String
+  description   String
+  difficulty    DifficultyLevel
+  genre         CourseGenre
+  thumbnailUrl  String?
+  prerequisites String?
+  price         Float?
+  isPublished   Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  teacherId     String
+  categoryId    String?
+  category      Category?       @relation(fields: [categoryId], references: [id])
+  teacher       User            @relation("TeacherCourses", fields: [teacherId], references: [id])
+  enrollments   Enrollment[]
+  lessons       Lesson[]
+}
+
+model Category {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Lesson {
+  id           String            @id @default(cuid())
+  title        String
+  content      String
+  contentType  LessonContentType
+  order        Int
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  courseId     String
+  attachments  Attachment[]
+  course       Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress LessonProgress[]
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  fileType  String
+  size      Int?
+  createdAt DateTime @default(now())
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  enrolledAt DateTime @default(now())
+  studentId  String
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  completedAt DateTime @default(now())
+  isCompleted Boolean  @default(false)
+  studentId   String
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, lessonId])
 }
 
 model Chord {
@@ -113,8 +191,50 @@ model Tuning {
   notes String[] @unique
 }
 
+model TabFile {
+  id          String   @id @default(cuid())
+  fileName    String
+  title       String?
+  artist      String?
+  fileContent Bytes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 enum UserRole {
   ADMIN
   TEACHER
   STUDENT
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CourseGenre {
+  ROCK
+  BLUES
+  JAZZ
+  CLASSICAL
+  METAL
+  POP
+  COUNTRY
+  ACOUSTIC
+  FINGERSTYLE
+  OTHER
+}
+
+enum LessonContentType {
+  VIDEO_EMBED
+  VIDEO_UPLOAD
+  TEXT
+  PDF_DOCUMENT
+  AUDIO_UPLOAD
 }
