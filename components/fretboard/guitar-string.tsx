@@ -10,12 +10,11 @@ interface GuitarStringProps {
 	stringIndex: number;
 	highlightedNotes: Set<NoteValue>;
 	rootNoteValue: NoteValue;
-	selectedNotesForPlayback: Set<string>; // Идентификаторы абсолютные "string-absFret"
+	selectedNotesForPlayback: Set<string>;
 	isSelectingMode: boolean;
 	onNoteClick?: (value: string) => void;
 	isToneReady: boolean;
 	tuningMidiValues: number[];
-	// Вместо передачи пропсами, возьмем из FretboardDisplay или напрямую из стора, если удобнее
 }
 
 const GuitarString: React.FC<GuitarStringProps> = ({
@@ -41,10 +40,7 @@ const GuitarString: React.FC<GuitarStringProps> = ({
 			fretsOnString.push(i);
 		}
 	}
-	// Если startFret = 0, но firstPhysicalFret = 1, а endFret = 0 (невалидное состояние из стора)
-	// fretsOnString может быть [0] или пустым.
-
-	// Более простой способ получить массив абсолютных ладов для рендера:
+  
 	const absoluteFretsToRender = [];
 	for (let absFret = startFret; absFret <= endFret; absFret++) {
 		absoluteFretsToRender.push(absFret);

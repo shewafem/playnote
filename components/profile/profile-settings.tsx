@@ -59,7 +59,6 @@ export default function ProfileSettings() {
 		},
 	});
 
-	// React Hook Form for Password Update
 	const passwordUpdateForm = useForm<UpdatePasswordFormValues>({
 		resolver: zodResolver(UpdatePasswordSchema),
 		defaultValues: {

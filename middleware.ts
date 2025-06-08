@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
-//callback req будет вызвана для каждого запроса, который соответствует matcher
+//callback req будет вызвана для каждого пути matcher
 export default auth((req) => {
 	const { nextUrl } = req;
-	const isLoggedIn = !!req.auth; // boolean req.auth информация о сессии
+	const isLoggedIn = !!req.auth;
 
 	const isAdminPath = nextUrl.pathname.startsWith("/admin");
 

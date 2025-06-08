@@ -3,7 +3,7 @@ import { Midi } from "tonal";
 export type NoteValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
 export interface NoteObject {
-	id: string; // "струна-лад"
+	id: string; // "#струны-#лада"
 	note: string; // "C4"
 }
 
@@ -20,8 +20,9 @@ export const MIN_FRETS: number = 0;
 export const DEFAULT_FRETS: number = 12;
 
 export const transformNotesToMidi = (notes: string[]): number[] => {
-	const midiValues: (number | null)[] = notes.map((note) => Midi.toMidi(note));
-	return midiValues.filter((midi): midi is number => midi !== null).reverse();
+	const midiValues: (number | null)[] = notes.map((note) => Midi.toMidi(note)).reverse();
+  console.log(midiValues)
+	return midiValues.filter((midi): midi is number => midi !== null);  
 };
 
 //(0-11)
@@ -50,12 +51,12 @@ export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tu
 		console.warn(`Неверное количество ладов: ${fretNumber}`);
 	}
 
-	const openStringMIDI = tuning[stringIndex];
+	const openStringMIDI = tuning[stringIndex]; // допустим стадарт открытая 0 струна tuning[0] = 40 (midi E)
 	return openStringMIDI + fretNumber;
 }
 
-export function getNoteValuesInShape(
-    rootNoteValue: NoteValue,
+export function getNoteValuesInShape( 
+    rootNoteValue: NoteValue, //C
     shapeType: string,
     shapeName: string,
     allShapes: ShapesObjectType
@@ -64,39 +65,17 @@ export function getNoteValuesInShape(
 	if (!shape) {
 		return new Set();
 	}
-	const noteValues = shape.map((interval) => ((rootNoteValue + interval) % 12) as NoteValue);
+	const noteValues = shape.map((interval) => ((rootNoteValue + interval) % 12) as NoteValue); // [0, 1, 2, 3] -> [C, C#, D, D#]
 	return new Set(noteValues);
 }
 
 export function mapIdsToNoteObjects(ids: string[], tuning: number[]): NoteObject[] {
-	if (!Array.isArray(ids)) {
-		return [];
-	}
-
 	return ids
 		.map((id) => {
-			if (typeof id !== "string" || !id.includes("-")) {
-				return null;
-			}
 			const parts = id.split("-");
-			if (parts.length !== 2) {
-				return null;
-			}
 			const [s, f] = parts.map(Number);
-			if (isNaN(s) || isNaN(f)) {
-				return null;
-			}
-
 			const midi = getFretboardNoteMIDI(s, f, tuning);
-			if (midi === -1) {
-				return null;
-			}
 			const noteNameWithOctave = midiToNoteName(midi);
-
-			if (noteNameWithOctave === null) {
-				return null;
-			}
-
 			return { id: id, note: noteNameWithOctave };
 		})
 		.filter((obj): obj is NoteObject => obj !== null);
