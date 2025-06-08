@@ -32,9 +32,10 @@ export const Header: React.FC<Props> = ({ className }) => {
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
 		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },
-		{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
-		{ href: "/courses", text: "Курсы", icon: "" },
-		{ href: "/blog", text: "Блог", icon: "" },
+    { href: "/player", text: "Плеер", icon: "🎧" },
+		//{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
+		//{ href: "/courses", text: "Курсы", icon: "" },
+		//{ href: "/blog", text: "Блог", icon: "" },
 	];
 
 	return (

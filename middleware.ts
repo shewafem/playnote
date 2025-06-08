@@ -1,24 +1,26 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
+//callback req будет вызвана для каждого запроса, который соответствует matcher
 export default auth((req) => {
 	const { nextUrl } = req;
-	const isLoggedIn = !!req.auth;
+	const isLoggedIn = !!req.auth; // boolean req.auth информация о сессии
+
+	const isAdminPath = nextUrl.pathname.startsWith("/admin");
+
+	const userRole = req.auth?.user?.role;
 
 	if (!isLoggedIn) {
 		return NextResponse.redirect(new URL("/sign-in", nextUrl));
-	}
-
-	const role = req.auth?.user?.role;
-	if (role !== "ADMIN") {
-		// Перенаправляем на главную страницу или страницу с ошибкой доступа
-		return NextResponse.redirect(new URL("/", nextUrl));
+	} else if (isAdminPath) {
+		if (userRole !== "ADMIN") {
+			return NextResponse.redirect(new URL("/profile", nextUrl));
+		}
 	}
 
 	return NextResponse.next();
 });
 
-
 export const config = {
-	matcher: ["/admin/:path*"],
+	matcher: ["/admin/:path*", "/profile/:path*"],
 };

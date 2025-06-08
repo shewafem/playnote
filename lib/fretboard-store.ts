@@ -125,8 +125,8 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 	setStartFret: (newStartFret) => {
 		const currentEndFret = get().endFret;
 		let clampedStartFret = Math.max(Number(newStartFret), MIN_FRETS);
-		clampedStartFret = Math.min(clampedStartFret, currentEndFret + 1);
-		clampedStartFret = Math.min(clampedStartFret, MAX_FRETS + 1);
+		clampedStartFret = Math.min(clampedStartFret, currentEndFret);
+		clampedStartFret = Math.min(clampedStartFret, MAX_FRETS);
 
 		if (!isNaN(clampedStartFret)) {
 			set({ startFret: clampedStartFret });

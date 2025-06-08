@@ -15,7 +15,7 @@ import { formatItem } from "@/lib/chords/utils";
 const segmentTranslations: { [key: string]: string } = {
 	chords: "Аккорды",
 	fretboard: "Гриф",
-	progressions: "Прогрессии",
+	//progressions: "Прогрессии",
 	profile: "Профиль",
 	player: "Проигрыватель",
 	"sign-in": "Вход",

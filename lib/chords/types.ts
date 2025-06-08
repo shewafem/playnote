@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 export type InstrumentType = {
 	strings: number;
 	fretsOnChord: number;
-	name: "Guitar" | "Ukulele";
+	name: "Guitar";
 	keys: string[];
 	tunings: {
 		standard: string[];
