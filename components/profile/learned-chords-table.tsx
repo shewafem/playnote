@@ -15,6 +15,7 @@ import { PositionWithChord } from "@/lib/chords/types"
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ExternalLink} from "lucide-react";
 import Link from "next/link";
+import { formatItemReverse } from "@/lib/chords/utils";
 
 interface LearnedChordsTableProps {
   learnedPositions: PositionWithChord[];
@@ -135,7 +136,7 @@ export default function LearnedChordsTable({ learnedPositions }: LearnedChordsTa
               groupedAndSortedChords.map((group) => (
                 <TableRow className="border-b" key={group.chordId}>
                   <TableCell className="sm:align-middle align-top">
-                    <Link className="flex font-bold sm:text-xl justify-center items-center gap-2" href={`/chords/${group.key}/${group.suffix}`}>{group.key} {group.suffix} <ExternalLink /></Link>
+                    <Link className="flex font-bold sm:text-xl justify-center items-center gap-2" href={`/chords/${formatItemReverse(group.key)}/${formatItemReverse(group.suffix)}`}>{group.key} {group.suffix} <ExternalLink /></Link>
                   </TableCell>
                   <TableCell className="border-border border-x-2 ">
                     <div className="flex flex-wrap gap-4 items-center justify-center">

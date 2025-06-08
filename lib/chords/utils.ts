@@ -16,3 +16,11 @@ export function formatItem(item: string): string {
 	const formattedItem = item.replace(/sharp/g, "#").replace(/over/g, "/");
 	return formattedItem;
 }
+
+export function formatItemReverse(suffix: string): string {
+  if (suffix === undefined) {
+    return suffix;
+  }
+  const formattedSuffix = suffix.replace(/\//g, "over").replace(/#/g, "sharp")
+  return formattedSuffix;
+}
