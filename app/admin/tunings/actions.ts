@@ -4,41 +4,32 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { TuningSchema, TuningFormInput, ServerActionError } from "@/schemas/tuning";
-import { Prisma } from "@prisma/client";
-
-function handlePrismaError(error: any, defaultMessage: string): { success: false; error: ServerActionError | string } {
-	console.error("Prisma Error:", error);
-	if (error instanceof Prisma.PrismaClientKnownRequestError) {
-		if (error.code === "P2002" && error.meta?.target) {
-			const target = error.meta.target as string[];
-			if (target.includes("name")) {
-				return { success: false, error: { fieldErrors: { name: ["Название строя уже существует."] } } };
-			}
-			if (target.includes("notes")) {
-				return {
-					success: false,
-					error: { fieldErrors: { notes: ["Такой набор нот уже существует в другом строе."] } },
-				};
-			}
-		}
-	}
-	return { success: false, error: defaultMessage + (error.message ? `: ${error.message}` : "") };
-}
 
 export async function createTuning(
 	data: TuningFormInput
 ): Promise<{ success: boolean; error?: ServerActionError | string; tuningId?: number }> {
+	const validatedFields = TuningSchema.safeParse(data);
+	if (!validatedFields.success) {
+		console.error("Ошибка валидации:", validatedFields.error.flatten());
+		return {
+			success: false,
+			error: {
+				fieldErrors: validatedFields.error.flatten().fieldErrors as Record<string, string[]>,
+				formErrors: validatedFields.error.flatten().formErrors,
+			},
+		};
+	}
+	const { notes } = validatedFields.data;
 	try {
-		const validatedFields = TuningSchema.safeParse(data);
-
-		if (!validatedFields.success) {
-			console.error("Validation errors on create:", validatedFields.error.flatten());
+		const existingTuning = await prisma.tuning.findUnique({
+			where: {
+				notes,
+			},
+		});
+		if (existingTuning) {
 			return {
 				success: false,
-				error: {
-					fieldErrors: validatedFields.error.flatten().fieldErrors as Record<string, string[]>,
-					formErrors: validatedFields.error.flatten().formErrors,
-				},
+				error: { formErrors: ["Такой тюнинг уже существует"], fieldErrors: { email: ["Ноты заняты"] } },
 			};
 		}
 		const newTuning = await prisma.tuning.create({
@@ -47,36 +38,45 @@ export async function createTuning(
 				notes: validatedFields.data.notes,
 			},
 		});
+
 		revalidatePath("/admin/tunings");
 		return { success: true, tuningId: newTuning.id };
 	} catch (error: any) {
-		return handlePrismaError(error, "Не удалось создать тюнинг");
+		return { success: false, error: error };
 	}
 }
-
 export async function updateTuning(
 	id: number,
 	data: TuningFormInput
 ): Promise<{ success: boolean; error?: ServerActionError | string }> {
+	const validatedFields = TuningSchema.safeParse(data);
+	if (!validatedFields.success) {
+		return {
+			success: false,
+			error: {
+				fieldErrors: validatedFields.error.flatten().fieldErrors as Record<string, string[]>,
+				formErrors: validatedFields.error.flatten().formErrors,
+			},
+		};
+	}
+	const { name, notes } = validatedFields.data;
 	try {
-		const validatedFields = TuningSchema.safeParse(data);
-
-		if (!validatedFields.success) {
-			console.error("Ошибка валидации при обновлении:", validatedFields.error.flatten());
+		const existingTuning = await prisma.tuning.findUnique({
+			where: {
+				notes,
+			},
+		});
+		if (existingTuning && existingTuning.id !== id) {
 			return {
 				success: false,
-				error: {
-					fieldErrors: validatedFields.error.flatten().fieldErrors as Record<string, string[]>,
-					formErrors: validatedFields.error.flatten().formErrors,
-				},
+				error: { formErrors: ["Такой тюнинг уже существует"], fieldErrors: { email: ["Ноты заняты"] } },
 			};
 		}
-
 		await prisma.tuning.update({
 			where: { id },
 			data: {
-				name: validatedFields.data.name,
-				notes: validatedFields.data.notes,
+				name: name,
+				notes: notes,
 			},
 		});
 
@@ -84,7 +84,7 @@ export async function updateTuning(
 		revalidatePath(`/admin/tunings/${id}`);
 		return { success: true };
 	} catch (error: any) {
-		return handlePrismaError(error, "Не удалось обновить тюнинг");
+		return { success: false, error: error };
 	}
 }
 export async function deleteTuning(id: number): Promise<{ success: boolean; error?: string }> {
@@ -97,13 +97,7 @@ export async function deleteTuning(id: number): Promise<{ success: boolean; erro
 		revalidatePath(`/admin/tunings/${id}`);
 		return { success: true };
 	} catch (error: any) {
-		console.error("ошибка удаления строя:", error);
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			if (error.code === "P2025") {
-				return { success: false, error: "Тюнинг не найден для удаления." };
-			}
-		}
-		return { success: false, error: "Не удалось удалить тюнинг." + (error.message ? `: ${error.message}` : "") };
+		return { success: false, error: error };
 	}
 }
 

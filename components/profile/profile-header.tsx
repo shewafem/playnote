@@ -2,6 +2,8 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale"; 
 const roleText = {
 	STUDENT: "Студент",
 	TEACHER: "Учитель",
@@ -32,7 +34,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 					<dt className="text-sm font-medium text-muted-foreground">Email</dt>
 					<dd className="text-sm mb-3">{user.email}</dd>
 					<dt className="text-sm font-medium text-muted-foreground">Дата регистрации:</dt>
-					<dd className="text-sm">{new Date(user.createdAt).toLocaleDateString()}</dd>
+					<dd className="text-sm">{format(new Date(user.createdAt), "dd MMMM yyyy, HH:mm", { locale: ru })}</dd>
 				</dl>
 			</div>
 			<Link

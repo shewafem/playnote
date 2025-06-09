@@ -154,7 +154,6 @@ const InteractiveFretboard: React.FC = () => {
 	);
 
 	const stopPlayback = useCallback(() => {
-		console.log("Остановка воспроизведения...");
 		if (Tone && Tone.getTransport() && Tone.getContext()?.state !== "closed") {
 			Tone.getTransport().stop();
 			Tone.getTransport().cancel(0);
@@ -163,13 +162,9 @@ const InteractiveFretboard: React.FC = () => {
 				sequenceRef.current.dispose();
 				sequenceRef.current = null;
 			}
-		} else {
-			console.warn("Tone.js недоступен для остановки воспроизведения.");
 		}
-
 		setIsPlayingSequence(false);
 		setCurrentPlaybackType(null);
-		console.log("Воспроизведение остановлено.");
 	}, [setIsPlayingSequence, setCurrentPlaybackType]);
 
 	const toggleSelectionMode = useCallback(() => {
@@ -179,10 +174,8 @@ const InteractiveFretboard: React.FC = () => {
 		const nextState = !isSelectingNotes;
 		if (nextState) {
 			setCurrentlySelectingNotes([...selectedNotesForPlayback]);
-			console.log("Включен режим выбора нот.");
 		} else {
 			setCurrentlySelectingNotes([]);
-			console.log("Выход из режима выбора нот (отменено).");
 		}
 		setIsSelectingNotes(nextState);
 	}, [
@@ -205,7 +198,6 @@ const InteractiveFretboard: React.FC = () => {
 					(event) => typeof event === "object" && event !== null && "note" in event && "id" in event
 				)
 			) {
-				console.error("Не выполнены условия для начала воспроизведения или неверные данные последовательности.");
 				stopPlayback();
 				return;
 			}
@@ -213,19 +205,14 @@ const InteractiveFretboard: React.FC = () => {
 			try {
 				if (Tone.getContext().state !== "running") {
 					await Tone.start();
-					console.log("Аудиоконтекст Tone.js запущен из startPlayback.");
 				}
 				if (isPlayingSequence || sequenceRef.current) {
-					console.log("Остановка предыдущего воспроизведения перед запуском нового.");
 					stopPlayback();
 				}
 
 				setIsPlayingSequence(true);
 				setCurrentPlaybackType(type);
 
-				console.log(
-					`Создание новой последовательности: ${type}, Цикл: ${loop}, Количество событий: ${sequenceEvents.length}`
-				);
 				sequenceRef.current = new Tone.Sequence<NoteObject>(
 					(time: number, event: NoteObject) => {
 						if (synthRef.current && event) {
@@ -246,8 +233,6 @@ const InteractiveFretboard: React.FC = () => {
 							} catch (synthError) {
 								console.error(`Ошибка при воспроизведении ноты ${note} в последовательности:`, synthError);
 							}
-						} else {
-							console.warn("Синтезатор или событие не доступно в колбэке последовательности.");
 						}
 					},
 					sequenceEvents,
@@ -258,7 +243,7 @@ const InteractiveFretboard: React.FC = () => {
 				sequenceRef.current.start(0); // времени старта транспорта (0)
 
 				Tone.getTransport().start();
-				console.log(`Воспроизведение начато. BPM: ${Tone.getTransport().bpm.value}`);
+				//console.log(`Воспроизведение начато. BPM: ${Tone.getTransport().bpm.value}`);
 			} catch (error) {
 				console.error("Ошибка при настройке startPlayback:", error);
 				stopPlayback();
@@ -277,7 +262,6 @@ const InteractiveFretboard: React.FC = () => {
 	const playPingPongSequence = useCallback(() => {
 		const forwardEvents = mapIdsToNoteObjects(selectedNotesForPlayback, currentTuningMidi);
 		if (forwardEvents.length === 0) {
-			console.warn("Нет выбранных нот для пинг-понг воспроизведения.");
 			return;
 		}
 
@@ -294,7 +278,6 @@ const InteractiveFretboard: React.FC = () => {
 	const playSelectedNotes = useCallback(() => {
 		const events = mapIdsToNoteObjects(selectedNotesForPlayback, currentTuningMidi);
 		if (events.length === 0) {
-			console.warn("Нет выбранных нот для воспроизведения.");
 			return;
 		}
 		const forwardEvents = [...events];
@@ -315,8 +298,6 @@ const InteractiveFretboard: React.FC = () => {
 					console.error("Ошибка планирования остановки последовательности:", e);
 					console.warn("Не удалось запланировать остановку. Возможно, потребуется остановить вручную.");
 				}
-			} else {
-				console.warn("Не удалось определить длительность последовательности для планирования остановки.");
 			}
 		}
 	}, [selectedNotesForPlayback, startPlayback, stopPlayback, currentPlaybackType, currentTuningMidi]);
@@ -328,8 +309,6 @@ const InteractiveFretboard: React.FC = () => {
 			Tone.getTransport().bpm.value = bpm;
 		}
 	}, [bpm]);
-
-  
 
 	return (
 		<section className="flex flex-col gap-4 justify-center items-center">

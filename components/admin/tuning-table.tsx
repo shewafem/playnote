@@ -1,7 +1,6 @@
-// app/admin/tunings/components/tunings-table.tsx
 "use client";
 
-import { Tuning } from "@prisma/client"; // Предполагаем, что Prisma генерирует тип Tuning
+import { Tuning } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
@@ -57,7 +56,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 		return initialTunings.filter(
 			(tuning) =>
 				tuning.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-				tuning.notes.join(",").toLowerCase().includes(searchTerm.toLowerCase())
+				tuning.notes.join(" ").toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	}, [initialTunings, searchTerm]);
 
@@ -91,7 +90,6 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 		if (!tuning) return;
 
 		toast.promise(deleteTuning(tuning.id), {
-			// Используем числовой ID
 			loading: "Удаление строя...",
 			success: (result) => {
 				if (result.success) {
@@ -162,7 +160,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 										<TableCell className="text-right px-4 py-3">
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
-													<Button variant="ghost" className="h-8 w-8 p-0">
+													<Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
 														<span className="sr-only">Открыть меню</span>
 														<MoreHorizontal className="h-4 w-4" />
 													</Button>
@@ -206,6 +204,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 									onClick={() => handlePageChange(1)}
 									disabled={currentPage === 1}
 									title="Первая"
+									className="cursor-pointer"
 								>
 									<ChevronsLeft className="h-4 w-4" />
 								</Button>
@@ -215,6 +214,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 									onClick={() => handlePageChange(currentPage - 1)}
 									disabled={currentPage === 1}
 									title="Назад"
+									className="cursor-pointer"
 								>
 									<ChevronLeft className="h-4 w-4" />
 								</Button>
@@ -227,6 +227,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 									onClick={() => handlePageChange(currentPage + 1)}
 									disabled={currentPage === totalPages}
 									title="Вперед"
+									className="cursor-pointer"
 								>
 									<ChevronRight className="h-4 w-4" />
 								</Button>
@@ -236,6 +237,7 @@ export function TuningsTable({ tunings: initialTunings, itemsPerPage = DEFAULT_I
 									onClick={() => handlePageChange(totalPages)}
 									disabled={currentPage === totalPages}
 									title="Последняя"
+									className="cursor-pointer"
 								>
 									<ChevronsRight className="h-4 w-4" />
 								</Button>

@@ -101,7 +101,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 						isSelectingMode={isSelectingNotes}
 						onNoteClick={isToneReady ? onNoteClick : undefined}
 						isToneReady={isToneReady}
-						tuningMidiValues={currentTuningMidi} // Pass the full MIDI array for the current tuning
+						tuningMidiValues={currentTuningMidi}
 					/>
 				))}
 				{/* Маркеры под грифом */}

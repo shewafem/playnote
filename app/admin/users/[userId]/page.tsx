@@ -1,4 +1,3 @@
-// app/admin/users/[userId]/edit/page.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserForm } from "@/components/admin/user-form";
 import { getUserById, updateUser } from "../actions";

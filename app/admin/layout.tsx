@@ -1,22 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation"; 
+import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetHeader } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-	Users,
-	SlidersHorizontal,
-	GitFork,
-	ListMusic,
-	LogOut, 
-	PanelLeft,
-	Guitar,
-} from "lucide-react";
-import { cn } from "@/lib/utils"; 
+import { Users, SlidersHorizontal, GitFork, ListMusic, LogOut, PanelLeft, Guitar } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface NavLinkItem {
 	href: string;
@@ -32,9 +24,7 @@ const mainNavLinks: NavLinkItem[] = [
 	{ href: "/admin/scales", label: "Гаммы", icon: ListMusic, segment: "scales" },
 ];
 
-const secondaryNavLinks: NavLinkItem[] = [
-	{ href: "/", label: "Вернуться на сайт", icon: LogOut, segment: undefined },
-];
+const secondaryNavLinks: NavLinkItem[] = [{ href: "/", label: "Вернуться на сайт", icon: LogOut, segment: undefined }];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
 	const pathname = usePathname();
@@ -55,7 +45,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 					{(isSidebarOpen || isMobile) && <h1 className="text-xl font-bold text-primary">Панель</h1>}
 				</Link>
 				{!isMobile && (
-					<Button variant="ghost" size="icon" onClick={toggleSidebar} className={cn(isSidebarOpen ? "" : "rotate-180")}>
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={toggleSidebar}
+						className={cn("cursor-pointer", isSidebarOpen ? "" : "rotate-180")}
+					>
 						<PanelLeft className="h-5 w-5" />
 					</Button>
 				)}
@@ -72,7 +67,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 										<Link href={link.href}>
 											<Button
 												variant={isActive ? "secondary" : "ghost"}
-												className={cn("w-full justify-start gap-2", !(isSidebarOpen || isMobile) && "justify-center")}
+												className={cn(
+													"w-full justify-start gap-2 cursor-pointer",
+													!(isSidebarOpen || isMobile) && "justify-center"
+												)}
 												asChild={isMobile}
 											>
 												{isMobile ? (
@@ -152,7 +150,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 			<aside
 				className={cn(
 					"hidden md:flex flex-col border-r bg-background transition-all duration-300 ease-in-out",
-					isSidebarOpen ? "w-64" : "w-[72px]" 
+					isSidebarOpen ? "w-64" : "w-[72px]"
 				)}
 			>
 				<NavContent />
@@ -169,11 +167,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 						</SheetTrigger>
 						<SheetContent side="left" className="p-0 w-64 md:w-72">
 							<SheetHeader>
-                <SheetTitle><NavContent isMobile={true} /></SheetTitle>
-                </SheetHeader>
+								<SheetTitle>
+									<NavContent isMobile={true} />
+								</SheetTitle>
+							</SheetHeader>
 						</SheetContent>
 					</Sheet>
-					<div className="flex-1"><h1 className="font-semibold text-lg">Панель администратора</h1></div>
+					<div className="flex-1">
+						<h1 className="font-semibold text-lg">Панель администратора</h1>
+					</div>
 				</header>
 				<main className="flex-1 p-4 sm:px-6 sm:py-0 md:p-6 overflow-auto">
 					<div className="max-w-7xl mx-auto">{children}</div>

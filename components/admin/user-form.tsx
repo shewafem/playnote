@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// app/admin/users/components/user-form.tsx
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,7 +68,6 @@ export function UserForm({ defaultValues, onSubmit, isEditing = false, formTitle
 					router.refresh();
 					return isEditing ? "Пользователь успешно обновлен!" : "Пользователь успешно создан!";
 				} else {
-					// This will be caught by the error part of toast.promise
 					throw result.error || new Error("Неизвестная ошибка");
 				}
 			},
@@ -77,18 +75,6 @@ export function UserForm({ defaultValues, onSubmit, isEditing = false, formTitle
 				let errorMessage = "Произошла ошибка.";
 				if (error?.formErrors?.length) {
 					errorMessage = error.formErrors.join(", ");
-					setServerError(errorMessage);
-				}
-				if (error?.fieldErrors) {
-					for (const [field, errors] of Object.entries(error.fieldErrors as Record<string, string[]>)) {
-						form.setError(field as keyof UserFormData, { message: errors.join(", ") });
-					}
-					if (!error.formErrors?.length) errorMessage = "Обнаружены ошибки в полях формы.";
-				} else if (typeof error === "string") {
-					errorMessage = error;
-					setServerError(errorMessage);
-				} else if (error instanceof Error) {
-					errorMessage = error.message;
 					setServerError(errorMessage);
 				}
 				return errorMessage;

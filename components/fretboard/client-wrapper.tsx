@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import InteractiveFretboard from "./index";
 import type { ShapesObjectType, TuningsMidiObjectType } from "@/lib/fretboard-utils";
-import { NOTE_NAMES } from "@/lib/fretboard-utils"; // For key validation
+import { NOTE_NAMES } from "@/lib/fretboard-utils";
 import { useSearchParams } from "next/navigation";
 
 interface ClientWrapperProps {

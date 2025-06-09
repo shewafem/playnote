@@ -1,4 +1,3 @@
-// app/admin/users/components/users-table.tsx
 "use client";
 
 import { User, UserRole } from "@prisma/client";
@@ -15,12 +14,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { deleteUser } from "@/app/admin/users/actions"; // Убедитесь, что путь правильный
+import { deleteUser } from "@/app/admin/users/actions"; 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { MoreHorizontal, Pencil, Trash2, UserCircle2, ShieldCheck, BookUser } from "lucide-react"; // Иконки
-import { format } from "date-fns"; // Для форматирования даты
-import { ru } from "date-fns/locale"; // Для русской локали даты
+import { MoreHorizontal, Pencil, Trash2, UserCircle2, ShieldCheck, BookUser } from "lucide-react";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale"; 
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search as SearchIcon } from "lucide-react";

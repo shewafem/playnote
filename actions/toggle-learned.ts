@@ -13,9 +13,18 @@ export async function toggleLearnedPosition(positionId: number) {
 	const userId = session.user.id;
 
 	try {
-		const user = await prisma.user.findUnique({
+		const user = await prisma.user.findUnique({ //пользователь с выученными позициями
 			where: { id: userId },
-			select: { learnedPositions: { where: { id: positionId }, select: { id: true } } },
+			select: {
+				learnedPositions: {
+					where: {
+						id: positionId,
+					},
+					select: {
+						id: true,
+					},
+				},
+			},
 		});
 
 		if (!user) {

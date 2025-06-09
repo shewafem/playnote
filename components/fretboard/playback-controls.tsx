@@ -1,9 +1,8 @@
-// components/interactive-fretboard/playback-controls.tsx
 import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { mapIdsToNoteObjects } from "@/lib/fretboard-utils"; // Assuming this is now in lib/musicUtils.ts
+import { mapIdsToNoteObjects } from "@/lib/fretboard-utils";
 import { Chord } from "tonal";
 import { Pause, Play } from "lucide-react";
 import { useFretboardStore } from "@/lib/fretboard-store";

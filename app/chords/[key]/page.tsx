@@ -15,8 +15,8 @@ export default async function ChordsOfKey({ params }: { params: Promise<{ key: s
 	const displayKey = formatItem(rawKeyFromUrl);
 
 	const { chords: initialChords, totalCount } = await getChordsByKeyPaginated(rawKeyFromUrl, 0, ITEMS_PER_PAGE);
-
-	const initialLearnedPositionIds: number[] = await getLearnedPositionIdsForChords(userId, initialChords); //какие позиция уже выучены
+//какие позиции уже выучены
+	const initialLearnedPositionIds: number[] = await getLearnedPositionIdsForChords(userId, initialChords);
 
 	if (totalCount === 0) {
 		return (

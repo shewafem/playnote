@@ -24,12 +24,12 @@ export async function GET() {
 export async function PATCH(req: Request) {
 	const session = await auth();
 	if (!session?.user?.id) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		return NextResponse.json({ error: "Неавторизован" }, { status: 401 });
 	}
 	const body = await req.json();
 	const parsed = ProfileInfoSchema.safeParse(body);
 	if (!parsed.success) {
-		return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+		return NextResponse.json({ error: "Неверная информация" }, { status: 400 });
 	}
 	const { name, email } = parsed.data;
 	try {
@@ -40,6 +40,6 @@ export async function PATCH(req: Request) {
 		});
 		return NextResponse.json(updated);
 	} catch {
-		return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
+		return NextResponse.json({ error: "Ошибка обновления профиля" }, { status: 500 });
 	}
 }

@@ -39,8 +39,7 @@ export async function getChord(key: string, suffix: string): Promise<ChordWithPo
   try {
     const chordFromDb = await prisma.chord.findUnique({
       where: {
-        // Используем имя уникального индекса, которое Prisma генерирует по умолчанию
-        // для @@unique([key, suffix]) это key_suffix
+        // для @@unique
         key_suffix: {
           key: formattedKey,
           suffix: suffix,
@@ -69,14 +68,9 @@ export async function getSuffixes(key: string): Promise<string[]> {
         key: formattedKey,
       },
       select: {
-        // Запрашиваем только поле suffix для эффективности
         suffix: true,
-      }, // Убедимся, что суффиксы уникальны, если это возможно (зависит от версии Prisma и БД)
-      // Если distinct на уровне поля не работает, можно сделать .map().filter() в JS
+      }, 
     });
-    // Если distinct не сработал как ожидалось или не поддерживается для select:
-    // const uniqueSuffixes = Array.from(new Set(chordsWithSuffixes.map(chord => chord.suffix)));
-    // return uniqueSuffixes;
     return chordsWithSuffixes.map((chord) => chord.suffix);
   } catch (error) {
     console.error(`Ошибка получения суффиксов для тональности ${formattedKey} из БД:`, error);
@@ -91,7 +85,6 @@ export async function getChordsByKeyPaginated(
 ): Promise<{ chords: ChordWithPositions[]; totalCount: number }> {
   const formattedKey = formatItem(key);
   try {
-    // Prisma transaction to get both data and count efficiently
     const [chordsFromDb, totalCount] = await prisma.$transaction([
       prisma.chord.findMany({
         where: { key: formattedKey },
@@ -108,7 +101,6 @@ export async function getChordsByKeyPaginated(
     return { chords: chordsFromDb, totalCount };
   } catch (error) {
     console.error(`Ошибка получения пагинированных аккордов для тональности ${formattedKey} из БД:`, error);
-    // It's better to throw or return a specific error structure
     throw new Error(`Ошибка получения пагинированных аккордов для тональности ${formattedKey}`);
   }
 }

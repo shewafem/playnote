@@ -12,7 +12,6 @@ import {
 	TuningFormShapeSchema,
 	ServerActionError,
 	formatFieldArrayToNotesString,
-	SingleNoteField,
 } from "@/schemas/tuning";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -46,12 +45,12 @@ export function TuningForm({
 		defaultValues: defaultValues || {
 			name: "",
 			notes: [
-				{ note: "E", octave: "4" },
-				{ note: "A", octave: "4" },
+				{ note: "E", octave: "2" },
+				{ note: "A", octave: "2" },
 				{ note: "D", octave: "3" },
 				{ note: "G", octave: "3" },
 				{ note: "B", octave: "3" },
-				{ note: "E", octave: "2" },
+				{ note: "E", octave: "4" },
 			],
 		},
 	});
@@ -79,51 +78,11 @@ export function TuningForm({
 					throw result.error || new Error("Неизвестная ошибка при сохранении тюнинга.");
 				}
 			},
+
 			error: (error) => {
 				let errorMessage = "Произошла ошибка.";
-				if (typeof error === "string") {
-					errorMessage = error;
-					setServerError(errorMessage);
-				} else if (error && typeof error === "object") {
-					const err = error as ServerActionError;
-					if (err.formErrors?.length) {
-						errorMessage = err.formErrors.join(", ");
-						setServerError(errorMessage);
-					}
-					if (err.fieldErrors) {
-						Object.entries(err.fieldErrors).forEach(([fieldName, fieldErrors]) => {
-							if (fieldName === "notes" && Array.isArray(fieldErrors)) {
-								// Handle errors for individual notes in the array
-								fieldErrors.forEach((noteError, index) => {
-									if (typeof noteError === "object" && noteError !== null) {
-										Object.entries(noteError).forEach(([noteField, noteFieldErrors]) => {
-											if (Array.isArray(noteFieldErrors) && noteFieldErrors.length > 0) {
-												form.setError(`notes.${index}.${noteField as keyof SingleNoteField}`, {
-													type: "server",
-													message: noteFieldErrors.join(", "),
-												});
-											}
-										});
-									}
-								});
-								if (!err.formErrors?.length && !errorMessage.startsWith("Обнаружены ошибки"))
-									errorMessage = "Обнаружены ошибки в нотах.";
-							} else if (
-								typeof fieldErrors === "string" ||
-								(Array.isArray(fieldErrors) && typeof fieldErrors[0] === "string")
-							) {
-								const message = Array.isArray(fieldErrors) ? fieldErrors.join(", ") : String(fieldErrors);
-								form.setError(fieldName as keyof TuningFormShape, { type: "server", message }); // Adjust fieldName type
-								if (!err.formErrors?.length && !errorMessage.startsWith("Обнаружены ошибки"))
-									errorMessage = "Обнаружены ошибки в полях формы.";
-							}
-						});
-					} else if (err.message && !err.formErrors?.length) {
-						errorMessage = err.message;
-						setServerError(errorMessage);
-					}
-				} else if (error instanceof Error) {
-					errorMessage = error.message;
+				if (error?.formErrors?.length) {
+					errorMessage = error.formErrors.join(", ");
 					setServerError(errorMessage);
 				}
 				return errorMessage;
@@ -234,11 +193,7 @@ export function TuningForm({
 							{form.formState.errors.notes && typeof form.formState.errors.notes.message === "string" && (
 								<p className="text-sm font-medium text-destructive">{form.formState.errors.notes.message}</p>
 							)}
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() => append({ note: "E", octave: "2" })} 
-							>
+							<Button type="button" variant="outline" onClick={() => append({ note: "E", octave: "2" })}>
 								<PlusCircle className="mr-2 h-4 w-4" />
 								Добавить струну
 							</Button>

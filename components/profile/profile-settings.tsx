@@ -83,7 +83,6 @@ export default function ProfileSettings() {
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				setProfileImage(e.target?.result as string);
-				// Here you would typically call an API to upload the image
 				// e.g., uploadProfileImage(file).then(() => toast.success("Фото профиля успешно обновлено"));
 				toast.success("Фото профиля успешно обновлено (превью).");
 			};
@@ -112,7 +111,6 @@ export default function ProfileSettings() {
 
 	const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
 		console.log("Password Update Data:", data);
-		// TODO: API call to update password
 		// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		toast.success("Пароль успешно обновлен");
