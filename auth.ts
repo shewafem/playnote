@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 					}
 
 					try {
-						const passwordsMatch = await bcrypt.compare(password, user.hashedPassword, );
+						const passwordsMatch = await bcrypt.compare(password, user.hashedPassword);
 
 						if (passwordsMatch) {
 							return {
@@ -35,6 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 								email: user.email,
 								name: user.name,
 								role: user.role,
+								image: user.image,
 							};
 						}
 					} catch (error) {
@@ -47,10 +48,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 		}),
 	],
 	callbacks: {
-		async jwt({ token, user }) {
+		async jwt({ token, user, trigger }) {
 			if (user) {
 				token.id = user.id;
 				token.role = user.role;
+				token.image = user.image;
+			}
+			if (trigger === "update") {
+				// Fetch latest user data when session is updated
+				const updatedUser= await prisma.user.findUnique({
+					where: { id: token.id as string},
+					select: { id: true, email: true, name: true, role: true, image: true },
+				});
+				if (updatedUser) {
+					token.id = updatedUser.id;
+					token.email = updatedUser.email;
+					token.name = updatedUser.name;
+					token.role = updatedUser.role;
+					token.image = updatedUser.image;
+				}
 			}
 			return token;
 		},
@@ -61,6 +77,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 			if (session.user && token.role) {
 				session.user.role = token.role as UserRole;
+			}
+			if (session.user && token.image) {
+				session.user.image = token.image as string;
 			}
 			// session.expires будет maxAge (30days)
 			return session;

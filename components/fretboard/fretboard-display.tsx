@@ -1,5 +1,5 @@
 // components/interactive-fretboard/fretboard-display.tsx
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef} from "react";
 import GuitarString from "./guitar-string";
 import FretNumbers from "./fret-numbers";
 import { getNoteName } from "@/lib/fretboard-utils";
@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import { Button } from "../ui/button";
 import html2canvas from "html2canvas-pro";
-import { Download, Save } from "lucide-react";
+import { Download } from "lucide-react";
+import SaveForm from "./save-form";
 
 interface FretboardDisplayProps {
 	highlightedNotes: Set<NoteValue>;
 	rootNoteValue: NoteValue;
 	onNoteClick?: (value: string) => void;
-	// fretCount и startFret теперь из стора
 }
 
 const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, rootNoteValue, onNoteClick }) => {
@@ -41,10 +41,17 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
 
-	const handleSaveConfiguration = async () => {
-		const configurationToSave = `?key=${selectedKey}&type=${selectedShapeType}&name=${selectedShapeName}&tuning=${selectedTuning}&startFret=${startFret}&endFret=${endFret}`;
-		console.log("Сохраняемая конфигурация:", configurationToSave);
-	};
+	//const [imgUrl, setImgUrl] = useState<string>("");
+
+	//const getFretboardImageData = async () => {
+	//	if (!fretboardDisplayRef.current) return;
+	//	const canvas = await html2canvas(fretboardDisplayRef.current!, {
+	//		width: fretboardDisplayRef.current.clientWidth,
+	//		backgroundColor: null,
+	//	});
+	//	const dataURL = canvas.toDataURL("image/png");
+	//	setImgUrl(dataURL);
+	//};
 
 	const downloadFretboardImage = async () => {
 		const element = fretboardDisplayRef.current;
@@ -81,6 +88,8 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 	if (!currentTuningMidi) {
 		return <div>Загрузка тюнинга...</div>;
 	}
+
+	const configurationToSave = `?key=${selectedKey}&type=${selectedShapeType}&name=${selectedShapeName}&tuning=${selectedTuning}&startFret=${startFret}&endFret=${endFret}`;
 	return (
 		<>
 			<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
@@ -132,11 +141,9 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 				</div>
 			</div>
 			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
-				Скачать текущий гриф как PNG <Download />
+				Скачать схему в PNG <Download />
 			</Button>
-			<Button className="cursor-pointer" onClick={handleSaveConfiguration}>
-				Сохранить конфигурацию <Save />
-			</Button>
+			<SaveForm config={configurationToSave}/>
 		</>
 	);
 };

@@ -27,6 +27,7 @@ const segmentTranslations: { [key: string]: string } = {
 	arpeggios: "Арпеджио",
 	scales: "Гаммы",
 	add: "Создать",
+  fretboards: "Сохраненные",
 };
 
 export function AppBreadcrumbs() {

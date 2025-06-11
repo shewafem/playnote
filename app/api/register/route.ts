@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { RegisterSchema } from "@/schemas/auth-schema";
 import prisma from "@/lib/prisma";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
 	try {
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 		// Избегайте возврата конфиденциальной информации в успешном ответе.
 		// Рекомендуется сообщить пользователю о необходимости подтвердить email, если вы внедряете верификацию.
 		return NextResponse.json(
-			{ success: "Аккаунт успешно создан. Пожалуйста, проверьте свою почту для верификации." }, // Измените, если не используете верификацию email
+			{ success: "Аккаунт успешно создан. Перенаправляем вас в профиль..." }, // Измените, если не используете верификацию email
 			{ status: 201 }
 		);
 	} catch (error: unknown) {

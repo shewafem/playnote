@@ -12,7 +12,7 @@ export default async function ChordsOfKey({ params }: { params: Promise<{ key: s
 	const userId = session?.user?.id;
 
 	const { key: rawKeyFromUrl } = await params;
-	const displayKey = formatItem(rawKeyFromUrl);
+	const displayKey = formatItem(rawKeyFromUrl); //C#
 
 	const { chords: initialChords, totalCount } = await getChordsByKeyPaginated(rawKeyFromUrl, 0, ITEMS_PER_PAGE);
 //какие позиции уже выучены

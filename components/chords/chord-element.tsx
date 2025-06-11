@@ -76,6 +76,11 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 			>
 				<Chord chord={position} instrument={guitar} />
 			</div>
+			{position.baseFret !== 1 && (
+				<>
+					<p className="text-center text-[10px] mb-1">{position.baseFret} лад</p>
+				</>
+			)}
 			<div className="flex justify-center items-center w-full gap-2 ml-[-12px]">
 				<Download size={16} />
 				<button
@@ -107,13 +112,13 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 						}
             ${isPending ? "cursor-not-allowed opacity-70" : ""}`}
 					>
-            <span>{isPending ? "Обновление" : isLearned ? "Выучено" : "Выучить"}</span>
+						<span>{isPending ? "Обновление" : isLearned ? "Выучено" : "Выучить"}</span>
 						{isPending ? (
 							<Loader2 size={14} className="animate-spin" />
 						) : isLearned ? (
 							<CheckCircle size={14} />
 						) : (
-							<GraduationCap size={14}/>
+							<GraduationCap size={14} />
 						)}
 					</button>
 				) : (

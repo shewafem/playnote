@@ -83,7 +83,7 @@ export async function getChordsByKeyPaginated(
   skip: number,
   take: number
 ): Promise<{ chords: ChordWithPositions[]; totalCount: number }> {
-  const formattedKey = formatItem(key);
+  const formattedKey = formatItem(key); //C#
   try {
     const [chordsFromDb, totalCount] = await prisma.$transaction([
       prisma.chord.findMany({

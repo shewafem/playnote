@@ -8,6 +8,7 @@ import { Container } from "@/components/layout/container";
 import { SessionProvider } from "next-auth/react";
 import { AppBreadcrumbs } from "@/components/layout/breadcrumbs";
 import { Toaster } from "sonner";
+//import { auth } from "@/auth";
 //import { Analytics } from "@vercel/analytics/next"
 
 const geologica = Geologica({

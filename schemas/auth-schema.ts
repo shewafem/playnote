@@ -26,7 +26,6 @@ export const RegisterSchema = z
 		path: ["confirmPassword"],
 	});
 
-// New Schemas for Password Reset
 export const ForgotPasswordSchema = z.object({
 	email: z.string().email({
 		message: "Пожалуйста, введите действительный адрес электронной почты.",

@@ -18,17 +18,16 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession} from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 
 interface Props {
 	className?: string;
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
-	const { data, status } = useSession();
-	const user = data?.user;
-
+  const {status, data} = useSession();
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
 		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },
@@ -37,7 +36,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 		//{ href: "/courses", text: "Курсы", icon: "" },
 		//{ href: "/blog", text: "Блог", icon: "" },
 	];
-
+  console.log(data)
 	return (
 		<header
 			className={cn(
@@ -61,7 +60,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 								<DropdownMenu>
 									<DropdownMenuTrigger asChild>
 										<Avatar className="cursor-pointer">
-											<AvatarImage src={user?.image as string} alt="avatar" />
+											<AvatarImage className="object-cover" src={data?.user.image as string} alt="avatar" />
 											<AvatarFallback className="bg-background">
 												<UserRoundCog/>
 											</AvatarFallback>

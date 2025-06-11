@@ -5,18 +5,21 @@ import { PositionWithChord } from "@/lib/chords/types";
 //import { Enrollment } from "@prisma/client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Guitar, PlayCircle } from "lucide-react";
+import { Guitar, PlayCircle, Save } from "lucide-react";
+import { SavedFretboard } from "@prisma/client";
 
 interface StudentInfoProps {
 	user: {
 		//enrollments: Enrollment[];
 		learnedPositions: PositionWithChord[];
+    savedFretboards: SavedFretboard[]
 	};
 }
 
 export default function StudentInfo({ user }: StudentInfoProps) {
 	//const enrolledCourses = user.enrollments || [];
 	const learnedPositions = user.learnedPositions || [];
+  const savedFretboards = user.savedFretboards || [];
 
 	const cardItems = [
 		//{
@@ -44,6 +47,16 @@ export default function StudentInfo({ user }: StudentInfoProps) {
 			icon: <PlayCircle size={16} className="text-primary" />,
 			description: "Нажмите для начала практики",
 			link: "/profile/player",
+		},
+		{
+			title: "Сохраненные схемы",
+			icon: <Save size={16} className="text-primary" />,
+			description: (
+				<p>
+					Вы добавили <span className="text-primary text-lg"> {savedFretboards.length}</span> схем грифа
+				</p>
+			),
+			link: "/profile/fretboards",
 		},
 	];
 

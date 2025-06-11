@@ -10,6 +10,9 @@ const nextConfig = {
     )
     return config;
   },
+  images: {
+    domains: ["crimson-active-horse-520.mypinata.cloud"],
+  }
 };
 
 export default nextConfig;

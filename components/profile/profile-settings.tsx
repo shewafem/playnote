@@ -18,20 +18,25 @@ import {
 	UpdatePasswordSchema,
 	type UpdatePasswordFormValues,
 } from "@/schemas/auth-schema";
+import { useSession } from "next-auth/react";
+//import { useSession } from "next-auth/react";
 
 const FieldError: React.FC<{ message?: string }> = ({ message }) => {
 	if (!message) return null;
 	return <p className="text-sm text-red-500 mt-1">{message}</p>;
 };
 
-export default function ProfileSettings() {
+export default function ProfileSettings({ hasAccount }: { hasAccount: boolean }) {
 	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
 	const [isLoading, setIsLoading] = useState(true);
+	//const [url, setUrl] = useState("");
+	const { update } = useSession();
 
-	// Fetch user profile on mount
+	const [file, setFile] = useState<File>();
+	const [uploading, setUploading] = useState(false);
 	useEffect(() => {
 		async function fetchProfile() {
 			setIsLoading(true);
@@ -69,24 +74,45 @@ export default function ProfileSettings() {
 	});
 
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			if (file.size > 1024 * 1024) {
+		if (event.target.files?.[0]) {
+			if (event.target.files?.[0].size > 1024 * 1024) {
 				toast.error("Файл слишком большой. Максимум 1МБ.");
 				return;
 			}
-			if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+			if (!["image/jpeg", "image/png", "image/gif"].includes(event.target.files?.[0].type)) {
 				toast.error("Неверный тип файла. Только JPG, PNG, GIF.");
 				return;
 			}
-
 			const reader = new FileReader();
 			reader.onload = (e) => {
 				setProfileImage(e.target?.result as string);
-				// e.g., uploadProfileImage(file).then(() => toast.success("Фото профиля успешно обновлено"));
-				toast.success("Фото профиля успешно обновлено (превью).");
 			};
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(event.target.files?.[0]);
+			setFile(event.target.files?.[0]);
+		}
+	};
+
+	const uploadFile = async () => {
+		try {
+			if (!file) {
+				toast.error("Файл не выбран");
+				return;
+			}
+			setUploading(true);
+			const data = new FormData();
+			data.set("file", file);
+			const uploadRequest = await fetch("/api/files", {
+				method: "POST",
+				body: data,
+			});
+			const signedUrl = await uploadRequest.json();
+      update({image: signedUrl})
+			setUploading(false);
+			toast.success("Фото успешно обновлено!");
+		} catch (e) {
+			console.log(e);
+			setUploading(false);
+			toast.success("Ошибка загрузки файла");
 		}
 	};
 
@@ -100,6 +126,7 @@ export default function ProfileSettings() {
 			});
 			if (!res.ok) throw new Error("Ошибка обновления профиля");
 			const updated = await res.json();
+      update({name: updated.name, email: updated.email})
 			toast.success("Личная информация успешно сохранена");
 			personalInfoForm.reset({ email: updated.email, name: updated.name });
 		} catch {
@@ -110,7 +137,7 @@ export default function ProfileSettings() {
 	};
 
 	const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
-		console.log("Password Update Data:", data);
+		console.log("пароль", data);
 		// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		toast.success("Пароль успешно обновлен");
@@ -128,7 +155,7 @@ export default function ProfileSettings() {
 					<CardContent className="space-y-6">
 						<div className="flex items-center gap-6">
 							<Avatar className="h-24 w-24">
-								<AvatarImage src={profileImage || "/placeholder.svg"} alt="Фото профиля" />
+								<AvatarImage className="object-cover" src={profileImage || "/placeholder.svg"} alt="Фото профиля" />
 								<AvatarFallback className="text-lg">
 									{personalInfoForm
 										.watch("name")
@@ -143,7 +170,7 @@ export default function ProfileSettings() {
 									<Button variant="outline" className="gap-2" asChild>
 										<span>
 											<Camera className="h-4 w-4" />
-											Изменить фото
+											Загрузить фото
 										</span>
 									</Button>
 								</Label>
@@ -155,6 +182,9 @@ export default function ProfileSettings() {
 									onChange={handleImageUpload}
 								/>
 								<p className="text-sm text-muted-foreground">JPG или PNG. Максимум 1МБ.</p>
+								<Button className="cursor-pointer" disabled={uploading} onClick={uploadFile}>
+									{uploading ? "Сохраняем..." : "Сохранить"}
+								</Button>
 							</div>
 						</div>
 					</CardContent>
@@ -175,13 +205,18 @@ export default function ProfileSettings() {
 										<Input
 											id="email-personal"
 											type="email"
+											disabled={hasAccount}
 											placeholder="ivan.ivanov@example.com"
 											{...personalInfoForm.register("email")}
 										/>
 										<FieldError message={personalInfoForm.formState.errors.email?.message} />
-										<p className="text-sm text-muted-foreground mt-2">
-											Этот email будет использоваться для уведомлений аккаунта.
-										</p>
+										{hasAccount ? (
+											<p className="text-sm text-muted-foreground mt-2">У вас подключен аккаунт Google</p>
+										) : (
+											<p className="text-sm text-muted-foreground mt-2">
+												Этот email будет использоваться для уведомлений аккаунта.
+											</p>
+										)}
 									</div>
 								</div>
 								<div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">

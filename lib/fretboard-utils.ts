@@ -21,7 +21,6 @@ export const DEFAULT_FRETS: number = 12;
 
 export const transformNotesToMidi = (notes: string[]): number[] => {
 	const midiValues: (number | null)[] = notes.map((note) => Midi.toMidi(note)).reverse();
-  console.log(midiValues)
 	return midiValues.filter((midi): midi is number => midi !== null);  
 };
 
@@ -79,4 +78,14 @@ export function mapIdsToNoteObjects(ids: string[], tuning: number[]): NoteObject
 			return { id: id, note: noteNameWithOctave };
 		})
 		.filter((obj): obj is NoteObject => obj !== null);
+}
+
+export function getDisplayStringFromQuery(queryString: string) {
+    if (!queryString || queryString.trim() === '' || queryString.trim() === '?') {
+        return ""; 
+    }
+    const paramsString = queryString.startsWith('?') ? queryString.substring(1) : queryString;
+    const searchParams = new URLSearchParams(paramsString);
+    const values = Array.from(searchParams.values());
+    return values.join(', ');
 }

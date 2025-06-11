@@ -1,7 +1,7 @@
 // components/interactive-fretboard/client-wrapper.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect} from "react";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import InteractiveFretboard from "./index";
 import type { ShapesObjectType, TuningsMidiObjectType } from "@/lib/fretboard-utils";
@@ -32,10 +32,9 @@ const InteractiveFretboardClientWrapper: React.FC<ClientWrapperProps> = ({ initi
 	} = useFretboardStore();
 
 	const searchParams = useSearchParams();
-	const initializedRef = useRef(false);
 
 	useEffect(() => {
-		if (initializedRef.current || !initialShapes || !initialTunings) return;
+		if (!initialShapes || !initialTunings) return;
 
 		setAllShapes(initialShapes);
 		setAllTunings(initialTunings);
@@ -104,8 +103,6 @@ const InteractiveFretboardClientWrapper: React.FC<ClientWrapperProps> = ({ initi
 			finalTuning = "";
 		}
 		setSelectedTuning(finalTuning);
-
-		initializedRef.current = true;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [initialShapes, initialTunings, searchParams]);
 

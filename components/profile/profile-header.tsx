@@ -24,7 +24,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
 	return (
 		<div className="flex flex-col max-w-200 mx-auto items-center md:flex-row gap-4 p-4 bg-card rounded-lg shadow">
 			<Avatar className="w-24 h-24 ">
-				<AvatarImage src={user.image || ""} alt={user.name || "Пользователь"} />
+				<AvatarImage className="object-cover" src={user.image || ""} alt={user.name || "Пользователь"} />
 				<AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
 			</Avatar>
 			<div className="text-center md:text-left">
