@@ -30,6 +30,14 @@ const delaGothicOne = Dela_Gothic_One({
 export const metadata: Metadata = {
 	title: "Playnote!",
 	description: "Современное приложения для обучения игре на гитаре",
+  keywords: [
+    "обучение игре на гитаре", 
+    "уроки игры на гитаре", 
+    "аккорды гитара",
+    "онлайн гитара",
+    "интерактивные инструменты",
+    "учить аккорды",
+  ],
 };
 
 export default function RootLayout({
@@ -38,7 +46,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html className="scroll-smooth" lang="en" suppressHydrationWarning>
+		<html className="scroll-smooth" lang="ru" suppressHydrationWarning>
 			<body
 				className={`${geologica.variable} ${jetBrainsMono.variable} ${delaGothicOne.variable} mt-14 font-sans antialiased`}
 			>

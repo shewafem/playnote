@@ -6,6 +6,9 @@ export interface FretboardStore {
 	//selectedRootNoteValue: NoteValue;
 	//setSelectedRootNoteValue: (noteValue: NoteValue) => void;
 
+  imgUrl: string;
+  setImgUrl: (url: string) => void;
+
 	selectedKey: string;
 	setSelectedKey: (key: string) => void;
 
@@ -101,6 +104,9 @@ export const useFretboardStore = create<FretboardStore>((set, get) => ({
 
 	currentlyPlayingNoteId: null,
 	setCurrentlyPlayingNoteId: (id) => set({ currentlyPlayingNoteId: id }),
+
+  imgUrl: '',
+  setImgUrl: (url) => set({ imgUrl: url }),
 
 	toggleNoteSelection: (id) => {
 		const prev = get().currentlySelectingNotes;

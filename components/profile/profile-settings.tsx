@@ -145,7 +145,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 	};
 
 	return (
-		<div className="container mx-auto max-w-4xl p-6 space-y-8">
+		<div className="w-fit mx-auto max-w-4xl space-y-8">
 			<div className="grid gap-6">
 				<Card>
 					<CardHeader>
@@ -181,7 +181,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 									className="hidden"
 									onChange={handleImageUpload}
 								/>
-								<p className="text-sm text-muted-foreground">JPG или PNG. Максимум 1МБ.</p>
+								<p className="text-muted-foreground text-xs sm:text-base">JPG или PNG. Максимум 1МБ.</p>
 								<Button className="cursor-pointer" disabled={uploading} onClick={uploadFile}>
 									{uploading ? "Сохраняем..." : "Сохранить"}
 								</Button>
@@ -207,6 +207,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 											type="email"
 											disabled={hasAccount}
 											placeholder="ivan.ivanov@example.com"
+                      className="text-xs sm:text-base"
 											{...personalInfoForm.register("email")}
 										/>
 										<FieldError message={personalInfoForm.formState.errors.email?.message} />
@@ -224,7 +225,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 										Имя пользователя
 									</Label>
 									<div className="flex-1">
-										<Input id="name-personal" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
+										<Input id="name-personal" className="text-xs sm:text-base" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
 										<FieldError message={personalInfoForm.formState.errors.name?.message} />
 										<p className="text-sm text-muted-foreground mt-2">Это ваше публичное отображаемое имя.</p>
 									</div>
@@ -261,6 +262,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 											type={showCurrentPassword ? "text" : "password"}
 											placeholder="Введите текущий пароль"
 											{...passwordUpdateForm.register("currentPassword")}
+                      className="text-xs sm:text-base"
 										/>
 										<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
 										<Button
@@ -287,6 +289,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 												type={showNewPassword ? "text" : "password"}
 												placeholder="Введите новый пароль"
 												{...passwordUpdateForm.register("newPassword")}
+                        className="text-xs sm:text-base"
 											/>
 											<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
 											<Button
@@ -312,6 +315,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 												type={showConfirmPassword ? "text" : "password"}
 												placeholder="Подтвердите новый пароль"
 												{...passwordUpdateForm.register("confirmNewPassword")}
+                        className="text-xs sm:text-base"
 											/>
 											<FieldError message={passwordUpdateForm.formState.errors.confirmNewPassword?.message} />
 											<Button

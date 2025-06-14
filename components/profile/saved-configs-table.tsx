@@ -18,6 +18,7 @@ import { SavedFretboard } from "@prisma/client";
 import { getSavedFretboardConfigurationsAction, deleteFretboardConfigurationAction } from "@/actions/configuration";
 import { toast } from "sonner";
 import { getDisplayStringFromQuery } from "@/lib/fretboard-utils";
+import Image from "next/image";
 
 // Helper for date formatting
 const formatDate = (dateString: Date | string) => {
@@ -124,7 +125,7 @@ export default function SavedConfigsTable() {
 					<AlertDescription>
 						{searchTerm
 							? "Схемы по вашему запросу не найдены."
-							: (<Link href="/fretboard">У вас пока нет сохраненных схем грифа. Сохраните одну, чтобы увидеть ее здесь!</Link>)}
+							: (<Link href="/fretboard">У вас пока нет сохраненных схем. <span className="text-primary font-bold underline">Нажмите сюда, чтобы выбрать схему!</span></Link>)}
 					</AlertDescription>
 				</Alert>
 			) : (
@@ -132,31 +133,37 @@ export default function SavedConfigsTable() {
 					<Table>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="w-[150px] sm:w-[200px] font-semibold text-center">Название</TableHead>
-								<TableHead className="hidden md:table-cell font-semibold text-center">
-									Тоника, тип, имя, строй, начальный лад, конечный лад
+								<TableHead className="hidden sm:table-cell w-fit font-semibold text-center">Название</TableHead>
+								<TableHead className="table-cell font-semibold text-center">
+									Изображение
 								</TableHead>
 								<TableHead className="hidden lg:table-cell font-semibold text-center">Создано</TableHead>
-								<TableHead className="text-right font-semibold w-[100px]">Действия</TableHead>
+								<TableHead className="text-right font-semibold w-fit">Действия</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
 							{filteredConfigs.map((config) => (
 								<TableRow key={config.id} className="hover:bg-muted/50">
-									<TableCell className="font-medium py-3 max-w-[150px] sm:max-w-[200px] text-center">{config.name}</TableCell>
-									<TableCell className="hidden md:table-cell text-sm text-muted-foreground py-3 truncate max-w-[200px] lg:max-w-xs text-center">
+									<TableCell className="hidden sm:table-cell font-medium py-3 max-w-[150px] sm:max-w-[200px] text-center">{config.name}</TableCell>
+									<TableCell className="text-sm text-muted-foreground py-3 truncate max-w-[200px] lg:max-w-xs text-center">
 										<Link
 											href={`${"/fretboard/"}${config.link}`}
 											title={config.link}
 											className="hover:underline hover:text-primary"
 										>
-											{getDisplayStringFromQuery(config.link)}
+											<Image
+                        src={config.img}
+                        alt={getDisplayStringFromQuery(config.link)}
+                        width={100}
+                        height={100}
+                        className="max-h-50 w-full align-middle justify-center object-contain"
+                      />
 										</Link>
 									</TableCell>
-									<TableCell className="hidden lg:table-cell text-sm text-muted-foreground py-3 text-center">
+									<TableCell className="hidden lg:table-cell text-sm w-20 text-muted-foreground py-3 text-center">
 										{formatDate(config.createdAt)}
 									</TableCell>
-									<TableCell className="text-right py-3">
+									<TableCell className="text-right py-3 w-fit">
 										<DropdownMenu>
 											<DropdownMenuTrigger asChild>
 												<Button variant="ghost" size="sm" className="cursor-pointer h-8 w-8 p-0">

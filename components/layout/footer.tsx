@@ -15,8 +15,8 @@ const sections = [
 		title: "Теория",
 		links: [
 			{ name: "Аккорды", href: "/chords" },
-			{ name: "Блог", href: "/blog" },
-			{ name: "Курсы", href: "/courses" },
+			{ name: "Блог", href: "/" },
+			{ name: "Курсы", href: "/" },
 		],
 	},
 	{
@@ -28,7 +28,7 @@ const sections = [
 	},
 	{
 		title: "Контакты",
-		links: [{ name: "О нас", href: "/about" }],
+		links: [{ name: "О нас", href: "/" }],
 	},
 ];
 

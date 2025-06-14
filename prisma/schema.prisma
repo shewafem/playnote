@@ -22,13 +22,11 @@ model User {
   savedFretboards          SavedFretboard[]
   accounts                 Account[]
   sessions                 Session[]
-  tabFiles                 TabFile[]
+  //tabFiles                 TabFile[]
   learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
   learnedPositions         Position[]       @relation("PositionToUser")
   learnedScales            Scale[]          @relation("ScaleToUser")
 }
-
-
 
 model Account {
   userId            String
@@ -68,14 +66,14 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-model Attachment {
-  id        String   @id @default(cuid())
-  name      String
-  url       String
-  fileType  String
-  size      Int?
-  createdAt DateTime @default(now())
-}
+//model Attachment {
+//  id        String   @id @default(cuid())
+//  name      String
+//  url       String
+//  fileType  String
+//  size      Int?
+//  createdAt DateTime @default(now())
+//}
 
 model Chord {
   id        Int        @id @default(autoincrement())
@@ -106,6 +104,7 @@ model SavedFretboard {
   id        Int      @id @default(autoincrement())
   name      String
   link      String
+  img       String
   userId    String
   savedBy   User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
@@ -132,19 +131,19 @@ model Tuning {
   notes String[] @unique
 }
 
-model TabFile {
-  id          String   @id @default(cuid())
-  fileName    String
-  title       String?
-  artist      String?
-  fileContent Bytes
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//model TabFile {
+//  id          String   @id @default(cuid())
+//  fileName    String
+//  title       String?
+//  artist      String?
+//  fileContent Bytes
+//  createdAt   DateTime @default(now())
+//  updatedAt   DateTime @updatedAt
+//  userId      String
+//  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-}
+//  @@index([userId])
+//}
 
 enum UserRole {
   ADMIN

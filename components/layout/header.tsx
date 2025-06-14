@@ -36,7 +36,6 @@ export const Header: React.FC<Props> = ({ className }) => {
 		//{ href: "/courses", text: "Курсы", icon: "" },
 		//{ href: "/blog", text: "Блог", icon: "" },
 	];
-  console.log(data)
 	return (
 		<header
 			className={cn(

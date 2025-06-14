@@ -1,7 +1,7 @@
 import { getChordsByKey } from "@/actions/chords/get-chords";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 export async function GET(
-	request: Request,
+	request: NextRequest,
 	{ params }: { params: Promise<{ key: string }> }
 ) {
 	const { key } = await params;

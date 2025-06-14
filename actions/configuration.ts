@@ -18,12 +18,13 @@ export async function saveFretboardConfigurationAction(values: z.infer<typeof Fr
 	if (!validatedFields.success) {
 		return { success: false, error: "Неверные данные.", issues: validatedFields.error.flatten().fieldErrors };
 	}
-	const { name, configuration } = validatedFields.data;
+	const { name, configuration, imageData } = validatedFields.data;
 	try {
 		await prisma.savedFretboard.create({
 			data: {
 				name,
 				link: configuration,
+        img: imageData as string,
 				userId: session.user.id,
 			},
 		});

@@ -40,18 +40,17 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
+  const setImgUrl = useFretboardStore((s) => s.setImgUrl);
 
-	//const [imgUrl, setImgUrl] = useState<string>("");
-
-	//const getFretboardImageData = async () => {
-	//	if (!fretboardDisplayRef.current) return;
-	//	const canvas = await html2canvas(fretboardDisplayRef.current!, {
-	//		width: fretboardDisplayRef.current.clientWidth,
-	//		backgroundColor: null,
-	//	});
-	//	const dataURL = canvas.toDataURL("image/png");
-	//	setImgUrl(dataURL);
-	//};
+	const getFretboardImageData = async () => {
+		if (!fretboardDisplayRef.current) return;
+		const canvas = await html2canvas(fretboardDisplayRef.current!, {
+			width: fretboardDisplayRef.current.clientWidth,
+			backgroundColor: null,
+		});
+		const dataURL = canvas.toDataURL("image/png");
+		setImgUrl(dataURL);
+	};
 
 	const downloadFretboardImage = async () => {
 		const element = fretboardDisplayRef.current;
@@ -143,7 +142,7 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
 				Скачать схему в PNG <Download />
 			</Button>
-			<SaveForm config={configurationToSave}/>
+			<div onClick={getFretboardImageData}><SaveForm config={configurationToSave}/></div>
 		</>
 	);
 };
