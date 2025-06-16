@@ -8,9 +8,10 @@ import PlaybackControls from "./playback-controls";
 import { getNoteValue, getNoteValuesInShape, mapIdsToNoteObjects } from "@/lib/fretboard-utils";
 import { NoteValue, NoteObject } from "@/lib/fretboard-utils";
 import { useFretboardStore } from "@/lib/fretboard-store";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const InteractiveFretboard: React.FC = () => {
+	console.log("InteractiveFretboard rendering");
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
@@ -36,27 +37,54 @@ const InteractiveFretboard: React.FC = () => {
 
 	const router = useRouter();
 	const pathname = usePathname();
+	const currentSearchParams = useSearchParams();
 
 	const isUpdatingUrlRef = useRef(false);
+
 	useEffect(() => {
-		if (!allShapes || !allTunings || isUpdatingUrlRef.current) return;
-		if (!selectedKey || !selectedShapeType || !selectedTuning) return;
-		if (allShapes[selectedShapeType] && Object.keys(allShapes[selectedShapeType]).length > 0 && !selectedShapeName)
+		if (isUpdatingUrlRef.current) {
 			return;
+		}
+		if (!allShapes || Object.keys(allShapes).length === 0 || !allTunings || Object.keys(allTunings).length === 0) {
+			return;
+		}
+		if (!selectedKey || !selectedShapeType || !selectedTuning) {
+			return;
+		}
+		const shapeTypeDetails = allShapes[selectedShapeType];
+		if (shapeTypeDetails && Object.keys(shapeTypeDetails).length > 0) {
+			if (!selectedShapeName) {
+				return;
+			}
+			if (!shapeTypeDetails[selectedShapeName]) {
+				return;
+			}
+		}
+		if (!allTunings[selectedTuning]) {
+			return;
+		}
 
 		isUpdatingUrlRef.current = true;
 		const newParams = new URLSearchParams();
+
 		newParams.set("key", selectedKey);
+		newParams.set("startFret", startFret.toString());
+		newParams.set("endFret", endFret.toString());
 
 		if (allShapes[selectedShapeType]) {
 			newParams.set("type", selectedShapeType);
-			if (allShapes[selectedShapeType][selectedShapeName]) {
+			if (shapeTypeDetails && shapeTypeDetails[selectedShapeName]) {
 				newParams.set("name", selectedShapeName);
-			} else if (Object.keys(allShapes[selectedShapeType]).length > 0) {
-				newParams.set("name", Object.keys(allShapes[selectedShapeType])[0]);
+			} else if (shapeTypeDetails && Object.keys(shapeTypeDetails).length > 0) {
+				newParams.set("name", Object.keys(shapeTypeDetails)[0]);
 			}
 		} else if (Object.keys(allShapes).length > 0) {
-			newParams.set("type", Object.keys(allShapes)[0]);
+			const firstType = Object.keys(allShapes)[0];
+			newParams.set("type", firstType);
+			const firstTypeDetails = allShapes[firstType];
+			if (firstTypeDetails && Object.keys(firstTypeDetails).length > 0) {
+				newParams.set("name", Object.keys(firstTypeDetails)[0]);
+			}
 		}
 
 		if (allTunings[selectedTuning]) {
@@ -65,10 +93,13 @@ const InteractiveFretboard: React.FC = () => {
 			newParams.set("tuning", Object.keys(allTunings)[0]);
 		}
 
-		newParams.set("startFret", startFret.toString());
-		newParams.set("endFret", endFret.toString());
+		const newParamsString = newParams.toString();
+		const currentParamsString = currentSearchParams.toString();
 
-		router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
+		if (currentParamsString !== newParamsString) {
+			router.push(`${pathname}?${newParamsString}`, { scroll: false });
+		}
+
 		isUpdatingUrlRef.current = false;
 	}, [
 		selectedKey,
@@ -77,10 +108,11 @@ const InteractiveFretboard: React.FC = () => {
 		selectedTuning,
 		startFret,
 		endFret,
-		router,
-		pathname,
 		allShapes,
 		allTunings,
+		router,
+		pathname,
+		currentSearchParams,
 	]);
 
 	const synthRef = useRef<Tone.PolySynth | null>(null);

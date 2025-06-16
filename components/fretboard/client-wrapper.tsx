@@ -1,7 +1,7 @@
 // components/interactive-fretboard/client-wrapper.tsx
 "use client";
 
-import React, { useEffect} from "react";
+import React, { useEffect, useRef } from "react"; // Added useRef
 import { useFretboardStore } from "@/lib/fretboard-store";
 import InteractiveFretboard from "./index";
 import type { ShapesObjectType, TuningsMidiObjectType } from "@/lib/fretboard-utils";
@@ -23,88 +23,120 @@ const InteractiveFretboardClientWrapper: React.FC<ClientWrapperProps> = ({ initi
 		setSelectedTuning,
 		setStartFret,
 		setEndFret,
-		selectedKey: currentKey,
-		selectedShapeType: currentType,
-		selectedShapeName: currentName,
-		selectedTuning: currentTuningName,
-		startFret: currentStartFret,
-		endFret: currentEndFret,
 	} = useFretboardStore();
 
 	const searchParams = useSearchParams();
+	const initialDataLoadedRef = useRef(false);
 
 	useEffect(() => {
-		if (!initialShapes || !initialTunings) return;
+		if (
+			!initialShapes ||
+			!initialTunings ||
+			Object.keys(initialShapes).length === 0 ||
+			Object.keys(initialTunings).length === 0
+		) {
+			console.log("ClientWrapper: initialShapes or initialTunings not ready yet.");
+			return;
+		}
 
 		setAllShapes(initialShapes);
 		setAllTunings(initialTunings);
+		initialDataLoadedRef.current = true;
+
+		console.log("ClientWrapper: setAllShapes and setAllTunings called.");
+	}, [initialShapes, initialTunings, setAllShapes, setAllTunings]);
+
+	useEffect(() => {
+		if (
+			!initialDataLoadedRef.current ||
+			!initialShapes ||
+			!initialTunings ||
+			Object.keys(initialShapes).length === 0 ||
+			Object.keys(initialTunings).length === 0
+		) {
+			return;
+		}
 
 		const keyFromUrl = searchParams.get("key");
 		if (keyFromUrl && NOTE_NAMES.includes(keyFromUrl)) {
 			setSelectedKey(keyFromUrl);
-		} else {
-			setSelectedKey(currentKey);
+		} else if (!searchParams.has("key")) {
+			setSelectedKey(NOTE_NAMES[0]);
 		}
 
 		const startFretFromUrl = searchParams.get("startFret");
 		if (startFretFromUrl) {
 			const num = parseInt(startFretFromUrl, 10);
 			if (!isNaN(num)) setStartFret(num);
-		} else {
-			setStartFret(currentStartFret);
+		} else if (!searchParams.has("startFret")) {
+			setStartFret(0);
 		}
 
 		const endFretFromUrl = searchParams.get("endFret");
 		if (endFretFromUrl) {
 			const num = parseInt(endFretFromUrl, 10);
-			if (!isNaN(num)) setEndFret(num); 
-		} else {
-			setEndFret(currentEndFret);
+			if (!isNaN(num)) setEndFret(num);
+		} else if (!searchParams.has("endFret")) {
+			setEndFret(12);
 		}
-
-		const availableShapeTypes = Object.keys(initialShapes);
-		let finalShapeType = currentType; 
 		const typeFromUrl = searchParams.get("type");
+		const availableShapeTypes = Object.keys(initialShapes);
+		let determinedShapeType = "";
 
 		if (typeFromUrl && availableShapeTypes.includes(typeFromUrl)) {
-			finalShapeType = typeFromUrl;
-		} else if (!availableShapeTypes.includes(finalShapeType) && availableShapeTypes.length > 0) {
-			finalShapeType = availableShapeTypes[0];
-		} else if (availableShapeTypes.length === 0) {
-			finalShapeType = ""; 
+			determinedShapeType = typeFromUrl;
+		} else if (!searchParams.has("type") && availableShapeTypes.length > 0) {
+			determinedShapeType = availableShapeTypes[0];
 		}
-		setSelectedShapeType(finalShapeType);
+		if (determinedShapeType) {
+			setSelectedShapeType(determinedShapeType);
+		} else if (availableShapeTypes.length === 0 && !searchParams.has("type")) {
+			setSelectedShapeType("");
+		}
 
-		const availableShapeNamesForFinalType = Object.keys(initialShapes[finalShapeType] || {});
-		let finalShapeName = currentName;
 		const nameFromUrl = searchParams.get("name");
+		const currentShapeTypeForNameLogic = determinedShapeType || useFretboardStore.getState().selectedShapeType;
+		const availableShapeNames = Object.keys(initialShapes[currentShapeTypeForNameLogic] || {});
+		let determinedShapeName = "";
 
-		if (nameFromUrl && availableShapeNamesForFinalType.includes(nameFromUrl)) {
-			finalShapeName = nameFromUrl;
-		} else if (
-			!availableShapeNamesForFinalType.includes(finalShapeName) &&
-			availableShapeNamesForFinalType.length > 0
-		) {
-			finalShapeName = availableShapeNamesForFinalType[0];
-		} else if (availableShapeNamesForFinalType.length === 0) {
-			finalShapeName = "";
+		if (nameFromUrl && availableShapeNames.includes(nameFromUrl)) {
+			determinedShapeName = nameFromUrl;
+		} else if (!searchParams.has("name") && availableShapeNames.length > 0) {
+			determinedShapeName = availableShapeNames[0];
 		}
-		setSelectedShapeName(finalShapeName);
+		if (determinedShapeName) {
+			setSelectedShapeName(determinedShapeName);
+		} else if (availableShapeNames.length === 0 && !searchParams.has("name")) {
+			setSelectedShapeName("");
+		}
 
-		const availableTuningNames = Object.keys(initialTunings);
-		let finalTuning = currentTuningName;
 		const tuningFromUrl = searchParams.get("tuning");
+		const availableTuningNames = Object.keys(initialTunings);
+		let determinedTuning = "";
 
 		if (tuningFromUrl && availableTuningNames.includes(tuningFromUrl)) {
-			finalTuning = tuningFromUrl;
-		} else if (!availableTuningNames.includes(finalTuning) && availableTuningNames.length > 0) {
-			finalTuning = availableTuningNames[0];
-		} else if (availableTuningNames.length === 0) {
-			finalTuning = "";
+			determinedTuning = tuningFromUrl;
+		} else if (!searchParams.has("tuning") && availableTuningNames.length > 0) {
+			determinedTuning = availableTuningNames[0];
 		}
-		setSelectedTuning(finalTuning);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [initialShapes, initialTunings, searchParams]);
+		if (determinedTuning) {
+			setSelectedTuning(determinedTuning);
+		} else if (availableTuningNames.length === 0 && !searchParams.has("tuning")) {
+			setSelectedTuning("");
+		}
+	}, [
+		searchParams,
+		initialShapes,
+		initialTunings,
+		setAllShapes,
+		setAllTunings,
+		setSelectedKey,
+		setSelectedShapeType,
+		setSelectedShapeName,
+		setSelectedTuning,
+		setStartFret,
+		setEndFret,
+	]);
 
 	return <InteractiveFretboard />;
 };
