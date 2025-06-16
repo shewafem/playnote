@@ -91,7 +91,6 @@ export default function AlphaTabPlayer() {
 
 		api.playerReady.on(() => {
 			setIsPlayerReady(true);
-			console.log("Проигрыватель готов");
 		});
 
 		api.playerStateChanged.on((stateObj) => {
@@ -104,7 +103,6 @@ export default function AlphaTabPlayer() {
 		//});
 
 		return () => {
-			console.log("очистка плеера");
 			setApi(null);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps

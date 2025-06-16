@@ -58,7 +58,6 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 			console.warn("Элемент не найден");
 			return;
 		}
-
 		try {
 			const canvas = await html2canvas(element, {
 				width: element.clientWidth,

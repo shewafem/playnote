@@ -11,7 +11,6 @@ import { useFretboardStore } from "@/lib/fretboard-store";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const InteractiveFretboard: React.FC = () => {
-	console.log("InteractiveFretboard rendering");
 	const selectedKey = useFretboardStore((s) => s.selectedKey);
 	const selectedShapeType = useFretboardStore((s) => s.selectedShapeType);
 	const selectedShapeName = useFretboardStore((s) => s.selectedShapeName);
@@ -97,7 +96,7 @@ const InteractiveFretboard: React.FC = () => {
 		const currentParamsString = currentSearchParams.toString();
 
 		if (currentParamsString !== newParamsString) {
-			router.push(`${pathname}?${newParamsString}`, { scroll: false });
+			router.replace(`${pathname}?${newParamsString}`, { scroll: false });
 		}
 
 		isUpdatingUrlRef.current = false;

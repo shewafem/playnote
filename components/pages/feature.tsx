@@ -31,7 +31,7 @@ const features = [
 			"Плеер alphaTab для проигрывания музыкальных файлов-табулатур (Guitar Pro файлы .gp, MusicXML, alphaTex)",
 		image: "/images/player.png",
 		darkImage: "/images/player-dark.png",
-		link: "/player",
+		link: "/profile/player",
 	},
 ];
 
@@ -56,20 +56,18 @@ const Feature = () => {
 				</div>
 				<div className="grid gap-6 md:grid-cols-2 lg:gap-8 items-start">
 					{features.map((feature) => {
-                        const imageSrc = mounted && resolvedTheme === "dark" 
-                            ? feature.darkImage 
-                            : feature.image;
-                        if (!mounted) {
-                            return (
-                                <div key={feature.id} className="flex flex-col rounded-xl border border-border">
-                                    <div className="aspect-16/9 h-full w-full bg-muted/20 animate-pulse" /> {/* Placeholder */}
-                                    <div className="px-4 py-4 ">
-                                        <h3 className="mb-3 text-lg font-semibold md:text-2xl">{feature.title}</h3>
-                                        <p className="text-muted-foreground lg:text-lg">{feature.description}</p>
-                                    </div>
-                                </div>
-                            );
-                        }
+						const imageSrc = mounted && resolvedTheme === "dark" ? feature.darkImage : feature.image;
+						if (!mounted) {
+							return (
+								<div key={feature.id} className="flex flex-col rounded-xl border border-border">
+									<div className="aspect-16/9 h-full w-full bg-muted/20 animate-pulse" /> {/* Placeholder */}
+									<div className="px-4 py-4 ">
+										<h3 className="mb-3 text-lg font-semibold md:text-2xl">{feature.title}</h3>
+										<p className="text-muted-foreground lg:text-lg">{feature.description}</p>
+									</div>
+								</div>
+							);
+						}
 
 						return (
 							<div key={feature.id} className="flex flex-col rounded-xl border border-border">

@@ -252,3 +252,13 @@ main {
 	background: #436d9d;
 	color: #fff;
 }
+
+
+.hide-scrollbar-for-capture::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar-for-capture {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}

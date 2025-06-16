@@ -1,7 +1,7 @@
 // components/interactive-fretboard/client-wrapper.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react"; // Added useRef
+import React, { useEffect, useRef } from "react";
 import { useFretboardStore } from "@/lib/fretboard-store";
 import InteractiveFretboard from "./index";
 import type { ShapesObjectType, TuningsMidiObjectType } from "@/lib/fretboard-utils";
@@ -35,15 +35,12 @@ const InteractiveFretboardClientWrapper: React.FC<ClientWrapperProps> = ({ initi
 			Object.keys(initialShapes).length === 0 ||
 			Object.keys(initialTunings).length === 0
 		) {
-			console.log("ClientWrapper: initialShapes or initialTunings not ready yet.");
 			return;
 		}
 
 		setAllShapes(initialShapes);
 		setAllTunings(initialTunings);
 		initialDataLoadedRef.current = true;
-
-		console.log("ClientWrapper: setAllShapes and setAllTunings called.");
 	}, [initialShapes, initialTunings, setAllShapes, setAllTunings]);
 
 	useEffect(() => {

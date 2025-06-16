@@ -21,7 +21,6 @@ export default async function EditTuningPage({ params }: { params: Promise<{ tun
 		name: tuning.name,
 		notes: tuning.notes.map((noteStr) => {
 			const match = noteStr.match(/^([A-Ga-g][#b]?)([1-6])$/);
-      console.log(match)
 			if (match) {
 				return { note: match[1], octave: match[2] };
 			}
