@@ -28,7 +28,7 @@ const sections = [
 	},
 	{
 		title: "Контакты",
-		links: [{ name: "О нас", href: "/" }],
+		links: [{ name: "О нас", href: "/about-us" }],
 	},
 ];
 

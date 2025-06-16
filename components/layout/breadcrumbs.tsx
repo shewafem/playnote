@@ -28,6 +28,7 @@ const segmentTranslations: { [key: string]: string } = {
 	scales: "Гаммы",
 	add: "Создать",
   fretboards: "Сохраненные",
+  "about-us": "О нас",
 };
 
 export function AppBreadcrumbs() {
