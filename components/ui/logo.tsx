@@ -10,7 +10,7 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({ className }) => {
   return (
-    <Link href="/" className={cn("flex items-center justify-center w-40", className)}>
+    <Link href="/" className={cn("flex items-center justify-center w-30 sm:w-40", className)}>
       <Image 
         src="/logo-light.svg" 
         alt="logo" 

@@ -31,7 +31,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
 		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },
-    { href: "/player", text: "Плеер", icon: "🎧" },
+    { href: "/profile/player", text: "Плеер", icon: "🎧" },
 		//{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
 		//{ href: "/courses", text: "Курсы", icon: "" },
 		//{ href: "/blog", text: "Блог", icon: "" },
@@ -45,7 +45,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 		>
 			<Container className="px-4 py-2 flex items-center justify-between">
 				{/* Левая часть - Логотип */}
-				<Logo />
+				<Logo/>
 				{/* Навигация для больших экранов */}
 				<div className="flex gap-3 md:gap-8">
 					<NavMenu></NavMenu>

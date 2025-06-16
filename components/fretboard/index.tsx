@@ -68,10 +68,7 @@ const InteractiveFretboard: React.FC = () => {
 		newParams.set("startFret", startFret.toString());
 		newParams.set("endFret", endFret.toString());
 
-		const currentUrlSearchParams = new URLSearchParams(window.location.search);
-		if (currentUrlSearchParams.toString() !== newParams.toString()) {
-			router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
-		}
+		router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
 		isUpdatingUrlRef.current = false;
 	}, [
 		selectedKey,

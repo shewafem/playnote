@@ -32,7 +32,6 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
 	const [isLoading, setIsLoading] = useState(true);
-	//const [url, setUrl] = useState("");
 	const { update } = useSession();
 
 	const [file, setFile] = useState<File>();
@@ -106,7 +105,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 				body: data,
 			});
 			const signedUrl = await uploadRequest.json();
-      update({image: signedUrl})
+			update({ image: signedUrl });
 			setUploading(false);
 			toast.success("Фото успешно обновлено!");
 		} catch (e) {
@@ -126,7 +125,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 			});
 			if (!res.ok) throw new Error("Ошибка обновления профиля");
 			const updated = await res.json();
-      update({name: updated.name, email: updated.email})
+			update({ name: updated.name, email: updated.email });
 			toast.success("Личная информация успешно сохранена");
 			personalInfoForm.reset({ email: updated.email, name: updated.name });
 		} catch {
@@ -146,7 +145,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 
 	return (
 		<div className="w-fit mx-auto max-w-4xl space-y-8">
-			<div className="grid gap-6">
+			<div className="flex flex-col gap-6">
 				<Card>
 					<CardHeader>
 						<CardTitle>Фото профиля</CardTitle>
@@ -181,7 +180,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 									className="hidden"
 									onChange={handleImageUpload}
 								/>
-								<p className="text-muted-foreground text-xs sm:text-base">JPG или PNG. Максимум 1МБ.</p>
+								<p className="text-muted-foreground text-xs sm:text-sm">JPG или PNG. Максимум 1МБ.</p>
 								<Button className="cursor-pointer" disabled={uploading} onClick={uploadFile}>
 									{uploading ? "Сохраняем..." : "Сохранить"}
 								</Button>
@@ -207,7 +206,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 											type="email"
 											disabled={hasAccount}
 											placeholder="ivan.ivanov@example.com"
-                      className="text-xs sm:text-base"
+											className="text-xs sm:text-base"
 											{...personalInfoForm.register("email")}
 										/>
 										<FieldError message={personalInfoForm.formState.errors.email?.message} />
@@ -225,7 +224,12 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 										Имя пользователя
 									</Label>
 									<div className="flex-1">
-										<Input id="name-personal" className="text-xs sm:text-base" placeholder="Иван Иванов" {...personalInfoForm.register("name")} />
+										<Input
+											id="name-personal"
+											className="text-xs sm:text-base"
+											placeholder="Иван Иванов"
+											{...personalInfoForm.register("name")}
+										/>
 										<FieldError message={personalInfoForm.formState.errors.name?.message} />
 										<p className="text-sm text-muted-foreground mt-2">Это ваше публичное отображаемое имя.</p>
 									</div>
@@ -237,8 +241,12 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 									className="gap-2 cursor-pointer"
 									disabled={personalInfoForm.formState.isSubmitting || isLoading}
 								>
-									{isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-									{isLoading ? "Сохранение..." : "Сохранить изменения"}
+									{personalInfoForm.formState.isSubmitting ? (
+										<Loader2 className="h-4 w-4 animate-spin" />
+									) : (
+										<Save className="h-4 w-4" />
+									)}
+									{personalInfoForm.formState.isSubmitting ? "Сохранение..." : "Сохранить изменения"}
 								</Button>
 							</div>
 						</form>
@@ -262,7 +270,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 											type={showCurrentPassword ? "text" : "password"}
 											placeholder="Введите текущий пароль"
 											{...passwordUpdateForm.register("currentPassword")}
-                      className="text-xs sm:text-base"
+											className="text-xs sm:text-base"
 										/>
 										<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
 										<Button
@@ -289,7 +297,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 												type={showNewPassword ? "text" : "password"}
 												placeholder="Введите новый пароль"
 												{...passwordUpdateForm.register("newPassword")}
-                        className="text-xs sm:text-base"
+												className="text-xs sm:text-base"
 											/>
 											<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
 											<Button
@@ -315,7 +323,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 												type={showConfirmPassword ? "text" : "password"}
 												placeholder="Подтвердите новый пароль"
 												{...passwordUpdateForm.register("confirmNewPassword")}
-                        className="text-xs sm:text-base"
+												className="text-xs sm:text-base"
 											/>
 											<FieldError message={passwordUpdateForm.formState.errors.confirmNewPassword?.message} />
 											<Button
