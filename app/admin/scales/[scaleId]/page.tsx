@@ -4,8 +4,9 @@ import { notFound } from "next/navigation";
 import { ScaleForm } from "@/components/admin/scale-form";
 import { ScaleFormData, formatFormulaForInput } from "@/schemas/scale";
 
-export default async function EditScalePage({ params }: { params: { scaleId: string } }) {
-	const scaleIdNum = Number(params.scaleId);
+export default async function EditScalePage({ params }: { params: Promise<{ scaleId: string }> }) {
+	const {scaleId} = await params;
+  const scaleIdNum = Number(scaleId)
 
 	if (isNaN(scaleIdNum)) {
 		notFound();

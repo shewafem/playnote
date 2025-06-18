@@ -7,23 +7,23 @@ declare module "next-auth" {
 		user: {
 			id: string;
 			role: PrismaUser["role"];
-			image: string | null; // Allow null
-			name?: string | null; // Allow null for consistency with Prisma
-			email?: string | null; // Allow null for consistency
+			image: string | null;
+			name?: string | null;
+			email?: string | null;
 		} & DefaultSession["user"];
 	}
 
 	interface User extends DefaultUser {
 		role: UserRole;
-		image: string | null; // Allow null
+		image: string | null;
 	}
 }
 
 declare module "next-auth/jwt" {
 	interface JWT extends DefaultJWT {
 		role: UserRole;
-		image: string | null; // Allow null
-		email?: string | null; // Optional for updates
-		name?: string | null; // Optional for updates
+		image: string | null;
+		email?: string | null;
+		name?: string | null;
 	}
 }
