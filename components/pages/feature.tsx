@@ -74,10 +74,12 @@ const Feature = () => {
 								<Link href={feature.link}>
 									<div>
 										<Image
-											width={1000}
-											height={1000}
+											width={16}
+											height={9}
 											src={imageSrc}
 											alt={feature.title}
+                      priority={true}
+											sizes="(max-width: 768px) 100vw, 50vw" 
 											className="aspect-16/9 h-full w-full object-contain"
 										/>
 									</div>

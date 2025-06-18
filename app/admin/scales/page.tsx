@@ -12,18 +12,18 @@ export default async function AdminScalesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Управление ладами</h1>
+        <h1 className="text-2xl font-semibold">Управление гаммами</h1>
         <Button asChild>
           <Link href="/admin/scales/add">
             <PlusCircle className="mr-2 h-4 w-4" />
-            Добавить лад
+            Добавить гамму
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Список ладов</CardTitle>
+          <CardTitle>Список гамм</CardTitle>
         </CardHeader>
         <CardContent>
           <ScalesTable scales={scales} />

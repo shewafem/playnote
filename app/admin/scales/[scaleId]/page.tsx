@@ -33,8 +33,8 @@ export default async function EditScalePage({ params }: { params: Promise<{ scal
 			defaultValues={defaultFormValues}
 			onSubmit={handleUpdate}
 			isEditing
-			formTitle={`Редактировать лад: ${scale.name}`}
-			formDescription="Измените название или формулу лада."
+			formTitle={`Редактировать гамму: ${scale.name}`}
+			formDescription="Измените название или формулу гаммы."
 		/>
 	);
 }

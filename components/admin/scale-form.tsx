@@ -43,12 +43,12 @@ export function ScaleForm({ defaultValues, onSubmit, isEditing = false, formTitl
 		setServerErrors(null);
 
 		toast.promise(onSubmit(values), {
-			loading: isEditing ? "Сохранение лада..." : "Создание лада...",
+			loading: isEditing ? "Сохранение гаммы..." : "Создание гаммы...",
 			success: (result) => {
 				if (result.success) {
 					router.push("/admin/scales");
 					router.refresh();
-					return isEditing ? "Лад успешно обновлен!" : "Лад успешно создан!";
+					return isEditing ? "Гамма успешно обновлена!" : "Гамма успешно создана!";
 				} else {
 					throw result.error || new Error("Неизвестная ошибка.");
 				}
@@ -103,11 +103,11 @@ export function ScaleForm({ defaultValues, onSubmit, isEditing = false, formTitl
 							name="name"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Название лада</FormLabel>
+									<FormLabel>Название гаммы</FormLabel>
 									<FormControl>
 										<Input placeholder="Мажорный, Минорный, Пентатоника..." {...field} />
 									</FormControl>
-									<FormDescription>Уникальное название для этого лада.</FormDescription>
+									<FormDescription>Уникальное название для этой гаммы.</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
@@ -117,12 +117,12 @@ export function ScaleForm({ defaultValues, onSubmit, isEditing = false, formTitl
 							name="formula"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Формула лада (интервалы)</FormLabel>
+									<FormLabel>Формула гаммы (интервалы)</FormLabel>
 									<FormControl>
 										<Input placeholder="2, 2, 1, 2, 2, 2, 1" {...field} />
 									</FormControl>
 									<FormDescription>
-										Введите интервалы в полутонах через запятую. Например, для мажорного лада: 2, 2, 1, 2, 2, 2, 1
+										Введите интервалы в полутонах через запятую. Например, для мажорной гаммы: 2, 2, 1, 2, 2, 2, 1
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
@@ -141,8 +141,8 @@ export function ScaleForm({ defaultValues, onSubmit, isEditing = false, formTitl
 										? "Сохранение..."
 										: "Создание..."
 									: isEditing
-										? "Сохранить лад"
-										: "Создать лад"}
+										? "Сохранить гамму"
+										: "Создать гамму"}
 							</Button>
 						</CardFooter>
 					</form>

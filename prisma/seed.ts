@@ -9,7 +9,6 @@ type JsonChordsDatabase = {
 	[noteKey: string]: ChordWithPositions[];
 };
 
-// Your provided tunings data
 const tuningsData: { [key: string]: string[] } = {
 	// --- 6-Струнная гитара: Стандартные и пониженные строи ---
 	"E Стандартный (E-A-D-G-B-E)": ["E2", "A2", "D3", "G3", "B3", "E4"],
@@ -20,16 +19,15 @@ const tuningsData: { [key: string]: string[] } = {
 
 	// --- 6-Струнная гитара: Drop строи ---
 	"Drop D (D-A-D-G-B-E)": ["D2", "A2", "D3", "G3", "B3", "E4"],
-	"Drop C♯ / Drop D♭ (D♭-A♭-D♭-G♭-B♭-E♭)": ["Db2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"], // Также C#2-G#2-C#3-F#3-A#3-D#4
-	"Drop C (C-G-C-F-A-D)": ["C2", "G2", "C3", "F3", "A3", "D4"], // Исправлено с ["C2", "G2", "C3", "D3", "G3", "C4"]
+	"Drop C♯ / Drop D♭ (D♭-A♭-D♭-G♭-B♭-E♭)": ["Db2", "Ab2", "Db3", "Gb3", "Bb3", "Eb4"], 
+	"Drop C (C-G-C-F-A-D)": ["C2", "G2", "C3", "F3", "A3", "D4"],
 	"Drop B (B-F♯-B-E-G♯-C♯)": ["B1", "F#2", "B2", "E3", "G#3", "C#4"],
-	// "Drop A (A-E-A-D-F♯-B)" - Очень низкий для 6 струн, чаще для 7-ми: ["A1", "E2", "A2", "D3", "F#3", "B3"] - пока убрал, чтобы не перегружать
 
 	// --- 6-Струнная гитара: Открытые строи (Open Tunings) ---
 	"Open G (D-G-D-G-B-D)": ["D2", "G2", "D3", "G3", "B3", "D4"],
 	"Open D (D-A-D-F♯-A-D)": ["D2", "A2", "D3", "F#3", "A3", "D4"],
 	"Open E (E-B-E-G♯-B-E)": ["E2", "B2", "E3", "G#3", "B3", "E4"],
-	"Open A (E-A-E-A-C♯-E)": ["E2", "A2", "E3", "A3", "C#4", "E4"], // Один из вариантов
+	"Open A (E-A-E-A-C♯-E)": ["E2", "A2", "E3", "A3", "C#4", "E4"],
 	"Open C (C-G-C-G-C-E)": ["C2", "G2", "C3", "G3", "C4", "E4"],
 	"Open Dm (D-A-D-F-A-D)": ["D2", "A2", "D3", "F3", "A3", "D4"],
 	"Open Gm (D-G-D-G-B♭-D)": ["D2", "G2", "D3", "G3", "Bb3", "D4"],
@@ -38,9 +36,9 @@ const tuningsData: { [key: string]: string[] } = {
 	"Double Drop D (D-A-D-G-B-D)": ["D2", "A2", "D3", "G3", "B3", "D4"],
 	"Кельтский (D-A-D-G-A-D)": ["D2", "A2", "D3", "G3", "A3", "D4"],
 	"Нэшвилл (E3-A3-D4-G4-B3-E4)": ["E3", "A3", "D4", "G4", "B3", "E4"],
-	"F Major 9 (Мат-рок) (F-A-C-G-B-E)": ["F2", "A2", "C3", "G3", "B3", "E4"], // Из вашего списка
+	"F Major 9 (Мат-рок) (F-A-C-G-B-E)": ["F2", "A2", "C3", "G3", "B3", "E4"],
 
-	// --- 7-Струнная гитара ---
+	//7-Струнная гитара
 	"Стандартный 7-струн (B-E-A-D-G-B-E)": ["B1", "E2", "A2", "D3", "G3", "B3", "E4"],
 	"Русская семиструнная (D-G-B-D-G-B-D)": ["D2", "G2", "B2", "D3", "G3", "B3", "D4"],
 };
@@ -139,13 +137,13 @@ async function seedScales() {
 	}
 	await prisma.scale.createMany({
 		data: scalesToCreate,
-		skipDuplicates: true, // Because 'formula' is unique
+		skipDuplicates: true,
 	});
 	console.log(`Заполнено ${scalesToCreate.length} гамм.`);
 }
 
 async function seedChords() {
-	const filePath = path.join(__dirname, "..", "chords.json"); // пут к JSON файлу
+	const filePath = path.join(__dirname, "..", "chords.json"); 
 	// Предполагается, что chords.json лежит в корне проекта,
 	// а seed.ts в prisma/seed.ts
 
@@ -175,7 +173,7 @@ async function seedChords() {
 
 				if (existingChord) {
 					console.log(`Аккорд ${chord.key} ${chord.suffix} уже существует. Пропускаем.`);
-					continue; // Пропускаем, если аккорд уже есть, чтобы избежать дубликатов
+					continue;
 				}
 
 				// Создаем аккорд и его позиции в одной транзакции (вложенная запись)

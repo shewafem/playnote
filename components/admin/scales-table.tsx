@@ -111,9 +111,9 @@ export function ScalesTable({ scales: initialScales, itemsPerPage = DEFAULT_ITEM
 			</div>
 			{initialScales.length === 0 && !searchTerm && (
 				<p className="text-center text-muted-foreground py-4">
-					Пока нет ни одного лада.{" "}
+					Пока нет ни одной гаммы.{" "}
 					<Link href="/admin/scales/add" className="text-primary hover:underline">
-						Добавить новый?
+						Добавить новую?
 					</Link>
 				</p>
 			)}
