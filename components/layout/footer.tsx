@@ -4,10 +4,10 @@ import Link from "next/link";
 import Logo from "../ui/logo";
 
 const socials = [
-	{ icon: <FaInstagram className="size-6 text-white" />, link: "/" },
-	{ icon: <FaFacebook className="size-6 text-white" />, link: "/" },
-	{ icon: <FaTwitter className="size-6 text-white" />, link: "/" },
-	{ icon: <FaLinkedin className="size-6 text-white" />, link: "/" },
+	{ icon: <FaInstagram className="size-6 dark:text-white text-black" />, link: "/" },
+	{ icon: <FaFacebook className="size-6 dark:text-white text-black" />, link: "/" },
+	{ icon: <FaTwitter className="size-6 dark:text-white text-black" />, link: "/" },
+	{ icon: <FaLinkedin className="size-6 dark:text-white text-black" />, link: "/" },
 ];
 
 const sections = [
@@ -23,7 +23,7 @@ const sections = [
 		title: "Практика",
 		links: [
 			{ name: "Гриф", href: "/fretboard" },
-			{ name: "Плеер", href: "/player" },
+			{ name: "Плеер", href: "/profile/player" },
 		],
 	},
 	{

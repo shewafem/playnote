@@ -127,9 +127,8 @@ const NoteDot: React.FC<NoteDotProps> = ({
 		{
 			"ring-2 ring-yellow-400 ring-offset-1 shadow-lg": isSelected,
 			"shadow-xl drop-shadow-lg": isPlaying,
-			"cursor-pointer": canClick,
+			"cursor-pointer focus-visible:ring-2 focus-visible:ring-primary": canClick,
 			"opacity-70": !isToneReady,
-			"focus-visible:ring-2 focus-visible:ring-primary": canClick,
 		}
 	);
 

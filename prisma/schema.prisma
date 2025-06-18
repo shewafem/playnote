@@ -11,21 +11,21 @@ model User {
   id                       String           @id @default(cuid())
   name                     String?
   email                    String           @unique
-  emailVerified            DateTime?
+  //emailVerified            DateTime?
   image                    String?
   createdAt                DateTime         @default(now())
   updatedAt                DateTime         @updatedAt
   hashedPassword           String?
-  passwordResetToken       String?          @unique
-  passwordResetTokenExpiry DateTime?
+  //passwordResetToken       String?          @unique
+  //passwordResetTokenExpiry DateTime?
   role                     UserRole         @default(STUDENT)
   savedFretboards          SavedFretboard[]
   accounts                 Account[]
   sessions                 Session[]
   //tabFiles                 TabFile[]
-  learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
+  //learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
   learnedPositions         Position[]       @relation("PositionToUser")
-  learnedScales            Scale[]          @relation("ScaleToUser")
+  //learnedScales            Scale[]          @relation("ScaleToUser")
 }
 
 model Account {
@@ -58,13 +58,13 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
+//model VerificationToken {
+//  identifier String
+//  token      String
+//  expires    DateTime
 
-  @@id([identifier, token])
-}
+//  @@id([identifier, token])
+//}
 
 //model Attachment {
 //  id        String   @id @default(cuid())
@@ -115,14 +115,14 @@ model Scale {
   id        Int    @id @default(autoincrement())
   name      String @unique
   formula   Int[]  @unique
-  learnedBy User[] @relation("ScaleToUser")
+  //learnedBy User[] @relation("ScaleToUser")
 }
 
 model Arpeggio {
   id        Int    @id @default(autoincrement())
   name      String @unique
   formula   Int[]  @unique
-  learnedBy User[] @relation("ArpeggioToUser")
+  //learnedBy User[] @relation("ArpeggioToUser")
 }
 
 model Tuning {

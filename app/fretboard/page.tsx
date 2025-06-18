@@ -3,6 +3,22 @@ import { NoteValue, ShapesObjectType, transformNotesToMidi, TuningsMidiObjectTyp
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import FretboardLoading from "./loading";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Интерактивный гриф | Playnote!",
+	description: "Интерактивный гриф для тренировки",
+  keywords: [
+    "обучение игре на гитаре", 
+    "уроки игры на гитаре", 
+    "аккорды гитара",
+    "онлайн гитара",
+    "интерактивные инструменты",
+    "учить аккорды",
+    "интерактивный гриф",
+    "онлайн-гитара",
+  ],
+};
 
 async function getFretboardInitialData() {
 	const dbScales = await prisma.scale.findMany();

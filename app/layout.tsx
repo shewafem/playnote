@@ -8,6 +8,7 @@ import { Container } from "@/components/layout/container";
 import { SessionProvider } from "next-auth/react";
 import { AppBreadcrumbs } from "@/components/layout/breadcrumbs";
 import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 //import { auth } from "@/auth";
 import { Analytics } from "@vercel/analytics/next"
 
@@ -57,6 +58,7 @@ export default function RootLayout({
 							<Container>
 								<AppBreadcrumbs />
                 {children}
+                <SpeedInsights />
 								<Analytics />
 							</Container>
 						</main>
