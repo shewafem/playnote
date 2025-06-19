@@ -9,7 +9,7 @@ import { User, Menu, UserRoundCog, LogOut } from "lucide-react";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { NavMenu } from "./nav-menu";
+//import { NavMenu } from "./nav-menu";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -18,20 +18,19 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOut, useSession} from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-
 
 interface Props {
 	className?: string;
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
-  const {status, data} = useSession();
+	const { status, data } = useSession();
 	const navLinks = [
 		{ href: "/chords", text: "Аккорды", icon: " 🎶" },
 		{ href: "/fretboard", text: "Гриф", icon: " 🎸" },
-    { href: "/profile/player", text: "Плеер", icon: "🎧" },
+		{ href: "/profile/player", text: "Плеер", icon: " 🎧" },
 		//{ href: "/progressions", text: "Прогрессии", icon: " 🎼" },
 		//{ href: "/courses", text: "Курсы", icon: "" },
 		//{ href: "/blog", text: "Блог", icon: "" },
@@ -45,14 +44,21 @@ export const Header: React.FC<Props> = ({ className }) => {
 		>
 			<Container className="px-4 py-2 flex items-center justify-between">
 				{/* Левая часть - Логотип */}
-				<Logo/>
+				<Logo />
 				{/* Навигация для больших экранов */}
 				<div className="flex gap-3 md:gap-8">
-					<NavMenu></NavMenu>
+					{/*<NavMenu></NavMenu>*/}
+					<nav className="hidden min-[37rem]:flex gap-4 md:gap-10 items-center">
+						{navLinks.map((link) => (
+							<Link key={link.href} href={link.href} className="flex gap-2 items-center text-sm sm:text-lg">
+								{link.text}
+								{link.icon}
+							</Link>
+						))}
+					</nav>
 
 					{/* Правая часть - Действия и мобильное меню */}
 					<div className="flex items-center gap-3">
-						{" "}
 						<ModeToggle />
 						{status === "authenticated" && (
 							<div className="flex items-center">
@@ -61,7 +67,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 										<Avatar className="cursor-pointer">
 											<AvatarImage className="object-cover" src={data?.user.image as string} alt="avatar" />
 											<AvatarFallback className="bg-background">
-												<UserRoundCog/>
+												<UserRoundCog />
 											</AvatarFallback>
 										</Avatar>
 									</DropdownMenuTrigger>
@@ -113,18 +119,19 @@ export const Header: React.FC<Props> = ({ className }) => {
 										))}
 										<hr className="my-2" />
 										<SheetClose asChild>
-                      {status === "unauthenticated" ?
-											<Link href="/sign-in" className="nav-link">
-												<Button className="w-full">
-													Войти
-													<User size={17} />
-												</Button>
-											</Link> : 
+											{status === "unauthenticated" ? (
+												<Link href="/sign-in" className="nav-link">
+													<Button className="w-full">
+														Войти
+														<User size={17} />
+													</Button>
+												</Link>
+											) : (
 												<Button onClick={() => signOut()} className="w-full nav-link cursor-pointer">
 													Выйти
 													<User size={17} />
 												</Button>
-                      }
+											)}
 										</SheetClose>
 									</nav>
 								</SheetContent>

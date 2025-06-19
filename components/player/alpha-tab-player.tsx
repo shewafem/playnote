@@ -97,23 +97,11 @@ export default function AlphaTabPlayer() {
 			setIsPlaying(stateObj.state === 1);
 		});
 
-		//api.playerPositionChanged.on((pos) => {
-		//	const current = formatTime(pos.currentTime);
-		//	const total = formatTime(pos.endTime);
-		//});
-
 		return () => {
 			setApi(null);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []); // при маунте
-
-	//const formatTime = (ms: number) => {
-	//	const seconds = Math.floor(ms / 1000);
-	//	const minutes = Math.floor(seconds / 60);
-	//	const remainingSeconds = seconds % 60;
-	//	return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
-	//};
+	}, []);
 
 	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!api) {

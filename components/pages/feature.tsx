@@ -44,7 +44,7 @@ const Feature = () => {
 	}, []);
 
 	return (
-		<section className="py-20 mx-auto flex items-center justify-center">
+		<section className="py-10 mx-auto flex items-center justify-center">
 			<div className="container flex flex-col gap-8 lg:px-16">
 				<div className="w-full">
 					<h2 className="mb-3 text-xl font-extrabold leading-[1.15] tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-foreground to-primary md:mb-4 md:text-4xl lg:mb-6 text-center">
