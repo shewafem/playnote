@@ -7,16 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+//import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Save, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Camera, Save, Loader2 } from "lucide-react"; //Eye, EyeOff,
 import { toast } from "sonner";
 
 import {
 	ProfileInfoSchema,
 	type ProfileInfoFormValues,
-	UpdatePasswordSchema,
-	type UpdatePasswordFormValues,
+	//UpdatePasswordSchema,
+	//type UpdatePasswordFormValues,
 } from "@/schemas/auth-schema";
 import { useSession } from "next-auth/react";
 //import { useSession } from "next-auth/react";
@@ -27,9 +27,9 @@ const FieldError: React.FC<{ message?: string }> = ({ message }) => {
 };
 
 export default function ProfileSettings({ hasAccount }: { hasAccount: boolean }) {
-	const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-	const [showNewPassword, setShowNewPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	//const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+	//const [showNewPassword, setShowNewPassword] = useState(false);
+	//const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
 	const [isLoading, setIsLoading] = useState(true);
 	const { update } = useSession();
@@ -63,14 +63,14 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 		},
 	});
 
-	const passwordUpdateForm = useForm<UpdatePasswordFormValues>({
-		resolver: zodResolver(UpdatePasswordSchema),
-		defaultValues: {
-			currentPassword: "",
-			newPassword: "",
-			confirmNewPassword: "",
-		},
-	});
+	//const passwordUpdateForm = useForm<UpdatePasswordFormValues>({
+	//	resolver: zodResolver(UpdatePasswordSchema),
+	//	defaultValues: {
+	//		currentPassword: "",
+	//		newPassword: "",
+	//		confirmNewPassword: "",
+	//	},
+	//});
 
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files?.[0]) {
@@ -135,13 +135,13 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 		}
 	};
 
-	const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
-		console.log("пароль", data);
-		// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		toast.success("Пароль успешно обновлен");
-		passwordUpdateForm.reset();
-	};
+	//const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
+	//	console.log("пароль", data);
+	//	// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
+	//	await new Promise((resolve) => setTimeout(resolve, 1000));
+	//	toast.success("Пароль успешно обновлен");
+	//	passwordUpdateForm.reset();
+	//};
 
 	return (
 		<div className="w-fit mx-auto max-w-4xl space-y-8">
@@ -252,7 +252,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 						</form>
 					</CardContent>
 				</Card>
-				<Card>
+				{/*<Card>
 					<CardHeader>
 						<CardTitle>Сменить пароль</CardTitle>
 						<CardDescription>Обновите ваш пароль, чтобы обеспечить безопасность аккаунта.</CardDescription>
@@ -360,7 +360,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 							</div>
 						</form>
 					</CardContent>
-				</Card>
+				</Card>*/}
 			</div>
 		</div>
 	);
