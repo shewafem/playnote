@@ -29,6 +29,12 @@ interface UsersTableProps {
 	itemsPerPage?: number;
 }
 
+const ruRoles = {
+  "ADMIN" : "АДМИН",
+  "STUDENT" : "ПОЛЬЗОВАТЕЛЬ",
+  "TEACHER" : "УЧИТЕЛЬ"
+}
+
 const DEFAULT_ITEMS_PER_PAGE = 10;
 
 export function UsersTable({ users: initialUsers, itemsPerPage = DEFAULT_ITEMS_PER_PAGE }: UsersTableProps) {
@@ -172,14 +178,14 @@ export function UsersTable({ users: initialUsers, itemsPerPage = DEFAULT_ITEMS_P
 												{/* Роль для мобильных */}
 												<div className="mt-1 md:hidden">
 													<Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
-														{getRoleIcon(user.role)} {user.role}
+														{getRoleIcon(user.role)} {ruRoles[user.role]}
 													</Badge>
 												</div>
 											</div>
 										</TableCell>
 										<TableCell className="hidden md:table-cell px-3">
 											<Badge variant={getRoleBadgeVariant(user.role)}>
-												{getRoleIcon(user.role)} {user.role}
+												{getRoleIcon(user.role)} {ruRoles[user.role]}
 											</Badge>
 										</TableCell>
 										<TableCell className="hidden lg:table-cell text-sm text-muted-foreground px-3">
