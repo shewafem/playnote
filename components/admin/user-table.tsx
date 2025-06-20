@@ -155,7 +155,7 @@ export function UsersTable({ users: initialUsers, itemsPerPage = DEFAULT_ITEMS_P
 									<TableRow key={user.id} className="hover:bg-muted/30">
 										<TableCell className="hidden sm:table-cell px-3">
 											<Avatar className="h-9 w-9">
-												<AvatarImage src={user.image || undefined} alt={user.name || user.email} />
+												<AvatarImage className="object-cover" src={user.image || undefined} alt={user.name || user.email} />
 												<AvatarFallback>
 													{user.name
 														? user.name.substring(0, 2).toUpperCase()

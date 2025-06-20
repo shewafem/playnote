@@ -50,7 +50,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 					{/*<NavMenu></NavMenu>*/}
 					<nav className="hidden min-[37rem]:flex gap-4 md:gap-10 items-center">
 						{navLinks.map((link) => (
-							<Link key={link.href} href={link.href} className="flex gap-2 items-center text-sm sm:text-lg">
+							<Link key={link.href} href={link.href} className="flex gap-2 items-center text-sm font-medium sm:text-base">
 								{link.text}
 								{link.icon}
 							</Link>
