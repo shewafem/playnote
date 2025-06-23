@@ -10,7 +10,6 @@ import { CheckCircle, Download, GraduationCap, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Note } from "tonal";
-//import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
 

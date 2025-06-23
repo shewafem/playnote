@@ -89,7 +89,8 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 
 	const configurationToSave = `?key=${selectedKey}&type=${selectedShapeType}&name=${selectedShapeName}&tuning=${selectedTuning}&startFret=${startFret}&endFret=${endFret}`;
 	return (
-		<>
+		<>		
+    <div onClick={getFretboardImageData}><SaveForm config={configurationToSave}/></div>
 			<p className="text-center text-xs text-muted-foreground">Наведите на ноты для подробной информации</p>
 			<div
 				ref={fretboardDisplayRef}
@@ -141,7 +142,6 @@ const FretboardDisplay: React.FC<FretboardDisplayProps> = ({ highlightedNotes, r
 			<Button className="cursor-pointer" onClick={downloadFretboardImage}>
 				Скачать схему в PNG <Download />
 			</Button>
-			<div onClick={getFretboardImageData}><SaveForm config={configurationToSave}/></div>
 		</>
 	);
 };

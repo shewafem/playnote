@@ -119,10 +119,10 @@ export function ScaleForm({ defaultValues, onSubmit, isEditing = false, formTitl
 								<FormItem>
 									<FormLabel>Формула гаммы (интервалы)</FormLabel>
 									<FormControl>
-										<Input placeholder="2, 2, 1, 2, 2, 2, 1" {...field} />
+										<Input placeholder="0,2,4,5,7,9,11" {...field} />
 									</FormControl>
 									<FormDescription>
-										Введите интервалы в полутонах через запятую. Например, для мажорной гаммы: 2, 2, 1, 2, 2, 2, 1
+										Введите интервалы в соответствии с целочисленной нотацией. Например, для мажорной гаммы: 0,2,4,5,7,9,11
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

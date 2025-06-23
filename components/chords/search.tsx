@@ -49,7 +49,7 @@ export const SearchBox: React.FC<SearchProps> = ({ keyNote, items, value, classN
 					</DrawerTrigger>
 					<DrawerContent>
 						<div className="p-4">
-							<DrawerTitle>Выберите тип</DrawerTitle>
+							<DrawerTitle>Выберите тип аккорда</DrawerTitle>
 							<DrawerDescription>Выберите тип из списка ниже.</DrawerDescription>
 							<div className="mt-4 border-t">
 								<ItemList items={items} keyNote={keyNote} setOpen={setOpen} />

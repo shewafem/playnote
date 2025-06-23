@@ -11,21 +11,15 @@ model User {
   id                       String           @id @default(cuid())
   name                     String?
   email                    String           @unique
-  emailVerified            DateTime?
   image                    String?
   createdAt                DateTime         @default(now())
   updatedAt                DateTime         @updatedAt
   hashedPassword           String?
-  passwordResetToken       String?          @unique
-  passwordResetTokenExpiry DateTime?
   role                     UserRole         @default(STUDENT)
   savedFretboards          SavedFretboard[]
   accounts                 Account[]
   sessions                 Session[]
-  //tabFiles                 TabFile[]
-  //learnedArpeggios         Arpeggio[]       @relation("ArpeggioToUser")
   learnedPositions         Position[]       @relation("PositionToUser")
-  //learnedScales            Scale[]          @relation("ScaleToUser")
 }
 
 model Account {
@@ -58,23 +52,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-//model VerificationToken {
-//  identifier String
-//  token      String
-//  expires    DateTime
-
-//  @@id([identifier, token])
-//}
-
-//model Attachment {
-//  id        String   @id @default(cuid())
-//  name      String
-//  url       String
-//  fileType  String
-//  size      Int?
-//  createdAt DateTime @default(now())
-//}
-
 model Chord {
   id        Int        @id @default(autoincrement())
   key       String
@@ -106,7 +83,7 @@ model SavedFretboard {
   link      String
   img       String
   userId    String
-  savedBy   User     @relation(fields: [userId], references: [id])
+  savedBy   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -115,14 +92,12 @@ model Scale {
   id        Int    @id @default(autoincrement())
   name      String @unique
   formula   Int[]  @unique
-  //learnedBy User[] @relation("ScaleToUser")
 }
 
 model Arpeggio {
   id        Int    @id @default(autoincrement())
   name      String @unique
   formula   Int[]  @unique
-  //learnedBy User[] @relation("ArpeggioToUser")
 }
 
 model Tuning {
@@ -130,20 +105,6 @@ model Tuning {
   name  String   @unique
   notes String[] @unique
 }
-
-//model TabFile {
-//  id          String   @id @default(cuid())
-//  fileName    String
-//  title       String?
-//  artist      String?
-//  fileContent Bytes
-//  createdAt   DateTime @default(now())
-//  updatedAt   DateTime @updatedAt
-//  userId      String
-//  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//  @@index([userId])
-//}
 
 enum UserRole {
   ADMIN

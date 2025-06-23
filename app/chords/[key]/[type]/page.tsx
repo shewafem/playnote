@@ -6,6 +6,8 @@ import { Position } from "@prisma/client";
 import React, { Suspense } from "react";
 import { getChord } from "@/actions/chords/get-chords";
 import ChordsLoading from "../loading";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { translateChordName } from "@/lib/translations";
 async function getCurrentUserLearnedPositionIds(userId: string | undefined): Promise<number[]> {
 	if (!userId) {
 		return [];
@@ -50,22 +52,33 @@ export default async function TypeOfChordsOfKey({ params }: { params: Promise<{ 
 	const learnedIdsSet = new Set(learnedPositionIds);
 
 	return (
-		<div className="self-start flex flex-col gap-4 bg-card text-card-foreground rounded-lg border border-border shadow-sm p-4 md:p-6">
-			<h2 className="text-xl text-center md:text-2xl font-semibold">{`${chord.key} ${chord.suffix}`}</h2>
-			<Suspense fallback={<ChordsLoading />}>
-				<div className="grid gap-y-8 grid-cols-2 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-					{chord.positions.map((position: Position, posIndex: number) => (
-						<ChordElement
-							key={`${position.id}-${posIndex}`}
-							position={position}
-							chordKey={chord.key}
-							suffix={chord.suffix}
-							posIndex={posIndex}
-							isInitiallyLearned={learnedIdsSet.has(position.id)}
-						/>
-					))}
-				</div>
-			</Suspense>
-		</div>
+		<TooltipProvider>
+			<div className="self-start flex flex-col gap-4 bg-card text-card-foreground rounded-lg border border-border shadow-sm p-4 md:p-6">
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<h2 className="text-xl text-center md:text-2xl font-semibold cursor-pointer hover:text-primary transition-colors">
+							{`${chord.key} ${chord.suffix}`}
+						</h2>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p>{translateChordName(chord.key, chord.suffix)}</p>
+					</TooltipContent>
+				</Tooltip>
+				<Suspense fallback={<ChordsLoading />}>
+					<div className="grid gap-y-8 grid-cols-2 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+						{chord.positions.map((position: Position, posIndex: number) => (
+							<ChordElement
+								key={`${position.id}-${posIndex}`}
+								position={position}
+								chordKey={chord.key}
+								suffix={chord.suffix}
+								posIndex={posIndex}
+								isInitiallyLearned={learnedIdsSet.has(position.id)}
+							/>
+						))}
+					</div>
+				</Suspense>
+			</div>
+		</TooltipProvider>
 	);
 }

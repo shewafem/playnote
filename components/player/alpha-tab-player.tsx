@@ -105,11 +105,9 @@ export default function AlphaTabPlayer() {
 
 	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!api) {
-			console.warn("API не готово", api);
 			return;
 		}
 		const selectedFile = event.target.files?.[0];
-		console.log("выбранный файл:", selectedFile);
 		if (selectedFile) {
 			try {
 				const fileData = await selectedFile.arrayBuffer();

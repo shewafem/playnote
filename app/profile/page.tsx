@@ -19,17 +19,6 @@ export default async function ProfilePage() {
   const userWithDetails = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      //enrollments: {
-      //  include: {
-      //    course: true,
-      //  },
-      //  orderBy: {
-      //    course: { title: 'asc' }
-      //  }
-      //},
-      //coursesCreated: {
-      //  orderBy: { createdAt: 'desc' }
-      //},
       learnedPositions: {
         include: {
           chord: true,
@@ -54,7 +43,6 @@ export default async function ProfilePage() {
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-3 space-y-6">
             {userWithDetails.role === "STUDENT" && <StudentInfo user={userWithDetails} />}
-            {/*{userWithDetails.role === "TEACHER" && <TeacherInfo user={userWithDetails} />}*/}
             {userWithDetails.role === "ADMIN" && redirect("/admin")}
         </div>
       </div>

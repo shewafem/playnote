@@ -31,7 +31,7 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 
 	const availableShapeNames =
 		allShapes && selectedShapeType && allShapes[selectedShapeType] ? Object.keys(allShapes[selectedShapeType]) : [];
-    
+
 	const availableTuningNames = allTunings ? Object.keys(allTunings) : [];
 
 	useEffect(() => {
@@ -93,25 +93,34 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 			<div className="flex flex-wrap items-center justify-center gap-4 p-4 border border-border rounded-md bg-card shadow-sm">
 				<div className="flex flex-wrap items-center justify-center gap-4">
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="key-select">Тоника</Label>
-						<Select value={selectedKey} onValueChange={setSelectedKey}>
-							<SelectTrigger id="key-select" className="w-[120px]">
-								<SelectValue placeholder="Выбрать тонику" />
-							</SelectTrigger>
-							<SelectContent>
-								{keyOptions.map((option) => (
-									<SelectItem key={option.value} value={option.value}>
-										{option.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<div className="flex flex-col gap-1.5">
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Label htmlFor="key-select">Тоника<span className="text-muted-foreground">?</span></Label>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Тоника — это главная нота, от которой строятся все интервалы гаммы или аккорда</p>
+								</TooltipContent>
+							</Tooltip>
+							<Select value={selectedKey} onValueChange={setSelectedKey}>
+								<SelectTrigger id="key-select" className="w-[120px]">
+									<SelectValue placeholder="Выбрать тонику" />
+								</SelectTrigger>
+								<SelectContent>
+									{keyOptions.map((option) => (
+										<SelectItem key={option.value} value={option.value}>
+											{option.label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="shape-type-select">Тип</Label>
 						<Select value={selectedShapeType} onValueChange={setSelectedShapeType}>
 							<SelectTrigger id="shape-type-select" className="w-[140px]">
-								<SelectValue placeholder="Выбрать тип" />
+								<SelectValue placeholder="Тип аккорда" />
 							</SelectTrigger>
 							<SelectContent>
 								{shapeTypeOptions.map((option) => (
@@ -138,7 +147,14 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 						</Select>
 					</div>
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="tuning-select">Строй</Label>
+						<Tooltip>
+								<TooltipTrigger asChild>
+									<Label htmlFor="tuning-select">Строй<span className="text-muted-foreground">?</span></Label>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Строй определяет ноты открытых струн гитары. </p>
+								</TooltipContent>
+							</Tooltip>
 						<Select value={selectedTuning} onValueChange={setSelectedTuning}>
 							<SelectTrigger id="tuning-select" className="w-[120px]">
 								<SelectValue placeholder="Выбрать строй" />
@@ -186,7 +202,16 @@ const Controls: React.FC<ControlsProps> = ({ className }) => {
 			</div>
 			<div className="flex flex-wrap justify-center items-center gap-3 w-full">
 				<div className="flex gap-2">
-					<p className="text-center font-bold">Формула:</p>{" "}
+					<Tooltip>
+						<TooltipTrigger>
+							<p className="text-center font-bold">
+								Формула<span className="text-muted-foreground">? </span>:
+							</p>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>Формула - это последовательность интервалов, которые определяют звучание аккорда</p>
+						</TooltipContent>
+					</Tooltip>
 					{formula.map((degree) => (
 						<Tooltip key={degree}>
 							<TooltipTrigger>

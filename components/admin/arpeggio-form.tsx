@@ -113,10 +113,10 @@ export function ArpeggioForm({ defaultValues, onSubmit, isEditing = false, formT
 								<FormItem>
 									<FormLabel>Формула арпеджио (ступени)</FormLabel>
 									<FormControl>
-										<Input placeholder="1, 3, 5" {...field} />
+										<Input placeholder="0, 4, 7" {...field} />
 									</FormControl>
 									<FormDescription>
-										Введите ступени через запятую. Например, для мажорного трезвучия: 1, 3, 5
+										Введите ступени через запятую. Например, для мажорного трезвучия: 0, 4, 7
 									</FormDescription>
 									<FormMessage />
 								</FormItem>

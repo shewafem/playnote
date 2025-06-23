@@ -27,9 +27,6 @@ const FieldError: React.FC<{ message?: string }> = ({ message }) => {
 };
 
 export default function ProfileSettings({ hasAccount }: { hasAccount: boolean }) {
-	//const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-	//const [showNewPassword, setShowNewPassword] = useState(false);
-	//const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
 	const [isLoading, setIsLoading] = useState(true);
 	const { update } = useSession();
@@ -63,14 +60,6 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 		},
 	});
 
-	//const passwordUpdateForm = useForm<UpdatePasswordFormValues>({
-	//	resolver: zodResolver(UpdatePasswordSchema),
-	//	defaultValues: {
-	//		currentPassword: "",
-	//		newPassword: "",
-	//		confirmNewPassword: "",
-	//	},
-	//});
 
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files?.[0]) {
@@ -135,13 +124,6 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 		}
 	};
 
-	//const onPasswordUpdateSubmit: SubmitHandler<UpdatePasswordFormValues> = async (data) => {
-	//	console.log("пароль", data);
-	//	// await updatePasswordApi({ currentPassword: data.currentPassword, newPassword: data.newPassword });
-	//	await new Promise((resolve) => setTimeout(resolve, 1000));
-	//	toast.success("Пароль успешно обновлен");
-	//	passwordUpdateForm.reset();
-	//};
 
 	return (
 		<div className="w-fit mx-auto max-w-4xl space-y-8">
@@ -252,115 +234,6 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 						</form>
 					</CardContent>
 				</Card>
-				{/*<Card>
-					<CardHeader>
-						<CardTitle>Сменить пароль</CardTitle>
-						<CardDescription>Обновите ваш пароль, чтобы обеспечить безопасность аккаунта.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<form onSubmit={passwordUpdateForm.handleSubmit(onPasswordUpdateSubmit)} className="space-y-6">
-							<div className="space-y-4">
-								<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-									<Label htmlFor="current-password" className="sm:w-1/3 mb-1 sm:mb-0">
-										Текущий пароль
-									</Label>
-									<div className="relative flex-1">
-										<Input
-											id="current-password"
-											type={showCurrentPassword ? "text" : "password"}
-											placeholder="Введите текущий пароль"
-											{...passwordUpdateForm.register("currentPassword")}
-											className="text-xs sm:text-base"
-										/>
-										<FieldError message={passwordUpdateForm.formState.errors.currentPassword?.message} />
-										<Button
-											type="button"
-											variant="ghost"
-											size="sm"
-											className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-											onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-											aria-label={showCurrentPassword ? "Скрыть текущий пароль" : "Показать текущий пароль"}
-										>
-											{showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-										</Button>
-									</div>
-								</div>
-								<Separator />
-								<div className="space-y-4">
-									<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-2">
-										<Label htmlFor="new-password" className="sm:w-1/3 mb-1 sm:mb-0">
-											Новый пароль
-										</Label>
-										<div className="relative flex-1">
-											<Input
-												id="new-password"
-												type={showNewPassword ? "text" : "password"}
-												placeholder="Введите новый пароль"
-												{...passwordUpdateForm.register("newPassword")}
-												className="text-xs sm:text-base"
-											/>
-											<FieldError message={passwordUpdateForm.formState.errors.newPassword?.message} />
-											<Button
-												type="button"
-												variant="ghost"
-												size="sm"
-												className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-												onClick={() => setShowNewPassword(!showNewPassword)}
-												aria-label={showNewPassword ? "Скрыть новый пароль" : "Показать новый пароль"}
-											>
-												{showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-											</Button>
-										</div>
-									</div>
-
-									<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-										<Label htmlFor="confirm-new-password" className="sm:w-1/3 mb-1 sm:mb-0">
-											Подтвердите новый пароль
-										</Label>
-										<div className="relative flex-1">
-											<Input
-												id="confirm-new-password"
-												type={showConfirmPassword ? "text" : "password"}
-												placeholder="Подтвердите новый пароль"
-												{...passwordUpdateForm.register("confirmNewPassword")}
-												className="text-xs sm:text-base"
-											/>
-											<FieldError message={passwordUpdateForm.formState.errors.confirmNewPassword?.message} />
-											<Button
-												type="button"
-												variant="ghost"
-												size="sm"
-												className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-												onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-												aria-label={
-													showConfirmPassword
-														? "Скрыть подтверждение нового пароля"
-														: "Показать подтверждение нового пароля"
-												}
-											>
-												{showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-											</Button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="flex justify-center">
-								<Button
-									type="submit"
-									className="gap-2 cursor-pointer"
-									disabled={passwordUpdateForm.formState.isSubmitting}
-								>
-									{passwordUpdateForm.formState.isSubmitting ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<Save className="h-4 w-4" />
-									)}
-									{passwordUpdateForm.formState.isSubmitting ? "Обновление..." : "Обновить пароль"}
-								</Button>
-							</div>
-						</form>
-					</CardContent>
-				</Card>*/}
 			</div>
 		</div>
 	);

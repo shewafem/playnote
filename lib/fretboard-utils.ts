@@ -14,14 +14,13 @@ export type TuningsMidiObjectType = { [name: string]: number[] };
 export const NOTE_NAMES: string[] = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 
 export const MAX_FRETS: number = 24;
-export const MIN_DISPLAYED_FRETS_COUNT = 1;
 export const MIN_FRETS: number = 0;
 
 export const DEFAULT_FRETS: number = 12;
 
 export const transformNotesToMidi = (notes: string[]): number[] => {
 	const midiValues: (number | null)[] = notes.map((note) => Midi.toMidi(note)).reverse();
-	return midiValues.filter((midi): midi is number => midi !== null);  
+	return midiValues.filter((midi): midi is number => midi !== null);
 };
 
 //(0-11)
@@ -42,7 +41,7 @@ export function midiToNoteName(midiNumber: number): string | null {
 	return Midi.midiToNoteName(midiNumber, { sharps: true });
 }
 
-export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tuning : number[]): number {
+export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tuning: number[]): number {
 	if (stringIndex < 0 || stringIndex >= tuning.length) {
 		return -1;
 	}
@@ -54,11 +53,11 @@ export function getFretboardNoteMIDI(stringIndex: number, fretNumber: number, tu
 	return openStringMIDI + fretNumber;
 }
 
-export function getNoteValuesInShape( 
-    rootNoteValue: NoteValue, //C
-    shapeType: string,
-    shapeName: string,
-    allShapes: ShapesObjectType
+export function getNoteValuesInShape(
+	rootNoteValue: NoteValue, //C
+	shapeType: string,
+	shapeName: string,
+	allShapes: ShapesObjectType
 ): Set<NoteValue> {
 	const shape = allShapes[shapeType]?.[shapeName];
 	if (!shape) {
@@ -68,7 +67,7 @@ export function getNoteValuesInShape(
 	return new Set(noteValues);
 }
 
-export function mapIdsToNoteObjects(ids: string[], tuning: number[]): NoteObject[] {
+export function mapIdsToNoteObjects(ids: string[], tuning: number[]): NoteObject[] { // "5-6"
 	return ids
 		.map((id) => {
 			const parts = id.split("-");
@@ -81,11 +80,11 @@ export function mapIdsToNoteObjects(ids: string[], tuning: number[]): NoteObject
 }
 
 export function getDisplayStringFromQuery(queryString: string) {
-    if (!queryString || queryString.trim() === '' || queryString.trim() === '?') {
-        return ""; 
-    }
-    const paramsString = queryString.startsWith('?') ? queryString.substring(1) : queryString;
-    const searchParams = new URLSearchParams(paramsString);
-    const values = Array.from(searchParams.values());
-    return values.join(', ');
+	if (!queryString || queryString.trim() === "" || queryString.trim() === "?") {
+		return "";
+	}
+	const paramsString = queryString.startsWith("?") ? queryString.substring(1) : queryString;
+	const searchParams = new URLSearchParams(paramsString);
+	const values = Array.from(searchParams.values());
+	return values.join(", ");
 }

@@ -56,8 +56,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 			if (trigger === "update") {
 				// Fetch latest user data when session is updated
-				const updatedUser= await prisma.user.findUnique({
-					where: { id: token.id as string},
+				const updatedUser = await prisma.user.findUnique({
+					where: { id: token.id as string },
 					select: { id: true, email: true, name: true, role: true, image: true },
 				});
 				if (updatedUser) {

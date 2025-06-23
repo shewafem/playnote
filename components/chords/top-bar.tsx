@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const TopBar: React.FC<Props> = ({ className }) => {
-	const [suffixes, setSuffixes] = useState<string[]>([]);
-	const [isLoading, setIsLoading] = useState(false); 
+  const [suffixes, setSuffixes] = useState<string[]>([]);
+	const [isLoading, setIsLoading] = useState(false);
 	const params = useParams<{ key?: string; type?: string }>();
 	const keyFromUrl = params?.key;
 	const typeFromUrl = params?.type as string;
@@ -27,7 +27,7 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 			fetch(`/api/chords/${encodeURIComponent(keyFromUrl)}/suffixes`)
 				.then((res) => {
 					if (!res.ok) {
-						throw new Error(`HTTP error! status: ${res.status}`);
+						throw new Error(`Ошибка: ${res.status}`);
 					}
 					return res.json();
 				})
@@ -35,7 +35,7 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 					setSuffixes(data);
 				})
 				.catch((error) => {
-					console.error("Error fetching suffixes via API:", error);
+					console.error("Ошибка запроса аккордов:", error);
 					setSuffixes([]);
 				})
 				.finally(() => {
@@ -55,9 +55,7 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 		>
 			<p>Выберите тональность</p>
 			<Categories items={keyNotes} selected={formattedKeyForDisplay} />
-			{keyFromUrl &&
-					<SearchBox isLoading={isLoading} keyNote={keyFromUrl} items={suffixes} value={typeFromUrl} />
-      }
+			{keyFromUrl && <SearchBox isLoading={isLoading} keyNote={keyFromUrl} items={suffixes} value={typeFromUrl} />}
 		</div>
 	);
 };
