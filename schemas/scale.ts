@@ -1,4 +1,3 @@
-// app/schemas/scale-schema.ts
 import { z } from "zod";
 
 export const ScaleFormSchema = z.object({

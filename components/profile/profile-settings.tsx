@@ -19,6 +19,7 @@ import {
 	//type UpdatePasswordFormValues,
 } from "@/schemas/auth-schema";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 //import { useSession } from "next-auth/react";
 
 const FieldError: React.FC<{ message?: string }> = ({ message }) => {
@@ -30,6 +31,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 	const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=100&width=100");
 	const [isLoading, setIsLoading] = useState(true);
 	const { update } = useSession();
+  const router = useRouter()
 
 	const [file, setFile] = useState<File>();
 	const [uploading, setUploading] = useState(false);
@@ -97,6 +99,7 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 			update({ image: signedUrl });
 			setUploading(false);
 			toast.success("Фото успешно обновлено!");
+      router.refresh()
 		} catch (e) {
 			console.log(e);
 			setUploading(false);
@@ -116,7 +119,9 @@ export default function ProfileSettings({ hasAccount }: { hasAccount: boolean })
 			const updated = await res.json();
 			update({ name: updated.name, email: updated.email });
 			toast.success("Личная информация успешно сохранена");
+      router.refresh()
 			personalInfoForm.reset({ email: updated.email, name: updated.name });
+      
 		} catch {
 			toast.error("Не удалось обновить профиль");
 		} finally {
