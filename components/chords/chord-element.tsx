@@ -12,7 +12,6 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { Note } from "tonal";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 
 interface ChordElementProps {
 	position: Position;
