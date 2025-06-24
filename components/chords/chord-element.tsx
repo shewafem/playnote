@@ -42,7 +42,7 @@ const ChordElement: React.FC<ChordElementProps> = ({ position, chordKey, suffix,
 			const result = await toggleLearnedPosition(position.id);
 			if (result.success) {
 				setIsLearned(result.learned!);
-        toast.success(<Link href="profile/chords">Аккорд выучен! Нажмите сюда, чтобы увидеть его в профиле</Link>)
+        toast.success(<Link href="/profile/chords">Аккорд выучен! Нажмите сюда, чтобы увидеть его в профиле</Link>)
 			} else {
 				console.error("Ошибка переключения:", result.error);
 			}
