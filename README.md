@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Веб-приложение для обучения игре на гитаре 🎸
 
-## Getting Started
+Это комплексное веб-приложение, созданное для помощи начинающим и опытным гитаристам в их обучении. Платформа предлагает интерактивные инструменты, библиотеку знаний и персональный трекинг прогресса.
 
-First, run the development server:
+## 🚀 Основные функции
+
+*   👤 **Личный кабинет пользователя:** Регистрация, авторизация и профиль с возможностью просмотра прогресса обучения.
+*   🎼 **Интерактивный гитарный гриф:** Визуализация нот, аккордов и гамм прямо на грифе.
+*   📚 **Библиотека аккордов:** Обширная коллекция аппликатур аккордов для гитары в разных позициях с удобным поиском.
+*   💾 **Персональные схемы:** Возможность сохранять найденные или созданные аккорды и гитарные схемы в личном кабинете для быстрого доступа.
+*   ▶️ **Онлайн-проигрыватель табулатур:** Загружайте и проигрывайте файлы табулатур (например, Guitar Pro) с панелью управления для замедления, зацикливания и детального изучения песен.
+*   ⚙️ **Административная панель:** Управление пользователями, контентом и материалами для обучения.
+
+## 🛠️ Стек технологий
+
+| Категория                   | Технологии                                                                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Frontend**                | `Next.js` `TypeScript` `Tailwind CSS` `shadcn/ui` `React Hook Form` `Zustand`                            |
+| **Backend**                 | `Next.js (Server Components & Actions)` `Auth.js (NextAuth.js v5)` `Prisma ORM`                          |
+| **База данных**             | `PostgreSQL`                                                                                             |
+| **Дополнительные библиотеки** | `Tone.js` `tonal.js` `alphaTab` `html2canvas-pro` `react-chords`                                           |
+| **Валидация и инструменты** | `Zod` `Figma`                                                                                            |
+
+---
+
+## 🏁 Инструкция по установке и запуску
+
+Для запуска проекта на вашем локальном компьютере, следуйте этим шагам.
+
+### 1. Предварительные требования
+
+Убедитесь, что у вас установлены:
+*   [Node.js](https://nodejs.org/en/) (рекомендуется версия 18.x или выше)
+*   [pnpm](https://pnpm.io/installation) (или `npm`/`yarn`)
+*   [PostgreSQL](https://www.postgresql.org/download/) (установленный локально или доступный через URL)
+
+### 2. Клонирование репозитория
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/shewafem/playnote.git
+cd playnote
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Установка зависимостей
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Рекомендуется использовать `pnpm` для управления зависимостями.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm install
+```
 
-## Learn More
+### 4. Настройка переменных окружения
 
-To learn more about Next.js, take a look at the following resources:
+Создайте копию файла `.env.example` и переименуйте ее в `.env.local`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cp .env.example .env.local
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Теперь откройте `.env.local` и заполните необходимые переменные:
 
-## Deploy on Vercel
+```env
+# URL для подключения к вашей базе данных PostgreSQL
+# Формат: postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public
+DATABASE_URL="postgresql://postgres:password@localhost:5432/guitar_app?schema=public"
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Секретный ключ для Auth.js. 
+# Сгенерируйте его командой: openssl rand -base64 32
+AUTH_SECRET="your-super-secret-key-here"
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# URL вашего приложения (для разработки)
+AUTH_URL="http://localhost:3000"
+
+# (Опционально) Добавьте ключи для OAuth провайдеров, если используете
+# GITHUB_ID=
+# GITHUB_SECRET=
+# GOOGLE_CLIENT_ID=
+# GOOGLE_CLIENT_SECRET=
+```
+
+### 5. Применение миграций базы данных
+
+Эта команда создаст таблицы в вашей базе данных PostgreSQL на основе схемы Prisma.
+
+```bash
+pnpm prisma migrate dev
+```
+
+### 6. Запуск проекта
+
+Теперь вы готовы запустить сервер для разработки!
+
+```bash
+pnpm dev
+```
+
+### 7. Готово! 🎉
+
+Откройте ваш браузер и перейдите по адресу [http://localhost:3000](http://localhost:3000). Вы должны увидеть работающее приложение.
